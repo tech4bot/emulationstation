@@ -560,7 +560,6 @@ void GuiMenu::openScraperSettings()
 			openScraperSettings();
 		}
 	});
-	}
 
 	mWindow->pushGui(s);
 }
@@ -3299,7 +3298,6 @@ void GuiMenu::openUISettings()
 			window->pushGui(new GuiMenu(window));
 		}
 	});
-	}
 
 	mWindow->pushGui(s);
 }
@@ -3452,42 +3450,6 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
 #endif
 #endif
-
-       auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
-                bluetoothd_enabled->setState(btbaseEnabled);
-                s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
-                s->addSaveFunc([bluetoothd_enabled] {
-                        if (bluetoothd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop bluetooth", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
-                        } else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
-                                runSystemCommand("systemctl start bluetooth", "", nullptr);
-                        }
-                bool bluetoothenabled = bluetoothd_enabled->getState();
-                SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                });
-
-       auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
-                sshd_enabled->setState(baseEnabled);
-                s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
-                s->addSaveFunc([sshd_enabled] {
-                        if (sshd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop sshd", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr);
-                        } else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
-                                runSystemCommand("systemctl start sshd", "", nullptr);
-                        }
-                bool sshenabled = sshd_enabled->getState();
-                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                });
 
        auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
                 bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
@@ -4011,24 +3973,13 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	// Integer scale
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
 	{
-		auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (FOR MOST HANDHELDS)"));
+		auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (PIXEL PERFECT)"));
 		integerscale_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".integerscale") != "0" && SystemConf::getInstance()->get(configName + ".integerscale") != "1");
 		integerscale_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".integerscale") == "1");
 		integerscale_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".integerscale") == "0");
-		systemConfiguration->addWithLabel(_("INTEGER SCALE (FOR MOST HANDHELDS)"), integerscale_enabled);
+		systemConfiguration->addWithLabel(_("INTEGER SCALE (PIXEL PERFECT)"), integerscale_enabled);
 		systemConfiguration->addSaveFunc([integerscale_enabled, configName] { SystemConf::getInstance()->set(configName + ".integerscale", integerscale_enabled->getSelected()); });
 	}
-
-        // RGA scale
-        if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
-        {
-                auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
-                rgascale_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".rgascale") != "0" && SystemConf::getInstance()->get(configName + ".rgascale") != "1");
-                rgascale_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".rgascale") == "1");
-                rgascale_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".rgascale") == "0");
-                systemConfiguration->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
-                systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
-        }
 
 	// decorations
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
@@ -4456,24 +4407,13 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	// Integer scale
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
 	{
-		auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (FOR MOST HANDHELDS)"));
+		auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (PIXEL PERFECT)"));
 		integerscale_enabled->add(_("AUTO"), "auto", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".integerscale'") != "0" && getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".integerscale'") != "1");
 		integerscale_enabled->add(_("ON"), "1", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".integerscale'") == "1");
 		integerscale_enabled->add(_("OFF"), "0", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".integerscale'") == "0");
-		systemConfiguration->addWithLabel(_("INTEGER SCALE (FOR MOST HANDHELDS)"), integerscale_enabled);
+		systemConfiguration->addWithLabel(_("INTEGER SCALE (PIXEL PERFECT)"), integerscale_enabled);
 		systemConfiguration->addSaveFunc([integerscale_enabled, configName] { getShOutput(R"(/emuelec/scripts/emuelec-utils setemu set ')" + configName + ".integerscale' " + integerscale_enabled->getSelected()); });
 	}
-
-        // RGA scale
-        if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
-        {
-                auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
-                rgascale_enabled->add(_("AUTO"), "auto", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".rgascale'") != "0" && getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".rgascale'") != "1");
-                rgascale_enabled->add(_("ON"), "1", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".rgascale'") == "1");
-                rgascale_enabled->add(_("OFF"), "0", getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + configName + ".rgascale'") == "0");
-                systemConfiguration->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
-                systemConfiguration->addSaveFunc([rgascale_enabled, configName] { getShOutput(R"(/emuelec/scripts/emuelec-utils setemu set ')" + configName + ".rgascale' " + rgascale_enabled->getSelected()); });
-        }
 
 	// Vertical Game
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::vertical))
