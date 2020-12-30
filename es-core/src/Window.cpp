@@ -275,9 +275,9 @@ void Window::displayNotificationMessage(std::string message, int duration)
 
 	if (duration <= 0)
 	{
-		duration = Settings::getInstance()->getInt("audio.display_titles_time");
+		duration = Settings::getInstance()->getInt("notification.display_time");
 		if (duration <= 2 || duration > 120)
-			duration = 10;
+			duration = 4;
 
 		duration *= 1000;
 	}

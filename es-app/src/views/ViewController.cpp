@@ -716,11 +716,9 @@ bool ViewController::input(InputConfig* config, Input input)
 #ifdef _ENABLEEMUELEC
 /* Detect unconfigured keyboad as well */
         if(config->isConfigured() == false) {
-			if(input.type == TYPE_BUTTON || input.type == TYPE_KEY) {
-				if(input.id != SDLK_POWER) {
+			if(input.type == TYPE_BUTTON) {
 	    mWindow->pushGui(new GuiDetectDevice(mWindow, false, NULL));
 	    return true;
-	}
 	  }
         }
 #else

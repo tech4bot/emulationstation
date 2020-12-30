@@ -111,7 +111,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 #endif
 
 #ifdef _ENABLEEMUELEC
-		addEntry(_("EMUELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec"); /* < emuelec */
+		addEntry(_("351ELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec"); /* < emuelec */
 #endif
 
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
@@ -160,7 +160,10 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 		addEntry(_("SCRAPE").c_str(), true, [this] { openScraperSettings(); }, "iconScraper");		
 		addEntry(_("UPDATES & DOWNLOADS"), true, [this] { openUpdatesSettings(); }, "iconUpdates");
-		addEntry(_("SYSTEM SETTINGS").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
+#ifdef _ENABLEEMUELEC
+               if (isFullUI)
+                       addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+#endif
 	}
 	else
 	{
@@ -203,7 +206,7 @@ if (!isKidUI) {
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
 {
-	auto s = new GuiSettings(mWindow, "EmuELEC Settings");
+	auto s = new GuiSettings(mWindow, "EmulationStation Settings");
 
 	Window* window = mWindow;
 	std::string a;
@@ -237,7 +240,7 @@ void GuiMenu::openEmuELECSettings()
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		if (emuelec_video_mode->getSelected() != "-- AUTO-DETECTED RESOLUTIONS --") { 
 			if (emuelec_video_mode->getSelected() != "Custom") {
-			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
+			std::string msg = _("You are about to set 351ELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
 		
 			window->pushGui(new GuiMsgBox(window, msg,
@@ -357,90 +360,6 @@ void GuiMenu::openEmuELECSettings()
 			}
 		});
 #endif		
-       auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
-		bluetoothd_enabled->setState(btbaseEnabled);
-		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
-		s->addSaveFunc([bluetoothd_enabled] {
-			if (bluetoothd_enabled->changed()) {
-			if (bluetoothd_enabled->getState() == false) {
-				runSystemCommand("systemctl stop bluetooth", "", nullptr); 
-				runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr); 
-			} else { 
-				runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-				runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
-				runSystemCommand("systemctl start bluetooth", "", nullptr);
-			}
-                bool bluetoothenabled = bluetoothd_enabled->getState();
-                SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
-				SystemConf::getInstance()->saveSystemConf();
-			}
-		});
-
-       auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
-		sshd_enabled->setState(baseEnabled);
-		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
-		s->addSaveFunc([sshd_enabled] {
-			if (sshd_enabled->changed()) {
-			if (sshd_enabled->getState() == false) {
-				runSystemCommand("systemctl stop sshd", "", nullptr); 
-				runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr); 
-			} else { 
-				runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-				runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
-				runSystemCommand("systemctl start sshd", "", nullptr);
-			}
-                bool sshenabled = sshd_enabled->getState();
-                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
-				SystemConf::getInstance()->saveSystemConf();
-			}
-		});
-			
-		auto emuelec_boot_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "START AT BOOT", false);
-		std::vector<std::string> devices;
-		devices.push_back("Emulationstation");
-		devices.push_back("Retroarch");
-		for (auto it = devices.cbegin(); it != devices.cend(); it++)
-		emuelec_boot_def->add(*it, *it, SystemConf::getInstance()->get("ee_boot") == *it);
-		s->addWithLabel(_("START AT BOOT"), emuelec_boot_def);
-		s->addSaveFunc([emuelec_boot_def] {
-			if (emuelec_boot_def->changed()) {
-				std::string selectedBootMode = emuelec_boot_def->getSelected();
-				SystemConf::getInstance()->set("ee_boot", selectedBootMode);
-				SystemConf::getInstance()->saveSystemConf();
-			}
-		});
-
-       auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
-		fps_enabled->setState(fpsEnabled);
-		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
-		s->addSaveFunc([fps_enabled] {
-			bool fpsenabled = fps_enabled->getState();
-                SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
-				SystemConf::getInstance()->saveSystemConf();
-			});       
-/*
-       auto bezels_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool bezelsEnabled = SystemConf::getInstance()->get("global.bezel") == "1";
-		bezels_enabled->setState(bezelsEnabled);
-		s->addWithLabel(_("ENABLE RA BEZELS"), bezels_enabled);
-		s->addSaveFunc([bezels_enabled] {
-			bool bezelsenabled = bezels_enabled->getState();
-                SystemConf::getInstance()->set("global.bezel", bezelsenabled ? "1" : "0");
-				SystemConf::getInstance()->saveSystemConf();
-			});	
-*/       
-       auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
-		splash_enabled->setState(splashEnabled);
-		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
-		s->addSaveFunc([splash_enabled] {
-                bool splashenabled = splash_enabled->getState();
-                SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
-				SystemConf::getInstance()->saveSystemConf();
-			});
 
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
 	bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
@@ -453,75 +372,10 @@ void GuiMenu::openEmuELECSettings()
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
-	createInputTextRow(s, _("DEFAULT YOUTUBE SEARCH WORD"), "youtube.searchword", false);
+        // Developer options
+        s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
 
-	auto enable_advmamegp = std::make_shared<SwitchComponent>(mWindow);
-	bool advgpEnabled = SystemConf::getInstance()->get("advmame_auto_gamepad") == "1";
-	enable_advmamegp->setState(advgpEnabled);
-	s->addWithLabel(_("AUTO CONFIG ADVANCEMAME GAMEPAD"), enable_advmamegp);
-	
-	s->addSaveFunc([enable_advmamegp, window] {
-		bool advmamegpenabled = enable_advmamegp->getState();
-		SystemConf::getInstance()->set("advmame_auto_gamepad", advmamegpenabled ? "1" : "0");
-		SystemConf::getInstance()->saveSystemConf();
-	});
-	
-	if (UIModeController::getInstance()->isUIModeFull())
-	{
-	
-	
-	//Danger zone options
-		s->addEntry(_("DANGER ZONE!"), true, [this]
-		{
-	Window* window = mWindow;
-	ComponentListRow row;
-	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
-	// backup configs
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/downloads/ee_backup_config.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
-				[] { 
-				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils backup backup", "", nullptr);
-				}, _("NO"), nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP EMUELEC CONFIGS"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	danger_zone->addRow(row);
-	row.elements.clear();
-	// emus config
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING: SYSTEM WILL RESET SCRIPTS AND BINARIES !\nUPDATE, DOWNLOADS, THEMES, BLUETOOTH PAIRINGS AND ROMS FOLDER WILL NOT BE AFFECTED.\n\nRESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"), _("YES"),
-				[] { 
-				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils clearconfig EMUS", "", nullptr);
-				}, _("NO"), nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	danger_zone->addRow(row);
-	row.elements.clear();
-	// retroarch config
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING: RETROARCH CONFIG WILL RESET TO DEFAULT\n\nPER-CORE CONFIGURATIONS WILL NOT BE AFFECTED BUT NO BACKUP WILL BE CREATED!\n\nRESET RETROARCH CONFIG TO DEFAULT?"), _("YES"),
-				[] { 
-				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils clearconfig retroarch", "", nullptr);
-				}, _("NO"), nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	danger_zone->addRow(row);
-	row.elements.clear();
-	// all configs
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING: ALL CONFIGURATIONS WILL BE RESET AND NO BACKUP WILL BE CREATED!\n\nIF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\nRESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
-				[] { 
-				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils clearconfig ALL", "", nullptr);
-				}, _("NO"), nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET SYSTEM TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	danger_zone->addRow(row);
-	row.elements.clear();
-			
-			mWindow->pushGui(danger_zone);
-		});
-	
 	mWindow->pushGui(s);
- }
 }
 /*  emuelec >*/
 #endif
@@ -747,7 +601,7 @@ void GuiMenu::addVersionInfo()
 		else
 #endif
 #ifdef _ENABLEEMUELEC	
-		mVersion.setText("EMUELEC ES V" + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/emuelec/scripts/emuelec-utils getip)"));
+		mVersion.setText("351ELEC ES V" + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/emuelec/scripts/emuelec-utils getip)"));
 #else
 		mVersion.setText("BATOCERA.LINUX ES V" + ApiSystem::getInstance()->getVersion() + buildDate);
 #endif
@@ -888,25 +742,17 @@ void GuiMenu::openSystemInformations_batocera()
 
 	Window *window = mWindow;
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
-	GuiSettings *informationsGui = new GuiSettings(window, _("INFORMATION").c_str());
+	GuiSettings *informationsGui = new GuiSettings(window, _("SYSTEM INFORMATION").c_str());
 
 	auto version = std::make_shared<TextComponent>(window, ApiSystem::getInstance()->getVersion(), font, color);
 	informationsGui->addWithLabel(_("VERSION"), version);
 
 	bool warning = ApiSystem::getInstance()->isFreeSpaceLimit();
 	auto userspace = std::make_shared<TextComponent>(window,
-		ApiSystem::getInstance()->getFreeSpaceUserInfo(),
+		ApiSystem::getInstance()->getFreeSpaceInfo("/storage/roms"),
 		font,
 		warning ? 0xFF0000FF : color);
 	informationsGui->addWithLabel(_("USER DISK USAGE"), userspace);
-
-#ifndef _ENABLEEMUELEC
-	auto systemspace = std::make_shared<TextComponent>(window,
-		ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
-		font,
-		color);
-	informationsGui->addWithLabel(_("SYSTEM DISK USAGE"), systemspace);
-#endif
 
 	// various informations
 	std::vector<std::string> infos = ApiSystem::getInstance()->getSystemInformations();
@@ -1447,25 +1293,6 @@ void GuiMenu::openSystemSettings_batocera()
 	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
 	s->addWithLabel(_("LANGUAGE"), language_choice);
 
-	// power saver
-	auto power_saver = std::make_shared< OptionListComponent<std::string> >(mWindow, _("POWER SAVER MODES"), false);
-	std::vector<std::string> modes;
-	modes.push_back("disabled");
-	modes.push_back("default");
-	modes.push_back("enhanced");
-	modes.push_back("instant");
-	for (auto it = modes.cbegin(); it != modes.cend(); it++)
-		power_saver->add(_(it->c_str()), *it, Settings::getInstance()->getString("PowerSaverMode") == *it);
-	s->addWithLabel(_("POWER SAVER MODES"), power_saver);
-	s->addSaveFunc([this, power_saver] {
-		if (Settings::getInstance()->getString("PowerSaverMode") != "instant" && power_saver->getSelected() == "instant") 
-		{						
-			Settings::getInstance()->setBool("EnableSounds", false);
-		}
-		Settings::getInstance()->setString("PowerSaverMode", power_saver->getSelected());
-		PowerSaver::init();
-	});
-
 	// UI RESTRICTIONS
 	auto UImodeSelection = std::make_shared< OptionListComponent<std::string> >(mWindow, _("UI MODE"), false);
 	std::vector<std::string> UImodes = UIModeController::getInstance()->getUIModes();
@@ -1517,7 +1344,7 @@ void GuiMenu::openSystemSettings_batocera()
 	}
 #endif
 
-#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
+#if !defined(WIN32) || defined(_DEBUG)
 	s->addGroup(_("HARDWARE"));
 
 	// brighness
@@ -1801,7 +1628,7 @@ void GuiMenu::openSystemSettings_batocera()
 		{	
 #ifdef _ENABLEEMUELEC
 			std::string selectedLanguage = language_choice->getSelected();
-			std::string msg = _("You are about to set EmuELEC Language to:") +"\n" +  selectedLanguage + "\n";
+			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
 			msg += _("Emulationstation will restart")+"\n";
 			msg += _("Do you want to proceed ?");
 			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
@@ -1828,9 +1655,61 @@ void GuiMenu::openSystemSettings_batocera()
 
 	});
 
-	// Developer options
-	if (isFullUI)
-		s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
+	if (UIModeController::getInstance()->isUIModeFull())
+	{
+	
+	
+	//Danger zone options
+		s->addEntry(_("DANGER ZONE!"), true, [this]
+		{
+	Window* window = mWindow;
+	ComponentListRow row;
+	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
+	// backup configs
+	row.makeAcceptInputHandler([window] {
+		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/351ELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+				[] { 
+				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils ee_backup backup", "", nullptr);
+				}, _("NO"), nullptr));
+	});
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP CONFIGURATIONS"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	danger_zone->addRow(row);
+	row.elements.clear();
+
+        // restore configs
+        row.makeAcceptInputHandler([window] {
+                window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
+                                [] {
+                                runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils ee_backup restore", "", nullptr);
+                                }, _("NO"), nullptr));
+        });
+        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+        danger_zone->addRow(row);
+        row.elements.clear();
+
+	// retroarch config
+	row.makeAcceptInputHandler([window] {
+		window->pushGui(new GuiMsgBox(window, _("WARNING: RETROARCH CONFIG WILL RESET TO DEFAULT\n\nPER-CORE CONFIGURATIONS WILL NOT BE AFFECTED BUT NO BACKUP WILL BE CREATED!\n\nRESET RETROARCH CONFIG TO DEFAULT?"), _("YES"),
+				[] { 
+				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils clearconfig retroarch", "", nullptr);
+				}, _("NO"), nullptr));
+	});
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	danger_zone->addRow(row);
+	row.elements.clear();
+	// all configs
+	row.makeAcceptInputHandler([window] {
+		window->pushGui(new GuiMsgBox(window, _("WARNING: RESETTING WILL PRESERVE YOUR PASSWORDS AND NETWORK CONFIGURATION HOWEVER YOUR REMAINING DATA AND ALL OTHER CONFIGURATIONS WILL BE RESET TO DEFAULTS!\n\nIF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\nRESET SYSTEM AND RESTART?"), _("YES"),
+				[] { 
+				runSystemCommand("systemd-run /emuelec/scripts/emuelec-utils clearconfig ALL", "", nullptr);
+				}, _("NO"), nullptr));
+	});
+	row.addElement(std::make_shared<TextComponent>(window, _("FACTORY RESET"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	danger_zone->addRow(row);
+	row.elements.clear();
+			
+			mWindow->pushGui(danger_zone);
+		});
 
 	auto pthis = this;
 	s->onFinalize([s, pthis, window]
@@ -1841,6 +1720,7 @@ void GuiMenu::openSystemSettings_batocera()
 			window->pushGui(new GuiMenu(window, false));
 		}
 	});
+	}
 
 	mWindow->pushGui(s);
 }
@@ -2091,6 +1971,26 @@ void GuiMenu::openGamesSettings_batocera()
 	smoothing_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF") , "0" } }, SystemConf::getInstance()->get("global.smooth"));
 	s->addWithLabel(_("SMOOTH GAMES"), smoothing_enabled);
 	s->addSaveFunc([smoothing_enabled] { SystemConf::getInstance()->set("global.smooth", smoothing_enabled->getSelected()); });
+
+       auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
+                fps_enabled->setState(fpsEnabled);
+                s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
+                s->addSaveFunc([fps_enabled] {
+                        bool fpsenabled = fps_enabled->getState();
+                SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                        });
+
+       auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
+                splash_enabled->setState(splashEnabled);
+                s->addWithLabel(_("ENABLE GAME SPLASH"), splash_enabled);
+                s->addSaveFunc([splash_enabled] {
+                bool splashenabled = splash_enabled->getState();
+                SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                        });
 	
 #ifdef _ENABLEEMUELEC
 	// bezel
@@ -2155,10 +2055,16 @@ void GuiMenu::openGamesSettings_batocera()
 #endif
 
 	// Integer scale
-	auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (PIXEL PERFECT)"));
+	auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (FOR MOST HANDHELDS)"));
 	integerscale_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF") , "0" } }, SystemConf::getInstance()->get("global.integerscale"));
-	s->addWithLabel(_("INTEGER SCALE (PIXEL PERFECT)"), integerscale_enabled);
+	s->addWithLabel(_("INTEGER SCALE (FOR MOST HANDHELDS)"), integerscale_enabled);
 	s->addSaveFunc([integerscale_enabled] { SystemConf::getInstance()->set("global.integerscale", integerscale_enabled->getSelected()); });
+
+        // RGA scale
+        auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
+        rgascale_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF") , "0" } }, SystemConf::getInstance()->get("global.rgascale"));
+        s->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
+        s->addSaveFunc([rgascale_enabled] { SystemConf::getInstance()->set("global.rgascale", rgascale_enabled->getSelected()); });
 
 #ifndef _ENABLEEMUELEC
 	// decorations
@@ -3260,6 +3166,13 @@ void GuiMenu::openUISettings()
 
 	s->addGroup(_("DISPLAY OPTIONS"));
 
+        auto notification_time = std::make_shared<SliderComponent>(mWindow, 2.f, 120.f, 2.f, "s");
+        notification_time->setValue(Settings::getInstance()->getInt("notification.display_time"));
+        s->addWithLabel(_("POPUP NOTIFICATION TIMEOUT"), notification_time);
+        s->addSaveFunc([notification_time] {
+                Settings::getInstance()->setInt("notification.display_time", (int)Math::round(notification_time->getValue()));
+        });
+
 	s->addEntry(_("SCREENSAVER SETTINGS"), true, std::bind(&GuiMenu::openScreensaverOptions, this));
 
 	// transition style
@@ -3449,14 +3362,6 @@ void GuiMenu::openSoundSettings()
 		Settings::getInstance()->setBool("audio.display_titles", display_titles->getState());
 	});
 
-	// batocera - how long to display the song titles?
-	auto titles_time = std::make_shared<SliderComponent>(mWindow, 2.f, 120.f, 2.f, "s");
-	titles_time->setValue(Settings::getInstance()->getInt("audio.display_titles_time"));
-	s->addWithLabel(_("HOW MANY SECONDS FOR SONG TITLES"), titles_time);
-	s->addSaveFunc([titles_time] {
-		Settings::getInstance()->setInt("audio.display_titles_time", (int)Math::round(titles_time->getValue()));
-	});
-
 	// batocera - music per system
 	auto music_per_system = std::make_shared<SwitchComponent>(mWindow);
 	music_per_system->setState(Settings::getInstance()->getBool("audio.persystem"));
@@ -3545,6 +3450,42 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
 #endif
 #endif
+
+       auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
+                bluetoothd_enabled->setState(btbaseEnabled);
+                s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
+                s->addSaveFunc([bluetoothd_enabled] {
+                        if (bluetoothd_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop bluetooth", "", nullptr);
+                                runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
+                        } else {
+                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+                                runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
+                                runSystemCommand("systemctl start bluetooth", "", nullptr);
+                        }
+                bool bluetoothenabled = bluetoothd_enabled->getState();
+                SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                });
+
+       auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+                sshd_enabled->setState(baseEnabled);
+                s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
+                s->addSaveFunc([sshd_enabled] {
+                        if (sshd_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop sshd", "", nullptr);
+                                runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr);
+                        } else {
+                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+                                runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
+                                runSystemCommand("systemctl start sshd", "", nullptr);
+                        }
+                bool sshenabled = sshd_enabled->getState();
+                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                });
 
 	// Wifi enable
 	auto enable_wifi = std::make_shared<SwitchComponent>(mWindow);	

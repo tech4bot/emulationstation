@@ -233,7 +233,7 @@ void Settings::setDefaults()
 
 	// Audio out device for volume control
 	#if defined _RPI_ || defined _ENABLEEMUELEC
-		mStringMap["AudioDevice"] = "PCM";
+		mStringMap["AudioDevice"] = "Playback";
 	#else
 		mStringMap["AudioDevice"] = "Master";
 	#endif
@@ -291,9 +291,11 @@ void Settings::setDefaults()
 	mBoolMap["audio.persystem"] = false;
 	mBoolMap["audio.display_titles"] = true;
 	mBoolMap["audio.thememusics"] = true;	
-	mIntMap["audio.display_titles_time"] = 10;
 	
 	mBoolMap["NetPlayCheckIndexesAtStart"] = false;
+
+	// Default notification display time
+	mIntMap["notification.display_time"] = 4;
 
 #if WIN32
 	mBoolMap["updates.enabled"] = true;

@@ -177,8 +177,8 @@ std::pair<std::string, int> ApiSystem::updateSystem(const std::function<void(con
 	LOG(LogDebug) << "ApiSystem::updateSystem";
 
 #ifdef _ENABLEEMUELEC	
-	std::string updatecommand = "emuelec-upgrade";
-	std::string updatelog = "/storage/.config/emuelec/logs/emuelec-upgrade.log";
+	std::string updatecommand = "351elec-upgrade";
+	std::string updatelog = "/storage/.config/emuelec/logs/351elec-upgrade.log";
 #else
 	std::string updatecommand = "batocera-upgrade";
 	std::string updatelog = "/userdata/system/logs/batocera-upgrade.log";
@@ -1108,21 +1108,6 @@ bool ApiSystem::getBrighness(int& value)
 	char buffer[BACKLIGHT_BUFFER_SIZE + 1];
 	ssize_t count;
 
-	fd = open(BACKLIGHT_BRIGHTNESS_MAX_NAME, O_RDONLY);
-	if (fd < 0)
-		return false;
-
-	memset(buffer, 0, BACKLIGHT_BUFFER_SIZE + 1);
-
-	count = read(fd, buffer, BACKLIGHT_BUFFER_SIZE);
-	if (count > 0)
-		max = atoi(buffer);
-
-	close(fd);
-
-	if (max == 0) 
-		return 0;
-
 	fd = open(BACKLIGHT_BRIGHTNESS_NAME, O_RDONLY);
 	if (fd < 0)
 		return false;
@@ -1135,19 +1120,18 @@ bool ApiSystem::getBrighness(int& value)
 
 	close(fd);
 
-	value = (uint32_t) (value / (float)max * 100.0f);
 	return true;
 #endif
 }
 
 void ApiSystem::setBrighness(int value)
 {
-#if !WIN32	
+#if !WIN32
 	if (value < 5)
 		value = 5;
 
-	if (value > 100)
-		value = 100;
+	if (value > 255)
+		value = 255;
 
 	int fd;
 	int max = 255;
@@ -1173,14 +1157,26 @@ void ApiSystem::setBrighness(int value)
 	if (fd < 0)
 		return;
 	
-	float percent = value / 100.0f * (float)max;
-	sprintf(buffer, "%d\n", (uint32_t)percent);
+	sprintf(buffer, "%d\n", (uint32_t)value);
 
 	count = write(fd, buffer, strlen(buffer));
 	if (count < 0)
 		LOG(LogError) << "ApiSystem::setBrighness failed";
 
 	close(fd);
+
+        fd = open("/storage/.brightness", O_RDWR);
+        if (fd < 0)
+                return;
+
+        sprintf(buffer, "%d", (int)value);
+
+        count = write(fd, buffer, strlen(buffer));
+        if (count < 0)
+                LOG(LogError) << "ApiSystem::setBrighness (save) failed";
+
+        close(fd);
+
 #endif
 }
 
