@@ -9,6 +9,7 @@
 #include "guis/GuiMsgBox.h"
 #include "guis/GuiScraperStart.h"
 #include "guis/GuiThemeInstallStart.h" //batocera
+#include "guis/GuiPackageInstallStart.h" //351elec
 #include "guis/GuiBezelInstallStart.h" //batocera
 #include "guis/GuiBatoceraStore.h" //batocera
 #include "guis/GuiSettings.h"
@@ -1160,6 +1161,15 @@ void GuiMenu::openUpdatesSettings()
 		mWindow->pushGui(new GuiThemeInstallStart(mWindow)); 
 	});
 
+        // Community package installer/browser
+        updateGui->addEntry(_("PACKAGES"), true, [this]
+        {
+                if (!checkNetwork())
+                        return;
+
+                mWindow->pushGui(new GuiPackageInstallStart(mWindow));
+        });
+
 	// Batocera integration with theBezelProject
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
 	{
@@ -1183,23 +1193,7 @@ void GuiMenu::openUpdatesSettings()
 	{
 		SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
 	});
-#ifndef _ENABLEEMUELEC
-	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE TYPE"), false);
-	
-	std::string updatesType = SystemConf::getInstance()->get("updates.type");
-	if (updatesType.empty() || updatesType != "beta")
-		updatesType = "stable";
-	
-	updatesTypeList->add("stable", "stable", updatesType == "stable");
-	updatesTypeList->add("beta", "beta", updatesType != "stable");
-	
-	updateGui->addWithLabel(_("UPDATE TYPE"), updatesTypeList);
-	updatesTypeList->setSelectedChangedCallback([](std::string name)
-	{
-		if (SystemConf::getInstance()->set("updates.type", name))
-			SystemConf::getInstance()->saveSystemConf();
-	});	
-#endif
+
 	// Start update
 	updateGui->addEntry(GuiUpdate::state == GuiUpdateState::State::UPDATE_READY ? _("APPLY UPDATE") : _("START UPDATE"), true, [this]
 	{

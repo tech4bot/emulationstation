@@ -1,40 +1,45 @@
 #pragma once
 
+#include <string>
 #include "GuiComponent.h"
-#include "GuiThemeInstallStart.h"
-#include "GuiPackageInstallStart.h"
 #include "components/MenuComponent.h"
+#include "components/ComponentGrid.h"
+#include "components/TextComponent.h"
+#include "components/ImageComponent.h"
 #include "ApiSystem.h"
 #include "ContentInstaller.h"
 
 template<typename T>
 class OptionListComponent;
 
-class GuiBatoceraBezelEntry : public ComponentGrid
+class GuiThreeFiftyOnePackageEntry : public ComponentGrid
 {
 public:
-	GuiBatoceraBezelEntry(Window* window, BatoceraBezel& entry);
+	GuiThreeFiftyOnePackageEntry(Window* window, ThreeFiftyOnePackage& entry);
 
 	bool isInstallPending() { return mIsPending; }
-	BatoceraBezel& getEntry() { return mEntry; }
+	ThreeFiftyOnePackage& getEntry() { return mEntry; }
 	virtual void setColor(unsigned int color);
+
+	void update(int deltaTime) override;
 
 private:
 	std::shared_ptr<TextComponent>  mImage;
 	std::shared_ptr<TextComponent>  mText;
 	std::shared_ptr<TextComponent>  mSubstring;
 
-	BatoceraBezel mEntry;
+	std::shared_ptr<ImageComponent>  mPreviewImage;
+
+	ThreeFiftyOnePackage mEntry;
 	bool mIsPending;
 };
 
 
-// Batocera
-class GuiBezelInstallStart : public GuiComponent, IContentInstalledNotify
+class GuiPackageInstallStart : public GuiComponent, IContentInstalledNotify
 {
 public:
-	GuiBezelInstallStart(Window* window);
-	~GuiBezelInstallStart();
+	GuiPackageInstallStart(Window* window);
+	~GuiPackageInstallStart();
 
 	bool input(InputConfig* config, Input input) override;
 	void update(int deltaTime) override;
@@ -42,16 +47,16 @@ public:
 	virtual std::vector<HelpPrompt> getHelpPrompts() override;
 
 	void OnContentInstalled(int contentType, std::string contentName, bool success) override;
+
 private:
-	void processBezel(BatoceraBezel name);
-	
-	void loadBezelsAsync();
+	void loadPackagesAsync();
 	void loadList();
 
 	void centerWindow();
+	void processPackage(ThreeFiftyOnePackage package);
 
-	int			  mReloadList;
-	MenuComponent mMenu;	
+	int				mReloadList;
+	MenuComponent	mMenu;
 
-	std::vector<BatoceraBezel> mBezels;
+	std::vector<ThreeFiftyOnePackage> mPackages;
 };

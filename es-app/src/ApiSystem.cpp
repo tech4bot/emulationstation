@@ -689,6 +689,121 @@ bool ApiSystem::setAudioOutputDevice(std::string selected)
 	return exitcode == 0;
 }
 
+void ApiSystem::getThreeFiftyOnePackagesImages(std::vector<ThreeFiftyOnePackage>& items)
+{
+
+        std::vector<std::pair<std::vector<ThreeFiftyOnePackage>::iterator, HttpReq*>> requests;
+
+        for (auto it = items.begin(); it != items.end(); ++it)
+        {
+                std::string distantFile = getUpdateUrl() + "/packages/" + it->name + ".jpg";
+                it->image = distantFile;
+                continue;
+
+
+                std::string localPath = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp");
+                if (!Utils::FileSystem::exists(localPath))
+                        Utils::FileSystem::createDirectory(localPath);
+
+                std::string localFile = localPath + "/" + it->name + ".jpg";
+
+                if (Utils::FileSystem::exists(localFile))
+                {
+                        auto date = Utils::FileSystem::getFileCreationDate(localFile);
+                        auto duration = Utils::Time::DateTime::now().elapsedSecondsSince(date);
+                        if (duration > 86400) // 1 day
+                                Utils::FileSystem::removeFile(localFile);
+                }
+
+                if (Utils::FileSystem::exists(localFile))
+                        it->image = localFile;
+                else
+                {
+                        HttpReq* httpreq = new HttpReq(distantFile, localFile);
+
+                        auto pair = std::pair<std::vector<ThreeFiftyOnePackage>::iterator, HttpReq*>(it, httpreq);
+                        requests.push_back(pair);
+                }
+        }
+
+        bool running = true;
+
+        while (running && requests.size() > 0)
+        {
+                running = false;
+
+                for (auto it = requests.begin(); it != requests.end(); ++it)
+                {
+                        if (it->second->status() == HttpReq::REQ_IN_PROGRESS)
+                        {
+                                running = true;
+                                continue;
+                        }
+
+                        if (it->second->status() == HttpReq::REQ_SUCCESS)
+                        {
+                                auto filePath = it->second->getFilePath();
+                                if (Utils::FileSystem::exists(filePath))
+                                        it->first->image = filePath;
+                        }
+
+                        delete it->second;
+                        requests.erase(it);
+                        running = true;
+                        break;
+                }
+        }
+}
+
+std::vector<ThreeFiftyOnePackage> ApiSystem::getThreeFiftyOnePackagesList()
+{
+        LOG(LogDebug) << "ApiSystem::getThreeFiftyOnePackagesList";
+
+        std::vector<ThreeFiftyOnePackage> res;
+
+        std::string command = "351elec-es-packages list";
+        FILE *pipe = popen(command.c_str(), "r");
+        if (pipe == NULL)
+                return res;
+
+        char line[1024];
+        char *pch;
+
+        while (fgets(line, 1024, pipe))
+        {
+                strtok(line, "\n");
+                // provide only packages that are [A]vailable or [I]nstalled as a result
+                // (Eliminate [?] and other non-installable lines of text)
+                if ((strncmp(line, "[A]", 3) == 0) || (strncmp(line, "[I]", 3) == 0))
+                {
+                        auto parts = Utils::String::splitAny(line, " \t");
+                        if (parts.size() < 2)
+                                continue;
+
+                        ThreeFiftyOnePackage bt;
+                        bt.isInstalled = (Utils::String::startsWith(parts[0], "[I]"));
+                        bt.name = parts[1];
+                        bt.url = parts.size() < 3 ? "" : (parts[2] == "-" ? parts[3] : parts[2]);
+
+                        res.push_back(bt);
+                }
+        }
+        pclose(pipe);
+
+        getThreeFiftyOnePackagesImages(res);
+        return res;
+}
+
+std::pair<std::string, int> ApiSystem::installThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func)
+{
+        return executeScript("351elec-es-packages install " + thname, func);
+}
+
+std::pair<std::string, int> ApiSystem::uninstallThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func)
+{
+        return executeScript("351elec-es-packages remove " + thname, func);
+}
+
 std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
 {
 	LOG(LogDebug) << "ApiSystem::getBatoceraThemesList";

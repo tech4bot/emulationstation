@@ -36,6 +36,15 @@ struct BatoceraTheme
 	std::string image;
 };
 
+struct ThreeFiftyOnePackage
+{
+        std::string name;
+        std::string url;
+        bool isInstalled;
+
+        std::string image;
+};
+
 struct PacmanPackage
 {
 	PacmanPackage()
@@ -158,9 +167,14 @@ public:
 	virtual std::pair<std::string,int> installBatoceraTheme(std::string thname, const std::function<void(const std::string)>& func = nullptr);
 	virtual std::pair<std::string, int> uninstallBatoceraBezel(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
 
+        // Packages
+        virtual std::vector<ThreeFiftyOnePackage> getThreeFiftyOnePackagesList();
+        virtual std::pair<std::string,int> installThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func = nullptr);
+
     virtual std::vector<BatoceraBezel> getBatoceraBezelsList();
 	virtual std::pair<std::string,int> installBatoceraBezel(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
 	virtual std::pair<std::string,int> uninstallBatoceraTheme(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
+	virtual std::pair<std::string,int> uninstallThreeFiftyOnePackage(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
 
 	virtual std::string getCRC32(const std::string fileName, bool fromZipContents = true);
 	virtual std::string getMD5(const std::string fileName, bool fromZipContents = true);
@@ -202,6 +216,8 @@ protected:
 	void getBatoceraThemesImages(std::vector<BatoceraTheme>& items);
 	std::string getUpdateUrl();
     static ApiSystem* instance;
+
+        void getThreeFiftyOnePackagesImages(std::vector<ThreeFiftyOnePackage>& items);
 
     void launchExternalWindow_before(Window *window);
     void launchExternalWindow_after(Window *window);
