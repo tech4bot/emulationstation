@@ -3469,12 +3469,12 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                 s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
                 s->addSaveFunc([sshd_enabled] {
                         if (sshd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop sshd", "", nullptr);
+                                runSystemCommand("systemctl disable sshd", "", nullptr);
                                 runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr);
                         } else {
                                 runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
                                 runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
-                                runSystemCommand("systemctl start sshd", "", nullptr);
+                                runSystemCommand("systemctl enable sshd", "", nullptr);
                         }
                 bool sshenabled = sshd_enabled->getState();
                 SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
