@@ -1195,7 +1195,7 @@ void GuiMenu::openUpdatesSettings()
 	});
 
 	// Update Bands
-	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE BAND"), false);
+	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE CHANNEL"), false);
 	
 	std::string updatesType = SystemConf::getInstance()->get("updates.type");
 	if (updatesType.empty())
@@ -1205,7 +1205,7 @@ void GuiMenu::openUpdatesSettings()
 	updatesTypeList->add("rc", "rc", updatesType == "rc");
 	updatesTypeList->add("nightly", "nightly", updatesType == "nightly");
 	
-	updateGui->addWithLabel(_("UPDATE BAND"), updatesTypeList);
+	updateGui->addWithLabel(_("UPDATE CHANNEL"), updatesTypeList);
 	updatesTypeList->setSelectedChangedCallback([](std::string name)
 	{
 		if (SystemConf::getInstance()->set("updates.type", name))
