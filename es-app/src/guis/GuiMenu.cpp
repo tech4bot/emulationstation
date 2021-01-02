@@ -1194,6 +1194,24 @@ void GuiMenu::openUpdatesSettings()
 		SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
 	});
 
+	// Update Bands
+	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE BAND"), false);
+	
+	std::string updatesType = SystemConf::getInstance()->get("updates.type");
+	if (updatesType.empty())
+		updatesType = "stable";
+	
+	updatesTypeList->add("stable", "stable", updatesType == "stable");
+	updatesTypeList->add("rc", "rc", updatesType == "rc");
+	updatesTypeList->add("nightly", "nightly", updatesType == "nightly");
+	
+	updateGui->addWithLabel(_("UPDATE BAND"), updatesTypeList);
+	updatesTypeList->setSelectedChangedCallback([](std::string name)
+	{
+		if (SystemConf::getInstance()->set("updates.type", name))
+			SystemConf::getInstance()->saveSystemConf();
+	});	
+
 	// Start update
 	updateGui->addEntry(GuiUpdate::state == GuiUpdateState::State::UPDATE_READY ? _("APPLY UPDATE") : _("START UPDATE"), true, [this]
 	{
