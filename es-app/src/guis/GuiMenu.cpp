@@ -735,6 +735,23 @@ void GuiMenu::exitKidMode()
 	mWindow->pushGui(new ExitKidModeMsgBox(mWindow, _("UNLOCK UI MODE"), _("PLEASE ENTER THE CODE TO UNLOCK THE CURRENT UI MODE")));
 }
 
+void GuiMenu::openDiabloServer()
+{
+        auto theme = ThemeData::getMenuTheme();
+        std::shared_ptr<Font> font = theme->Text.font;
+        unsigned int color = theme->Text.color;
+
+        Window *window = mWindow;
+        bool isFullUI = UIModeController::getInstance()->isUIModeFull();
+
+	auto DiabloGui = new GuiSettings(mWindow, _("DIABLO SERVER").c_str());
+
+	createInputTextRow(DiabloGui, _("SERVER IP/NAME"), "diablo.server", true);
+	createInputTextRow(DiabloGui, _("SERVER PASSWORD"), "diablo.password", true);
+
+	mWindow->pushGui(DiabloGui);
+}
+
 void GuiMenu::openSystemInformations_batocera()
 {
 	auto theme = ThemeData::getMenuTheme();
@@ -2263,6 +2280,9 @@ void GuiMenu::openGamesSettings_batocera()
 		// Netplay
 		if (SystemData::isNetplayActivated() && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::NETPLAY))
 			s->addEntry(_("NETPLAY SETTINGS"), true, [this] { openNetplaySettings(); }, "iconNetplay");
+
+		// Add an entry to the Diablo phone book for Multiplayer
+                s->addEntry(_("DIABLO SERVER"), true, [this] { openDiabloServer(); });
 
 		// Missing Bios
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::BIOSINFORMATION))

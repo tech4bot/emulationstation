@@ -76,7 +76,8 @@ private:
 	void openQuitMenu_batocera();
 	void openSystemInformations_batocera();
 	void openDeveloperSettings();
-	void openNetplaySettings(); 
+	void openNetplaySettings();
+	void openDiabloServer(); 
 	void openRetroachievementsSettings();
 	void openMissingBiosSettings();
 	void openFormatDriveSettings();
