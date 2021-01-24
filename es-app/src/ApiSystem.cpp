@@ -849,7 +849,7 @@ std::string ApiSystem::getUpdateUrl()
 	if (!systemsetting.empty())
 		return systemsetting;
 
-	return "https://updates.batocera.org";
+	return "https://github.com/fewtarius/351ELEC/tree/main/metadata";
 }
 
 void ApiSystem::getBatoceraThemesImages(std::vector<BatoceraTheme>& items)
