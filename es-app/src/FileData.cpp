@@ -940,7 +940,7 @@ const std::string FileData::getCore(bool resolveDefault)
 #ifndef _ENABLEEMUELEC	
 	std::string core = SystemConf::getInstance()->get(getConfigurationName() + ".core"); 
 #else
-	std::string core = getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + getConfigurationName() + ".core'");
+	std::string core = getShOutput(R"(/usr/bin/emuelec-utils setemu get ')" + getConfigurationName() + ".core'");
 #endif
 #endif
 
@@ -994,7 +994,7 @@ const std::string FileData::getEmulator(bool resolveDefault)
 #ifndef _ENABLEEMUELEC	
 	std::string emulator = SystemConf::getInstance()->get(getConfigurationName() + ".emulator");
 #else
-	std::string emulator = getShOutput(R"(/emuelec/scripts/emuelec-utils setemu get ')" + getConfigurationName() + ".emulator'");
+	std::string emulator = getShOutput(R"(/usr/bin/emuelec-utils setemu get ')" + getConfigurationName() + ".emulator'");
 #endif
 #endif
 
@@ -1027,7 +1027,7 @@ void FileData::setCore(const std::string value)
 #ifndef _ENABLEEMUELEC	
 	SystemConf::getInstance()->set(getConfigurationName() + ".core", value);
 #else
-	getShOutput(R"(/emuelec/scripts/emuelec-utils setemu set ')" + getConfigurationName() + ".core' " + value);
+	getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + getConfigurationName() + ".core' " + value);
 #endif
 #endif
 }
@@ -1040,7 +1040,7 @@ void FileData::setEmulator(const std::string value)
 #ifndef _ENABLEEMUELEC
 	SystemConf::getInstance()->set(getConfigurationName() + ".emulator", value);
 #else
-	getShOutput(R"(/emuelec/scripts/emuelec-utils setemu set ')" + getConfigurationName() + ".emulator' " + value);
+	getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + getConfigurationName() + ".emulator' " + value);
 #endif
 #endif
 }

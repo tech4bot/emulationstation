@@ -101,7 +101,7 @@ void AudioManager::deinit()
 
 #ifdef _ENABLEEMUELEC	
 	LOG(LogInfo) << "Attempting to close SDL AUDIO";
-	runSystemCommand("/emuelec/scripts/emuelec-utils audio alsa", "", nullptr); 
+	runSystemCommand("/usr/bin/emuelec-utils audio alsa", "", nullptr); 
 #endif
 
 	//completely tear down SDL audio. else SDL hogs audio resources and emulators might fail to start...
@@ -199,7 +199,7 @@ void AudioManager::playRandomMusic(bool continueIfPlaying)
 	// check in system sound directory
 	if (musics.empty())
 #ifdef _ENABLEEMUELEC
-		getMusicIn("/storage/.config/emuelec/BGM", musics);
+		getMusicIn("/storage/.config/distribution/BGM", musics);
 #else
 		getMusicIn("/usr/share/batocera/music", musics);
 #endif

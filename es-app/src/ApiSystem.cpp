@@ -140,7 +140,7 @@ std::string ApiSystem::getVersion()
 {
 	LOG(LogDebug) << "ApiSystem::getVersion";
 #ifdef _ENABLEEMUELEC
-	std::ifstream ifs("/storage/.config/EE_VERSION");
+	std::ifstream ifs("/storage/.config/.OS_VERSION");
 #else
 	std::ifstream ifs("/usr/share/batocera/batocera.version");
 #endif
@@ -178,7 +178,7 @@ std::pair<std::string, int> ApiSystem::updateSystem(const std::function<void(con
 
 #ifdef _ENABLEEMUELEC	
 	std::string updatecommand = "351elec-upgrade";
-	std::string updatelog = "/storage/.config/emuelec/logs/351elec-upgrade.log";
+	std::string updatelog = "/storage/.config/distribution/logs/351elec-upgrade.log";
 #else
 	std::string updatecommand = "batocera-upgrade";
 	std::string updatelog = "/userdata/system/logs/batocera-upgrade.log";
@@ -279,7 +279,7 @@ std::pair<std::string, int> ApiSystem::scrape(BusyComponent* ui)
 		return std::pair<std::string, int>(std::string("Cannot call scrape command"), -1);
 	char line[1024] = "";
 #ifdef _ENABLEEMUELEC
-	FILE* flog = fopen("/storage/.config/emuelec/logs/emuelec-scraper.log", "w");
+	FILE* flog = fopen("/storage/.config/distribution/logs/emuelec-scraper.log", "w");
 #else	
 	FILE* flog = fopen("/userdata/system/logs/batocera-scraper.log", "w");
 #endif
@@ -404,7 +404,7 @@ bool ApiSystem::launchFileManager(Window *window)
 {
 	LOG(LogDebug) << "ApiSystem::launchFileManager";
 
-	std::string command = "/emuelec/scripts/emuelec-utils filemanager";
+	std::string command = "/usr/bin/emuelec-utils filemanager";
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -421,7 +421,7 @@ bool ApiSystem::launchErrorWindow(Window *window)
 {
 	LOG(LogDebug) << "ApiSystem::launchErrorWindow";
 
-	std::string command = "/emuelec/scripts/emuelec-utils error";
+	std::string command = "/usr/bin/emuelec-utils error";
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -1412,7 +1412,7 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 
 	for (auto executable : executables)
 #ifdef _ENABLEEMUELEC
-		if (!Utils::FileSystem::exists("/emuelec/scripts/batocera/" + executable))
+		if (!Utils::FileSystem::exists("/usr/bin/" + executable))
 			return false;
 #else
 		if (!Utils::FileSystem::exists("/usr/bin/" + executable))
