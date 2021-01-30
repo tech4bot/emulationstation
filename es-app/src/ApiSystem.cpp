@@ -178,7 +178,7 @@ std::pair<std::string, int> ApiSystem::updateSystem(const std::function<void(con
 
 #ifdef _ENABLEEMUELEC	
 	std::string updatecommand = "351elec-upgrade";
-	std::string updatelog = "/storage/.config/distribution/logs/351elec-upgrade.log";
+	std::string updatelog = "/tmp/logs/351elec-upgrade.log";
 #else
 	std::string updatecommand = "batocera-upgrade";
 	std::string updatelog = "/userdata/system/logs/batocera-upgrade.log";
@@ -279,7 +279,7 @@ std::pair<std::string, int> ApiSystem::scrape(BusyComponent* ui)
 		return std::pair<std::string, int>(std::string("Cannot call scrape command"), -1);
 	char line[1024] = "";
 #ifdef _ENABLEEMUELEC
-	FILE* flog = fopen("/storage/.config/distribution/logs/emuelec-scraper.log", "w");
+	FILE* flog = fopen("/tmp/logs/emuelec-scraper.log", "w");
 #else	
 	FILE* flog = fopen("/userdata/system/logs/batocera-scraper.log", "w");
 #endif
