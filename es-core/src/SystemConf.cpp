@@ -51,8 +51,8 @@ static std::map<std::string, std::string> defaults =
 };
 
 #ifdef _ENABLEEMUELEC
-std::string systemConfFile = "/storage/.config/distribution/configs/emuelec.conf";
-std::string systemConfFileTmp = "/storage/.config/distribution/configs/emuelec.conf.tmp";
+std::string systemConfFile = "/storage/.config/distribution/configs/distribution.conf";
+std::string systemConfFileTmp = "/storage/.config/distribution/configs/distribution.conf.tmp";
 #else
 std::string systemConfFile = "/userdata/system/batocera.conf";
 std::string systemConfFileTmp = "/userdata/system/batocera.conf.tmp";
