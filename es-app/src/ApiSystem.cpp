@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <regex>
 #include <sys/types.h>
 #include <algorithm>
 
@@ -437,7 +438,7 @@ bool ApiSystem::launchErrorWindow(Window *window)
 bool ApiSystem::enableWifi(std::string ssid, std::string key) 
 {
 #ifdef _ENABLEEMUELEC
-	return executeScript("batocera-config wifi enable \"" + ssid + "\" \"" + key + "\"");
+	return executeScript("batocera-config wifi enable \'" + ssid + "\' \'" + key + "\'");
 #else
 	return executeScript("batocera-wifi enable \"" + ssid + "\" \"" + key + "\"");
 #endif
