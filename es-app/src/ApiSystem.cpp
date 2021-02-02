@@ -437,8 +437,14 @@ bool ApiSystem::launchErrorWindow(Window *window)
 
 bool ApiSystem::enableWifi(std::string ssid, std::string key) 
 {
+	// Escape single quote if it's in the passphrase
+	using std::regex;
+        using std::regex_replace;
+
+	regex tic("(')");
+	key = regex_replace(key,tic,"\\'");
 #ifdef _ENABLEEMUELEC
-	return executeScript("batocera-config wifi enable \'" + ssid + "\' \'" + key + "\'");
+	return executeScript("batocera-config wifi enable \'" + ssid + "\' $\'" + key + "\'");
 #else
 	return executeScript("batocera-wifi enable \"" + ssid + "\" \"" + key + "\"");
 #endif
