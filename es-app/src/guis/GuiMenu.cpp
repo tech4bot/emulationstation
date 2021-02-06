@@ -539,18 +539,68 @@ void GuiMenu::openScraperSettings()
 	}
 	else
 	{
-		// scrape ratings
-		auto scrape_ratings = std::make_shared<SwitchComponent>(mWindow);
-		scrape_ratings->setState(Settings::getInstance()->getBool("ScrapeRatings"));
-		s->addWithLabel(_("SCRAPE RATINGS"), scrape_ratings); // batocera
-		s->addSaveFunc([scrape_ratings] { Settings::getInstance()->setBool("ScrapeRatings", scrape_ratings->getState()); });
-	}
+		// Image source : <image> tag
+		std::string imageSourceName = Settings::getInstance()->getString("ScrapperImageSrc");
+		auto imageSource = std::make_shared< OptionListComponent<std::string> >(mWindow, _("IMAGE SOURCE"), false);
+		imageSource->add(_("SCREENSHOT"), "ss", imageSourceName == "ss");
+		imageSource->add(_("TITLE SCREENSHOT"), "sstitle", imageSourceName == "sstitle");
+		imageSource->add(_("BOX 2D"), "box-2D", imageSourceName == "box-2D");
+		imageSource->add(_("FAN ART"), "fanart", imageSourceName == "fanart");
 
-	/*
-	std::function<void()> openAndSave = openScrapeNow;
-	openAndSave = [s, openAndSave] { s->save(); openAndSave(); };
-	s->addEntry(_("SCRAPE NOW"), false, openAndSave, "iconScraper");
-	*/
+		if (!imageSource->hasSelection())
+			imageSource->selectFirstItem();
+
+		s->addWithLabel(_("IMAGE SOURCE"), imageSource);
+		s->addSaveFunc([imageSource] { Settings::getInstance()->setString("ScrapperImageSrc", imageSource->getSelected()); });
+
+		// Box source : <thumbnail> tag
+		std::string thumbSourceName = Settings::getInstance()->getString("ScrapperThumbSrc");
+		auto thumbSource = std::make_shared< OptionListComponent<std::string> >(mWindow, _("BOX SOURCE"), false);
+		thumbSource->add(_("NONE"), "", thumbSourceName.empty());
+		thumbSource->add(_("BOX 2D"), "box-2D", thumbSourceName == "box-2D");
+
+		if (!thumbSource->hasSelection())
+			thumbSource->selectFirstItem();
+
+		s->addWithLabel(_("BOX SOURCE"), thumbSource);
+		s->addSaveFunc([thumbSource] { Settings::getInstance()->setString("ScrapperThumbSrc", thumbSource->getSelected()); });
+
+		imageSource->setSelectedChangedCallback([this, thumbSource](std::string value)
+		{
+			if (value == "box-2D")
+				thumbSource->remove(_("BOX 2D"));
+			else
+				thumbSource->add(_("BOX 2D"), "box-2D", false);
+		});
+
+		// Logo source : <marquee> tag
+		std::string logoSourceName = Settings::getInstance()->getString("ScrapperLogoSrc");
+		auto logoSource = std::make_shared< OptionListComponent<std::string> >(mWindow, _("LOGO SOURCE"), false);
+		logoSource->add(_("NONE"), "", logoSourceName.empty());
+		logoSource->add(_("WHEEL"), "wheel", logoSourceName == "wheel");
+
+		if (!logoSource->hasSelection())
+			logoSource->selectFirstItem();
+
+		s->addWithLabel(_("LOGO SOURCE"), logoSource);
+		s->addSaveFunc([logoSource] { Settings::getInstance()->setString("ScrapperLogoSrc", logoSource->getSelected()); });
+
+		if (scraper == "TheGamesDB")
+		{
+			// SCRAPE FANART
+			auto scrape_fanart = std::make_shared<SwitchComponent>(mWindow);
+			scrape_fanart->setState(Settings::getInstance()->getBool("ScrapeFanart"));
+			s->addWithLabel(_("SCRAPE FANART"), scrape_fanart);
+			s->addSaveFunc([scrape_fanart] { Settings::getInstance()->setBool("ScrapeFanart", scrape_fanart->getState()); });
+		}
+		else
+		{		// scrape video
+			auto scrape_video = std::make_shared<SwitchComponent>(mWindow);
+			scrape_video->setState(Settings::getInstance()->getBool("ScrapeVideos"));
+			s->addWithLabel(_("SCRAPE VIDEOS"), scrape_video);
+			s->addSaveFunc([scrape_video] { Settings::getInstance()->setBool("ScrapeVideos", scrape_video->getState()); });
+		}
+	}
 		
 	scraper_list->setSelectedChangedCallback([this, s, scraper, scraper_list](std::string value)
 	{		
@@ -1170,13 +1220,16 @@ void GuiMenu::openUpdatesSettings()
 	}
 
 	// Batocera themes installer/browser
-	updateGui->addEntry(_("THEMES"), true, [this] 
-	{ 
-		if (!checkNetwork())
-			return;
+	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEMESDOWNLOADER))
+	{
+		updateGui->addEntry(_("THEMES"), true, [this]
+		{
+			if (!checkNetwork())
+				return;
 
-		mWindow->pushGui(new GuiThemeInstallStart(mWindow)); 
-	});
+			mWindow->pushGui(new GuiThemeInstallStart(mWindow));
+		});
+	}
 
         // Community package installer/browser
         updateGui->addEntry(_("PACKAGES"), true, [this]
@@ -1188,7 +1241,7 @@ void GuiMenu::openUpdatesSettings()
         });
 
 	// Batocera integration with theBezelProject
-	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
+	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEBEZELPROJECT))
 	{
 		updateGui->addEntry(_("THE BEZEL PROJECT"), true, [this]
 		{
@@ -1296,6 +1349,7 @@ void GuiMenu::openSystemSettings_batocera()
 
 	language_choice->add("ARABIC",               "ar_YE", language == "ar_YE");
 	language_choice->add("CATALÀ",               "ca_ES", language == "ca_ES");
+	language_choice->add("CYMRAEG",              "cy_GB", language == "cy_GB");
 	language_choice->add("DEUTSCH", 	     "de_DE", language == "de_DE");
 	language_choice->add("GREEK",                "el_GR", language == "el_GR");
 	language_choice->add("ENGLISH", 	     "en_US", language == "en_US" || language == "en");
@@ -1849,6 +1903,24 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements_screenshot_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.screenshot"));
 	retroachievements->addWithLabel(_("AUTOMATIC SCREENSHOT"), retroachievements_screenshot_enabled);
 	retroachievements->addSaveFunc([retroachievements_screenshot_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.screenshot", retroachievements_screenshot_enabled->getState()); });
+	// Unlock sound
+	auto installedRSounds = ApiSystem::getInstance()->getRetroachievementsSoundsList();
+	if (installedRSounds.size() > 0)
+	{
+		std::string currentSound = SystemConf::getInstance()->get("global.retroachievements_sound");
+
+		auto rsounds_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("RETROACHIEVEMENTS UNLOCK SOUND"), false);
+		rsounds_choices->add(_("none"), "none", currentSound.empty() || currentSound == "none");
+
+		for (auto snd : installedRSounds)
+			rsounds_choices->add(_(Utils::String::toUpper(snd).c_str()), snd, currentSound == snd);
+
+		if (!rsounds_choices->hasSelection())
+			rsounds_choices->selectFirstItem();
+
+		retroachievements->addWithLabel(_("UNLOCK SOUND"), rsounds_choices);
+		retroachievements->addSaveFunc([rsounds_choices] { SystemConf::getInstance()->set("global.retroachievements_sound", rsounds_choices->getSelected()); });
+	}
 
 	// retroachievements, username, password
 	createInputTextRow(retroachievements, _("USERNAME"), "global.retroachievements.username", false);
@@ -1875,7 +1947,7 @@ void GuiMenu::openRetroachievementsSettings()
 			std::string error;
 			if (!RetroAchievements::testAccount(newUsername, newPassword, error))
 			{
-				window->pushGui(new GuiMsgBox(window, _("UNABLE TO ACTIVATE RETROACHIEVEMENTS :\r\n") + error, _("OK"), nullptr, GuiMsgBoxIcon::ICON_ERROR));
+				window->pushGui(new GuiMsgBox(window, _("UNABLE TO ACTIVATE RETROACHIEVEMENTS :") + "\n" + error, _("OK"), nullptr, GuiMsgBoxIcon::ICON_ERROR));
 				retroachievements_enabled->setState(false);
 				newState = false;
 			}
@@ -2926,6 +2998,30 @@ void GuiMenu::openThemeConfiguration(Window* mWindow, GuiComponent* s, std::shar
 				themeconfig->setVariable("reloadAll", true);
 		});
 
+
+		
+		// Show filenames
+		auto defFn = Settings::getInstance()->getBool("ShowFilenames") ? _("YES") : _("NO");
+		auto curFn = Settings::getInstance()->getString(system->getName() + ".ShowFilenames");
+
+		auto showFilenames = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SHOW FILENAMES IN LISTS"), false);
+		showFilenames->add(_("AUTO"), "", curFn == "");
+		showFilenames->add(_("YES"), "1", curFn == "1");
+		showFilenames->add(_("NO"), "0", curFn == "0");
+		themeconfig->addWithDescription(_("SHOW FILENAMES IN LISTS"), _("DEFAULT VALUE") + " : " + defFn, showFilenames);
+		themeconfig->addSaveFunc([themeconfig, showFilenames, system]
+		{
+			if (Settings::getInstance()->setString(system->getName() + ".ShowFilenames", showFilenames->getSelected()))
+			{
+				SystemData::resetSettings();
+				FileData::resetSettings();
+
+		//		themeconfig->setVariable("reloadCollections", true);
+				themeconfig->setVariable("reloadAll", true);				
+			}
+		});
+		
+
 		// File extensions
 		if (!system->isCollection() && !system->isGroupSystem())
 		{
@@ -2985,6 +3081,7 @@ void GuiMenu::openThemeConfiguration(Window* mWindow, GuiComponent* s, std::shar
 				Settings::getInstance()->setString(system->getName() + ".FavoritesFirst", "");
 				Settings::getInstance()->setString(system->getName() + ".ShowHiddenFiles", "");
 				Settings::getInstance()->setString(system->getName() + ".FolderViewMode", "");
+				Settings::getInstance()->setString(system->getName() + ".ShowFilenames", "");
 			}
 			
 			themeconfig->setVariable("reloadAll", true);
@@ -3306,7 +3403,9 @@ void GuiMenu::openUISettings()
 	{ 
 		if (Settings::getInstance()->setBool("ShowFilenames", showFilesnames->getState()))
 		{
+			SystemData::resetSettings();
 			FileData::resetSettings();
+
 			s->setVariable("reloadCollections", true);
 			s->setVariable("reloadAll", true);
 		}
@@ -3637,7 +3736,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 
 		s->addEntry(_("LAUNCH SCREENSAVER"), false, [s, window]
 		{
-			window->postToUiThread([](Window* w)
+			Window* w = window;
+			window->postToUiThread([w]()
 			{
 				w->startScreenSaver();
 				w->renderScreenSaver();
@@ -3973,7 +4073,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
 		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
 	{
-		auto installedShaders = ApiSystem::getInstance()->getShaderList();
+		auto installedShaders = ApiSystem::getInstance()->getShaderList(systemData->getName());
 		if (installedShaders.size() > 0)
 		{
 			std::string currentShader = SystemConf::getInstance()->get(configName + ".shaderset");

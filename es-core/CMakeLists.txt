@@ -84,6 +84,7 @@ set(CORE_HEADERS
 
 	# Renderers
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/GlExtensions.h	
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.h
@@ -99,6 +100,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/zip_file.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.h
 )
 
 set(CORE_SOURCES
@@ -180,6 +182,9 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GL21.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GLES10.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GLES20.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/GlExtensions.cpp	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Shader.cpp	
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.cpp
@@ -194,7 +199,23 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.cpp	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.cpp
 )
+
+# Keep Directory structure in Visual Studio
+if(MSVC)
+	file(
+		 GLOB_RECURSE source_list RELATIVE
+		 "${CMAKE_CURRENT_SOURCE_DIR}"
+		 *.cpp *.c
+		)
+	foreach(source IN LISTS source_list)
+		get_filename_component(source_path "${source}" PATH)
+		string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+		string(REPLACE "src" "" source_path_final "${source_path_msvc}")
+		source_group("${source_path_final}" FILES "${source}")
+	endforeach()  	
+endif()
 
 include_directories(${COMMON_INCLUDE_DIRS})
 add_library(es-core STATIC ${CORE_SOURCES} ${CORE_HEADERS})

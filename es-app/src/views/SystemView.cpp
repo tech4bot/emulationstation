@@ -173,9 +173,10 @@ void SystemView::populate()
 			if(logoElem && logoElem->has("path") && theme->getSystemThemeFolder() != "default")
 			{
 				std::string path = logoElem->get<std::string>("path");
-				std::string defaultPath = logoElem->has("default") ? logoElem->get<std::string>("default") : "";
-				if((!path.empty() && ResourceManager::getInstance()->fileExists(path))
-				   || (!defaultPath.empty() && ResourceManager::getInstance()->fileExists(defaultPath)))
+				if (path.empty())
+					path = logoElem->has("default") ? logoElem->get<std::string>("default") : "";
+				
+				if (!path.empty())
 				{
 					// Remove dynamic flags for png & jpg files : themes can contain oversized images that can't be unloaded by the TextureResource manager
 					ImageComponent* logo = new ImageComponent(mWindow, false, false); // Utils::String::toLower(Utils::FileSystem::getExtension(path)) != ".svg");
@@ -186,9 +187,9 @@ void SystemView::populate()
 					auto elem = theme->getElement("system", "logo", "image");
 					if (elem && elem->has("path"))
 					{
-						auto path = elem->get<std::string>("path");
-						if (Utils::FileSystem::exists(path))
-							logo->setImage(path, (elem->has("tile") && elem->get<bool>("tile")), MaxSizeInfo(mCarousel.logoSize * mCarousel.logoScale));
+						auto logoPath = elem->get<std::string>("path");
+						if (!logoPath.empty())
+							logo->setImage(logoPath, (elem->has("tile") && elem->get<bool>("tile")), MaxSizeInfo(mCarousel.logoSize * mCarousel.logoScale), false);
 					}
 
 					// If logosize is defined for full width/height, don't rotate by target size
@@ -616,16 +617,18 @@ void SystemView::update(int deltaTime)
 	for (auto sb : mStaticVideoBackgrounds)
 		sb->update(deltaTime);
 	
-	for (int i = 0; i < mEntries.size(); i++)
-	{
-		const std::shared_ptr<GuiComponent> &comp = mEntries.at(i).data.logo;
-		if (comp != nullptr)
-			comp->update(deltaTime);
-	}
-	
 	listUpdate(deltaTime);
 	mSystemInfo.update(deltaTime);
-	updateExtras([this, deltaTime](GuiComponent* p) { p->update(deltaTime); });
+
+	for (auto it = mEntries.cbegin(); it != mEntries.cend(); it++)
+	{
+		if (it->data.logo)
+			it->data.logo->update(deltaTime);
+
+		for (auto xt : it->data.backgroundExtras)
+			xt->update(deltaTime);
+	}
+	
 	GuiComponent::update(deltaTime);
 }
 
@@ -647,7 +650,10 @@ void SystemView::updateExtraTextBinding()
 		if (src.find("{binding:") == std::string::npos)
 			continue;
 
-		src = Utils::String::replace(src, "{binding:total}", std::to_string(info->totalGames));
+		if (info->totalGames != info->visibleGames)
+			src = Utils::String::replace(src, "{binding:total}", std::to_string(info->visibleGames) + " / " + std::to_string(info->totalGames));
+		else
+			src = Utils::String::replace(src, "{binding:total}", std::to_string(info->totalGames));
 
 		if (info->playCount == 0)
 			src = Utils::String::replace(src, "{binding:played}", _("None"));
@@ -743,7 +749,7 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 		mSystemInfo.setOpacity((unsigned char)(Math::lerp(infoStartOpacity, 0.f, t) * 255));
 	}, (int)(infoStartOpacity * (goFast ? 10 : 150)));
 
-	unsigned int gameCount = getSelected()->getGameCountInfo()->totalGames;
+	unsigned int gameCount = getSelected()->getGameCountInfo()->visibleGames;
 
 	updateExtraTextBinding();
 
@@ -1660,15 +1666,9 @@ void SystemView::topWindow(bool isTop)
 
 void SystemView::updateExtras(const std::function<void(GuiComponent*)>& func)
 {
-	for (int i = 0; i < mEntries.size(); i++)
-	{
-		SystemViewData data = mEntries.at(i).data;
-		for (unsigned int j = 0; j < data.backgroundExtras.size(); j++)
-		{
-			GuiComponent* extra = data.backgroundExtras[j];
-			func(extra);
-		}
-	}
+	for (auto it : mEntries)
+		for (auto xt : it.data.backgroundExtras)
+			func(xt);
 }
 
 void SystemView::activateExtras(int cursor, bool activate)

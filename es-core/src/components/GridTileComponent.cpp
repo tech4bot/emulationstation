@@ -38,6 +38,7 @@ GridTileComponent::GridTileComponent(Window* window) : GuiComponent(window), mBa
 	mImage = new ImageComponent(mWindow);
 	mImage->setOrigin(0.5f, 0.5f);
 
+	mLabel.setFont(Font::get(FONT_SIZE_SMALL));
 	mLabel.setDefaultZIndex(10);
 
 	addChild(&mBackground);
@@ -333,10 +334,6 @@ void GridTileComponent::renderContent(const Transform4x4f& parentTrans)
 
 	Transform4x4f trans = parentTrans * getTransform();
 
-	Transform4x4f trans2 = getTransform() * parentTrans;
-	Renderer::setMatrix(trans);
-	Renderer::setMatrix(trans2);
-
 	Vector2f clipPos(trans.translation().x(), trans.translation().y());
 	if (!Renderer::isVisibleOnScreen(clipPos.x(), clipPos.y(), mSize.x(), mSize.y()))
 		return;
@@ -353,7 +350,7 @@ void GridTileComponent::renderContent(const Transform4x4f& parentTrans)
 	Vector2i pos((int)Math::round(trans.translation()[0] + padding), (int)Math::round(trans.translation()[1] + topPadding));
 	Vector2i size((int)Math::round(mSize.x() - 2 * padding), (int)Math::round(mSize.y() - topPadding - bottomPadding));
 	
-	bool isDefaultImage = mIsDefaultImage; // && (mCurrentPath == ":/folder.svg" || mCurrentPath == ":/cartridge.svg");
+	bool isDefaultImage = mIsDefaultImage;
 	bool isMinSize = !isDefaultImage && currentProperties.Image.sizeMode == "minSize";
 
 	if (isMinSize)
@@ -370,7 +367,7 @@ void GridTileComponent::renderContent(const Transform4x4f& parentTrans)
 	
 	if (!mLabelMerged && isMinSize)
 		Renderer::popClipRect();
-
+	
 	std::vector<GuiComponent*> zOrdered;
 
 	if (mMarquee != nullptr && mMarquee->hasImage())
@@ -388,10 +385,10 @@ void GridTileComponent::renderContent(const Transform4x4f& parentTrans)
 		zOrdered.push_back(mImageOverlay);
 
 	std::stable_sort(zOrdered.begin(), zOrdered.end(), [](GuiComponent* a, GuiComponent* b) { return b->getZIndex() > a->getZIndex(); });
-
+	
 	for (auto comp : zOrdered)
 		comp->render(trans);
-
+		
 	if (mLabelMerged && isMinSize)
 		Renderer::popClipRect();
 }

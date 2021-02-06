@@ -22,7 +22,9 @@ set(ES_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/KeyboardMapping.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/services/HttpServerThread.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/services/httplib.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/RetroAchievements.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/RetroAchievements.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/SaveState.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/SaveStateRepository.h
 
     # GuiComponents
     ${CMAKE_CURRENT_SOURCE_DIR}/src/components/AsyncReqComponent.h
@@ -35,7 +37,8 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiFastSelect.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMetaDataEd.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameScraper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistOptions.h    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameOptions.h    
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistOptions.h    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGeneralScreensaverOptions.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMenu.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSettings.h
@@ -66,13 +69,14 @@ set(ES_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyMappingEditor.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyboardLayout.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameAchievements.h		
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSaveState.h
 	
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/GamesDBJSONScraper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/GamesDBJSONScraperResources.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ScreenScraper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/md5.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ArcadeDBJSONScraper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ScreenScraper.h    
 
     # Views
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/BasicGameListView.h
@@ -118,6 +122,8 @@ set(ES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/KeyboardMapping.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/services/HttpServerThread.cpp	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/RetroAchievements.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/SaveState.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/SaveStateRepository.cpp
 
     # GuiComponents
     ${CMAKE_CURRENT_SOURCE_DIR}/src/components/AsyncReqComponent.cpp
@@ -129,6 +135,7 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiFastSelect.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMetaDataEd.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameScraper.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameOptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGamelistOptions.cpp    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGeneralScreensaverOptions.cpp    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMenu.cpp
@@ -156,13 +163,14 @@ set(ES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyMappingEditor.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiKeyboardLayout.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiGameAchievements.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSaveState.cpp
 
     # Scrapers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/Scraper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/GamesDBJSONScraper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/GamesDBJSONScraperResources.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ScreenScraper.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/md5.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ArcadeDBJSONScraper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scrapers/ScreenScraper.cpp	
 
     # Views
     ${CMAKE_CURRENT_SOURCE_DIR}/src/views/gamelist/BasicGameListView.cpp
@@ -188,6 +196,21 @@ if(MSVC)
     LIST(APPEND ES_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/EmulationStation.rc
     )
+endif()
+
+# Keep Directory structure in Visual Studio
+if(MSVC)
+	file(
+		 GLOB_RECURSE source_list RELATIVE
+		 "${CMAKE_CURRENT_SOURCE_DIR}"
+		 *.cpp *.c
+		)
+	foreach(source IN LISTS source_list)
+		get_filename_component(source_path "${source}" PATH)
+		string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+		string(REPLACE "src" "" source_path_final "${source_path_msvc}")
+		source_group("${source_path_final}" FILES "${source}")
+	endforeach()  	
 endif()
 
 #-------------------------------------------------------------------------------

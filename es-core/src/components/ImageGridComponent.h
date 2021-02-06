@@ -425,7 +425,7 @@ void ImageGridComponent<T>::render(const Transform4x4f& parentTrans)
 	if (!Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x(), mSize.y()))
 		return;
 
-	if (Settings::getInstance()->getBool("DebugGrid"))
+	if (Settings::DebugGrid)
 	{
 		Renderer::setMatrix(trans);
 		Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), 0xFF000033);
@@ -450,7 +450,7 @@ void ImageGridComponent<T>::render(const Transform4x4f& parentTrans)
 	Vector2i pos((int)Math::round(trans.translation()[0]), (int)Math::round(trans.translation()[1]));
 	Vector2i size((int)Math::round(mSize.x() * scaleX), (int)Math::round(mSize.y() * scaleY));
 
-	if (Settings::getInstance()->getBool("DebugGrid"))
+	if (Settings::DebugGrid)
 	{
 		for (auto it = mTiles.begin(); it != mTiles.end(); it++)
 		{
@@ -566,6 +566,14 @@ void ImageGridComponent<T>::applyTheme(const std::shared_ptr<ThemeData>& theme, 
 			mAutoLayout = elem->get<Vector2f>("autoLayout");
 
 			float screenProportion = (float)Renderer::getScreenWidth() / (float)Renderer::getScreenHeight();
+
+			if (properties & ThemeFlags::SIZE && elem->has("size"))
+			{
+				Vector2f scale = GuiComponent::getParent() ? GuiComponent::getParent()->getSize() : Vector2f((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
+				auto size = elem->get<Vector2f>("size") * scale;
+				if (size.y() != 0)
+					screenProportion = size.x() / size.y();
+			}
 
 			float cellProportion = 1;
 			if (elem->has("cellProportion"))
@@ -739,6 +747,9 @@ template<typename T>
 void ImageGridComponent<T>::onSizeChanged()
 {
 	if (mTheme == nullptr)
+		return;
+
+	if (mSize.x() <= 0 || mSize.y() <= 0)
 		return;
 
 	buildTiles();
@@ -1150,6 +1161,11 @@ void ImageGridComponent<T>::buildTiles()
 {
 	if (mGridSizeOverride.x() != 0 && mGridSizeOverride.y() != 0)
 		mAutoLayout = mGridSizeOverride;
+
+	// temporary keep references to tiles to avoid shared fonts & shared textures destructors
+	std::vector<std::shared_ptr<GridTileComponent>> oldTiles;
+	for (auto tile : mTiles)
+		oldTiles.push_back(tile);
 
 	mStartPosition = 0;
 	mTiles.clear();

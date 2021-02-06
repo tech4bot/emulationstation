@@ -49,7 +49,6 @@
 
 #include <pugixml/src/pugixml.hpp>
 #include "platform.h"
-#include "scrapers/md5.h"
 #include "RetroAchievements.h"
 #include "utils/ZipFile.h"
 
@@ -976,15 +975,15 @@ std::pair<std::string, int> ApiSystem::uninstallBatoceraBezel(std::string bezels
 
 std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 {
+	LOG(LogDebug) << "getMD5 >> " << fileName;
+
 	// 7za x -so test.7z | md5sum
 	std::string ext = Utils::String::toLower(Utils::FileSystem::getExtension(fileName));
 	if (ext == ".zip" && fromZipContents)
 	{
-		try
+		Utils::Zip::ZipFile file;
+		if (file.load(fileName))
 		{
-			Utils::Zip::ZipFile file;
-			file.load(fileName);
-
 			std::string romName;
 
 			for (auto name : file.namelist())
@@ -1002,17 +1001,7 @@ std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 			}
 
 			if (!romName.empty())
-			{
-				MD5 md5 = MD5();
-				Utils::Zip::zip_callback func = [](void *pOpaque, unsigned long long ofs, const void *pBuf, size_t n) { ((MD5*)pOpaque)->update((const char *)pBuf, n); return n; };
-				file.readBuffered(romName, func, &md5);
-				md5.finalize();
-				return md5.hexdigest();
-			}			
-		}
-		catch (...)
-		{
-			// Bad zip file
+				return file.getFileMd5(romName);
 		}
 	}
 
@@ -1049,40 +1038,7 @@ std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 		// if there's no file or many files ? get md5 of archive
 	}
 
-	try
-	{
-		// 64 Kb blocks
-#define MD5BUFFERSIZE 64 * 1024
-
-		char* buffer = new char[MD5BUFFERSIZE];
-		if (buffer)
-		{
-			size_t size;
-
-#if defined(_WIN32)
-			FILE* file = _wfopen(Utils::String::convertToWideString(contentFile).c_str(), L"rb");
-#else			
-			FILE* file = fopen(contentFile.c_str(), "rb");
-#endif
-			if (file)
-			{
-				MD5 md5 = MD5();
-
-				while (size = fread(buffer, 1, MD5BUFFERSIZE, file))
-					md5.update(buffer, size);
-
-				md5.finalize();
-				ret = md5.hexdigest();
-				fclose(file);
-			}
-
-			delete buffer;
-		}
-	}
-	catch (std::bad_alloc& ex)
-	{
-		
-	}
+	ret = Utils::FileSystem::getFileMd5(contentFile);
 
 	if (!tmpZipDirectory.empty())
 	{
@@ -1090,15 +1046,21 @@ std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 		Utils::FileSystem::removeFile(tmpZipDirectory);
 	}
 
+	LOG(LogDebug) << "getMD5 << " << ret;
+
 	return ret;
 }
 
 std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
 {
+	LOG(LogDebug) << "getCRC32 >> " << fileName;
+
 	std::string ext = Utils::String::toLower(Utils::FileSystem::getExtension(fileName));
 
 	if (ext == ".7z" && fromZipContents)
 	{
+		LOG(LogDebug) << "getCRC32 is using 7z";
+
 		std::string fn = Utils::FileSystem::getFileName(fileName);
 		auto cmd = getSevenZipCommand() + " l -slt \"" + fileName + "\"";
 		auto lines = executeEnumerationScript(cmd);
@@ -1113,11 +1075,11 @@ std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
 	}
 	else if (ext == ".zip" && fromZipContents)
 	{
-		try
-		{
-			Utils::Zip::ZipFile file;
-			file.load(fileName);
+		LOG(LogDebug) << "getCRC32 is using ZipFile";
 
+		Utils::Zip::ZipFile file;
+		if (file.load(fileName))
+		{
 			std::string romName;
 
 			for (auto name : file.namelist())
@@ -1137,81 +1099,60 @@ std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
 			if (!romName.empty())
 				return file.getFileCrc(romName);
 		}
-		catch (...)
-		{
-			// Bad zip file
-		}
 	}
-	
-	#define CRCBUFFERSIZE 64 * 1024
 
-	char* buffer = new char[CRCBUFFERSIZE];
-	if (buffer)
-	{
-		size_t size;
-
-#if defined(_WIN32)
-		FILE* file = _wfopen(Utils::String::convertToWideString(fileName).c_str(), L"rb");
-#else			
-		FILE* file = fopen(fileName.c_str(), "rb");
-#endif
-		if (file)
-		{
-			unsigned int file_crc32 = 0;
-
-			while (size = fread(buffer, 1, CRCBUFFERSIZE, file))
-				file_crc32 = Utils::Zip::ZipFile::computeCRC(file_crc32, buffer, size);
-
-			char hex[10];
-			auto len = snprintf(hex, sizeof(hex) - 1, "%08X", file_crc32);
-			hex[len] = 0;
-
-			fclose(file);
-
-			return hex;
-		}
-
-		delete buffer;
-	}
+	LOG(LogDebug) << "getCRC32 is using fileBuffer";
+	return Utils::FileSystem::getFileCrc32(fileName);
 }
 
 bool ApiSystem::unzipFile(const std::string fileName, const std::string destFolder)
 {
+	LOG(LogDebug) << "unzipFile >> " << fileName << " to " << destFolder;
+
 	if (!Utils::FileSystem::exists(destFolder))
 		Utils::FileSystem::createDirectory(destFolder);
 		
 	if (Utils::String::toLower(Utils::FileSystem::getExtension(fileName)) == ".zip")
 	{
 		// 10 Mb max : If file is too big, prefer external decompression
-		if (getSevenZipCommand().empty() || Utils::FileSystem::getFileSize(fileName) < 10000 * 1024)
-		{
+		if (getSevenZipCommand().empty())
+		{			
+			LOG(LogDebug) << "unzipFile is using ZipFile";
+
 			try
 			{
 				Utils::Zip::ZipFile file;
-				file.load(fileName);
-
-				for (auto name : file.namelist())
+				if (file.load(fileName))
 				{
-					if (Utils::String::endsWith(name, "/"))
+					for (auto name : file.namelist())
 					{
-						Utils::FileSystem::createDirectory(destFolder + "/" + name.substr(0, name.length() - 1));
-						continue;
+						if (Utils::String::endsWith(name, "/"))
+						{
+							Utils::FileSystem::createDirectory(destFolder + "/" + name.substr(0, name.length() - 1));
+							continue;
+						}
+
+						file.extract(name, destFolder);
 					}
 
-					file.extract(name, destFolder);
+					LOG(LogDebug) << "unzipFile << OK";
+					return true;
 				}
-
-				return true;
 			}
 			catch (...)
 			{
+				LOG(LogDebug) << "unzipFile << KO";
 				return false;
 			}
 		}
 	}
+	
+	LOG(LogDebug) << "unzipFile is using 7z";
 
 	std::string cmd = getSevenZipCommand() + " x \"" + fileName + "\" -y -o\"" + destFolder + "\"";
-	return executeScript(cmd);
+	bool ret = executeScript(cmd);
+	LOG(LogDebug) << "unzipFile <<";
+	return ret;
 }
 
 const char* BACKLIGHT_BRIGHTNESS_NAME = "/sys/class/backlight/backlight/brightness";
@@ -1399,6 +1340,9 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 	case ApiSystem::OVERCLOCK:
 		executables.push_back("batocera-overclock");
 		break;
+	case ApiSystem::THEMESDOWNLOADER:
+		executables.push_back("batocera-es-theme");
+		break;		
 	case ApiSystem::NETPLAY:
 		executables.push_back("7zr");
 		break;
@@ -1409,6 +1353,9 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 	case ApiSystem::BATOCERASTORE:
 		executables.push_back("batocera-store");
 		break;
+	case ApiSystem::THEBEZELPROJECT:
+		executables.push_back("batocera-es-thebezelproject");
+		break;		
 	case ApiSystem::EVMAPY:
 		executables.push_back("evmapy");
 		break;		
@@ -1615,7 +1562,7 @@ std::vector<PacmanPackage> ApiSystem::getBatoceraStorePackages()
 	}
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load(data.c_str());
+	pugi::xml_parse_result result = doc.load_string(data.c_str());
 	if (!result)
 	{
 		LOG(LogError) << "Unable to parse packages";
@@ -1690,7 +1637,7 @@ void ApiSystem::updateBatoceraStorePackageList()
 	executeScript("batocera-store update");
 }
 
-std::vector<std::string> ApiSystem::getShaderList()
+std::vector<std::string> ApiSystem::getShaderList(const std::string systemName)
 {
 	Utils::FileSystem::FileSystemCacheActivator fsc;
 
@@ -1709,6 +1656,33 @@ std::vector<std::string> ApiSystem::getShaderList()
 
 				if (std::find(ret.cbegin(), ret.cend(), parent) == ret.cend())
 					ret.push_back(parent);
+			}
+		}
+	}
+
+	std::sort(ret.begin(), ret.end());
+	return ret;
+}
+
+
+std::vector<std::string> ApiSystem::getRetroachievementsSoundsList()
+{
+	Utils::FileSystem::FileSystemCacheActivator fsc;
+
+	std::vector<std::string> ret;
+
+	LOG(LogDebug) << "ApiSystem::getRetroAchievementsSoundsList";
+
+	std::vector<std::string> folderList = { "/usr/share/libretro/assets/sounds", "/userdata/sounds/retroachievements" };
+	for (auto folder : folderList)
+	{
+		for (auto file : Utils::FileSystem::getDirContent(folder, false))
+		{
+			auto sound = Utils::FileSystem::getFileName(file);
+			if (sound.substr(sound.find_last_of('.') + 1) == "ogg")
+			{
+				if (std::find(ret.cbegin(), ret.cend(), sound) == ret.cend())
+				  ret.push_back(sound.substr(0, sound.find_last_of('.')));
 			}
 		}
 	}

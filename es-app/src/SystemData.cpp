@@ -20,6 +20,7 @@
 #include "ThreadedHasher.h"
 #include <unordered_set>
 #include <algorithm>
+#include "SaveStateRepository.h"
 
 #if WIN32
 #include "Win32ApiSystem.h"
@@ -33,6 +34,8 @@ std::vector<CustomFeature> SystemData::mGlobalFeatures;
 SystemData::SystemData(const SystemMetadata& meta, SystemEnvironmentData* envData, std::vector<EmulatorData>* pEmulators, bool CollectionSystem, bool groupedSystem, bool withTheme, bool loadThemeOnlyIfElements) : // batocera
 	mMetadata(meta), mEnvData(envData), mIsCollectionSystem(CollectionSystem), mIsGameSystem(true)
 {
+	mSaveRepository = nullptr;
+	mIsCheevosSupported = -1;
 	mIsGroupSystem = groupedSystem;
 	mGameListHash = 0;
 	mGameCountInfo = nullptr;
@@ -60,7 +63,7 @@ SystemData::SystemData(const SystemMetadata& meta, SystemEnvironmentData* envDat
 				return;
 		}
 
-		if(!Settings::getInstance()->getBool("IgnoreGamelist") && mMetadata.name != "imageviewer")
+		if(!Settings::getInstance()->getBool("IgnoreGamelist")) // && !hasPlatformId(PlatformIds::IMAGEVIEWER))
 			parseGamelist(this, fileMap);
 	}
 	else
@@ -86,6 +89,9 @@ SystemData::SystemData(const SystemMetadata& meta, SystemEnvironmentData* envDat
 SystemData::~SystemData()
 {
 	delete mRootFolder;
+
+	if (mSaveRepository != nullptr)
+		delete mSaveRepository;
 
 	if (mGameCountInfo != nullptr)
 		delete mGameCountInfo;
@@ -1085,7 +1091,12 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 		{
 			// when platform is ignore, do not allow other platforms
 			platformIds.clear();
-			platformIds.push_back(platformId);
+
+			if (md.name == "imageviewer")
+				platformIds.push_back(PlatformIds::IMAGEVIEWER);
+			else
+				platformIds.push_back(platformId);
+
 			break;
 		}
 
@@ -1095,7 +1106,6 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 		else if (str != NULL && str[0] != '\0' && platformId == PlatformIds::PLATFORM_UNKNOWN)
 			LOG(LogWarning) << "  Unknown platform for system \"" << md.name << "\" (platform \"" << str << "\" from list \"" << platformList << "\")";
 	}
-
 
 	//validate
 	if (md.name.empty() || path.empty() || extensions.empty() || cmd.empty())
@@ -1466,8 +1476,19 @@ GameCountInfo* SystemData::getGameCountInfo()
 
 	std::vector<FileData*> games = mRootFolder->getFilesRecursive(GAME, true);
 
+	int realTotal = games.size();
+	if (mFilterIndex != nullptr)
+	{
+		auto savedFilter = mFilterIndex;
+		mFilterIndex = nullptr;
+		realTotal = mRootFolder->getFilesRecursive(GAME, true).size();
+		mFilterIndex = savedFilter;
+	}
+
+
 	mGameCountInfo = new GameCountInfo();
-	mGameCountInfo->totalGames = games.size();
+	mGameCountInfo->visibleGames = games.size();
+	mGameCountInfo->totalGames = realTotal;
 	mGameCountInfo->favoriteCount = 0;
 	mGameCountInfo->hiddenCount = 0;
 	mGameCountInfo->playCount = 0;
@@ -1552,8 +1573,12 @@ void SystemData::loadTheme()
 		else
 			sysData.insert(std::pair<std::string, std::string>("system.releaseYear", _("Unknown")));
 
+		if (isCheevosSupported() || isCollection() || isGroupSystem())
+			sysData.insert(std::pair<std::string, std::string>("system.cheevos", "true"));
+
 		mTheme->loadFile(getThemeFolder(), sysData, path);
-	} catch(ThemeException& e)
+	} 
+	catch(ThemeException& e)
 	{
 		LOG(LogError) << e.what();
 		mTheme = std::make_shared<ThemeData>(); // reset to empty
@@ -1625,34 +1650,48 @@ bool SystemData::isCheevosSupported()
 	if (isCollection())
 		return false;
 
+	if (mIsCheevosSupported < 0)
+	{
+		mIsCheevosSupported = 0;
+
 	const std::set<std::string> cheevosSystems = {
 #ifdef _ENABLEEMUELEC
 		"3do", "arcade", "atari2600", "atari7800", "atarilynx", "coleco", "colecovision", "famicom", "fbn", "fbneo", "fds", "gamegear", 
         "gb", "gba", "gbc", "lynx", "mame", "genesis", "mastersystem", "megadrive", "megadrive-japan", "msx", "n64", "neogeo", "nes", "ngp", 
-        "pcengine", "pcfx", "pokemini", "psx", "saturn", "sega32x", "segacd", "sfc", "sg-1000", "snes", "tg16", "vectrex", "virtualboy", "wonderswan"
+        "pcengine", "pcfx", "pokemini", "psx", "saturn", "sega32x", "segacd", "sfc", "sg-1000", "snes", "tg16", "vectrex", "virtualboy", "wonderswan" };
 #else
 		"megadrive", "n64", "snes", "gb", "gba", "gbc", "nes", "fds", "pcengine", "segacd", "sega32x", "mastersystem", 
 		"atarilynx", "lynx", "ngp", "gamegear", "pokemini", "atari2600", "fbneo", "fbn", "virtualboy", "pcfx", "tg16", "famicom", "msx1",
-		"psx", "sg-1000", "sg1000", "coleco", "colecovision", "atari7800", "wonderswan", "pc88", "saturn", "3do", "apple2", "neogeo", "arcade", "mame"
+		"psx", "sg-1000", "sg1000", "coleco", "colecovision", "atari7800", "wonderswan", "pc88", "saturn", "3do", "apple2", "neogeo", "arcade", "mame" };
 #endif 
-    };
 
-	// "nds" -> Disabled for now
-	// "psx" -> Missing cd reader library	
-	// "atarijaguar", "jaguar" -> No games yet
+		// "nds" -> Disabled for now
+		// "psx" -> Missing cd reader library	
+		// "atarijaguar", "jaguar" -> No games yet
 
-	if (cheevosSystems.find(getName()) != cheevosSystems.cend())
-	{
-		if (!es_features_loaded)
-			return true;
+		if (cheevosSystems.find(getName()) != cheevosSystems.cend())
+		{
+			if (!es_features_loaded)
+			{
+				mIsCheevosSupported = 1;
+				return true;
+			}
 
-		for (auto emul : mEmulators)
-			for (auto core : emul.cores)
-				if ((core.features & EmulatorFeatures::cheevos) == EmulatorFeatures::cheevos)
-					return true;
+			for (auto emul : mEmulators)
+			{
+				for (auto core : emul.cores)
+				{
+					if ((core.features & EmulatorFeatures::cheevos) == EmulatorFeatures::cheevos)
+					{
+						mIsCheevosSupported = 1;
+						return true;
+					}
+				}
+			}
+		}
 	}
 
-	return false;
+	return mIsCheevosSupported != 0;
 }
 
 bool SystemData::isNetplayActivated()
@@ -1921,4 +1960,32 @@ bool SystemData::shouldExtractHashesFromArchives()
 		!hasPlatformId(PlatformIds::SEGA_DREAMCAST) &&
 		!hasPlatformId(PlatformIds::ATOMISWAVE) &&
 		!hasPlatformId(PlatformIds::NAOMI);
+}
+
+void SystemData::resetSettings()
+{
+	for(auto sys : sSystemVector)
+		sys->mShowFilenames.reset();
+}
+
+bool SystemData::getShowFilenames()
+{
+	if (mShowFilenames == nullptr)
+	{
+		auto curFn = Settings::getInstance()->getString(getName() + ".ShowFilenames");
+		if (curFn.empty())
+			mShowFilenames = std::make_shared<bool>(Settings::getInstance()->getBool("ShowFilenames"));
+		else
+			mShowFilenames = std::make_shared<bool>(curFn == "1");
+	}
+
+	return *mShowFilenames;
+}
+
+SaveStateRepository* SystemData::getSaveStateRepository()
+{
+	if (mSaveRepository == nullptr)
+		mSaveRepository = new SaveStateRepository(this);
+
+	return mSaveRepository;
 }

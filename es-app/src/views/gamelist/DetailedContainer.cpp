@@ -6,6 +6,7 @@
 #include "SystemData.h"
 #include "LocaleES.h"
 #include "LangParser.h"
+#include "SaveStateRepository.h"
 
 #ifdef _RPI_
 #include "Settings.h"
@@ -17,8 +18,12 @@ DetailedContainer::DetailedContainer(ISimpleGameListView* parent, GuiComponent* 
 	mParent(parent), mList(list), mWindow(window), mViewType(viewType),
 	mDescContainer(window), mDescription(window),
 	mImage(nullptr), mVideo(nullptr), mThumbnail(nullptr), mFlag(nullptr),
-	mKidGame(nullptr), mNotKidGame(nullptr), mFavorite(nullptr), mHidden(nullptr), mManual(nullptr), mNoManual(nullptr), mNotFavorite(nullptr),
+	mKidGame(nullptr), mNotKidGame(nullptr), mHidden(nullptr), 
+	mFavorite(nullptr), mNotFavorite(nullptr),
+	mManual(nullptr), mNoManual(nullptr), 
+	mMap(nullptr), mNoMap(nullptr),
 	mCheevos(nullptr), mNotCheevos(nullptr),
+	mSaveState(nullptr), mNoSaveState(nullptr),
 
 	mLblRating(window), mLblReleaseDate(window), mLblDeveloper(window), mLblPublisher(window),
 	mLblGenre(window), mLblPlayers(window), mLblLastPlayed(window), mLblPlayCount(window), mLblGameTime(window), mLblFavorite(window),
@@ -35,8 +40,7 @@ DetailedContainer::DetailedContainer(ISimpleGameListView* parent, GuiComponent* 
 		{ "md_boxart", { MetaDataId::BoxArt, MetaDataId::Thumbnail } },
 		{ "md_wheel",{ MetaDataId::Wheel, MetaDataId::Marquee } },
 		{ "md_cartridge",{ MetaDataId::Cartridge } },
-		{ "md_mix",{ MetaDataId::Mix, MetaDataId::Image, MetaDataId::Thumbnail } },
-		{ "md_map", { MetaDataId::Map } }
+		{ "md_mix",{ MetaDataId::Mix, MetaDataId::Image, MetaDataId::Thumbnail } }
 	};
 
 	for (auto md : mdl)
@@ -156,6 +160,18 @@ DetailedContainer::~DetailedContainer()
 	if (mNoManual != nullptr)
 		delete mNoManual;
 
+	if (mMap != nullptr)
+		delete mMap;
+
+	if (mNoMap != nullptr)
+		delete mNoMap;
+
+	if (mSaveState != nullptr)
+		delete mSaveState;
+
+	if (mNoSaveState != nullptr)
+		delete mNoSaveState;
+	
 	if (mKidGame != nullptr)
 		delete mKidGame;
 
@@ -371,8 +387,12 @@ void DetailedContainer::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 	
 	loadIfThemed(&mHidden, theme, "md_hidden", false, true);
 	loadIfThemed(&mManual, theme, "md_manual", false, true);
-	loadIfThemed(&mNoManual, theme, "md_nomanual", false, true);
-	
+	loadIfThemed(&mNoManual, theme, "md_nomanual", false, true);	
+	loadIfThemed(&mMap, theme, "md_map", false, true);
+	loadIfThemed(&mNoMap, theme, "md_nomap", false, true);
+	loadIfThemed(&mSaveState, theme, "md_savestate", false, true);
+	loadIfThemed(&mNoSaveState, theme, "md_nosavestate", false, true);	
+
 	initMDLabels();
 
 	for (auto ctrl : getMetaComponents())
@@ -434,6 +454,10 @@ void DetailedContainer::updateControls(FileData* file, bool isClearing)
 
 		if (mManual != nullptr) mManual->setVisible(false);
 		if (mNoManual != nullptr) mNoManual->setVisible(false);		
+		if (mMap != nullptr) mMap->setVisible(false);
+		if (mNoMap != nullptr) mNoMap->setVisible(false);
+		if (mSaveState != nullptr) mSaveState->setVisible(false);
+		if (mNoSaveState != nullptr) mNoSaveState->setVisible(false);		
 		if (mKidGame != nullptr) mKidGame->setVisible(false);
 		if (mNotKidGame != nullptr) mNotKidGame->setVisible(false);		
 		if (mCheevos != nullptr) mCheevos->setVisible(false);
@@ -534,17 +558,43 @@ void DetailedContainer::updateControls(FileData* file, bool isClearing)
 		if (mNoManual != nullptr)
 			mNoManual->setVisible(!Utils::FileSystem::exists(file->getMetadata(MetaDataId::Manual)));
 
+		if (mMap != nullptr)
+			mMap->setVisible(Utils::FileSystem::exists(file->getMetadata(MetaDataId::Map)));
+
+		if (mNoMap != nullptr)
+			mNoMap->setVisible(!Utils::FileSystem::exists(file->getMetadata(MetaDataId::Map)));
+
+		// Save states
+		bool hasSaveState = false;
+		bool systemSupportsSaveStates = SaveStateRepository::isEnabled(file);
+
+		if (systemSupportsSaveStates && (mSaveState != nullptr || mNoSaveState != nullptr))
+			hasSaveState = file->getSourceFileData()->getSystem()->getSaveStateRepository()->hasSaveStates(file);
+
+		if (mSaveState != nullptr)
+			mSaveState->setVisible(systemSupportsSaveStates && hasSaveState);
+
+		if (mNoSaveState != nullptr)
+			mNoSaveState->setVisible(systemSupportsSaveStates && !hasSaveState);
+
+		// Kid game
 		if (mKidGame != nullptr)
 			mKidGame->setVisible(file->getKidGame());
 
 		if (mNotKidGame != nullptr)
 			mNotKidGame->setVisible(!file->getKidGame());
 
+		bool systemHasCheevos = 
+			file->getSourceFileData()->getSystem()->isCheevosSupported() || 
+			file->getSystem()->isCollection() || 
+			file->getSystem()->isGroupSystem(); // Fake cheevos supported if the game is in a collection cuz there are lot of games from different systems
+
+		// Cheevos
 		if (mCheevos != nullptr)
-			mCheevos->setVisible(file->hasCheevos());
+			mCheevos->setVisible(systemHasCheevos && file->hasCheevos());
 
 		if (mNotCheevos != nullptr)
-			mNotCheevos->setVisible(file->getSourceFileData()->getSystem()->isCheevosSupported() && !file->hasCheevos());
+			mNotCheevos->setVisible(systemHasCheevos && !file->hasCheevos());
 
 		if (mFavorite != nullptr)
 			mFavorite->setVisible(file->getFavorite());
@@ -619,6 +669,10 @@ void DetailedContainer::updateControls(FileData* file, bool isClearing)
 	if (mFlag != nullptr) comps.push_back(mFlag);
 	if (mManual != nullptr) comps.push_back(mManual);
 	if (mNoManual != nullptr) comps.push_back(mNoManual);
+	if (mMap != nullptr) comps.push_back(mMap);
+	if (mNoMap != nullptr) comps.push_back(mNoMap);
+	if (mSaveState != nullptr) comps.push_back(mSaveState);
+	if (mNoSaveState != nullptr) comps.push_back(mNoSaveState);	
 	if (mKidGame != nullptr) comps.push_back(mKidGame);
 	if (mNotKidGame != nullptr) comps.push_back(mNotKidGame);	
 	if (mCheevos != nullptr) comps.push_back(mCheevos);
@@ -665,6 +719,10 @@ void DetailedContainer::updateControls(FileData* file, bool isClearing)
 					if (mFlag != nullptr) mFlag->setImage("");
 					if (mManual != nullptr) mManual->setVisible(false);
 					if (mNoManual != nullptr) mNoManual->setVisible(false);
+					if (mMap != nullptr) mMap->setVisible(false);
+					if (mNoMap != nullptr) mNoMap->setVisible(false);
+					if (mSaveState != nullptr) mSaveState->setVisible(false);
+					if (mNoSaveState != nullptr) mNoSaveState->setVisible(false);
 					if (mKidGame != nullptr) mKidGame->setVisible(false);
 					if (mNotKidGame != nullptr) mNotKidGame->setVisible(false);
 					if (mCheevos != nullptr) mCheevos->setVisible(false);

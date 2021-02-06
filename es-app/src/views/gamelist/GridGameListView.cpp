@@ -114,6 +114,10 @@ bool GridGameListView::input(InputConfig* config, Input input)
 {
 	if (!UIModeController::getInstance()->isUIModeKid() && config->isMappedTo("select", input) && input.value)
 	{
+		auto idx = mRoot->getSystem()->getIndex(false);
+		if (idx != nullptr && idx->hasRelevency())
+			return true;
+
 		Sound::getFromTheme(mTheme, getName(), "menuOpen")->play();
 		mWindow->pushGui(new GuiGamelistOptions(mWindow, this, this->mRoot->getSystem(), true));
 		return true;
@@ -287,7 +291,7 @@ void GridGameListView::updateInfoPanel()
 
 	FileData* file = (mGrid.size() == 0 || mGrid.isScrolling()) ? NULL : mGrid.getSelected();
 	bool isClearing = mGrid.getObjects().size() == 0 && mGrid.getCursorIndex() == 0 && mGrid.getScrollingVelocity() == 0;
-	mDetails.updateControls(file, isClearing);	
+	mDetails.updateControls(file, isClearing);
 }
 
 void GridGameListView::addPlaceholder()
@@ -342,16 +346,25 @@ std::vector<HelpPrompt> GridGameListView::getHelpPrompts()
 {
 	std::vector<HelpPrompt> prompts;
 
-	if(mPopupSelfReference == nullptr && Settings::getInstance()->getBool("QuickSystemSelect"))
-		prompts.push_back(HelpPrompt("lr", _("SYSTEM"))); // batocera
+	if (Renderer::getScreenProportion() > 1.4)
+	{
+		if(mPopupSelfReference == nullptr && Settings::getInstance()->getBool("QuickSystemSelect"))
+			prompts.push_back(HelpPrompt("lr", _("SYSTEM")));
+			
+		prompts.push_back(HelpPrompt("up/down/left/right", _("CHOOSE")));
+	}
+	
 
-	prompts.push_back(HelpPrompt("up/down/left/right", _("CHOOSE"))); // batocera
 	prompts.push_back(HelpPrompt(BUTTON_OK, _("LAUNCH")));
 	prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
 
-	if(!UIModeController::getInstance()->isUIModeKid())
-		prompts.push_back(HelpPrompt("select", _("OPTIONS"))); // batocera
+	if (!UIModeController::getInstance()->isUIModeKid())
+		prompts.push_back(HelpPrompt("select", _("VIEW OPTIONS")));
 
+	prompts.push_back(HelpPrompt("x", _("GAME OPTIONS")));
+	prompts.push_back(HelpPrompt("y", _("SEARCH")));
+
+	/*
 	FileData* cursor = getCursor();
 	if (cursor != nullptr && cursor->isNetplaySupported())
 		prompts.push_back(HelpPrompt("x", _("NETPLAY"))); // batocera
@@ -366,7 +379,7 @@ std::vector<HelpPrompt> GridGameListView::getHelpPrompts()
 			prompts.push_back(HelpPrompt("y", _("Favorites")));
 		else
 			prompts.push_back(HelpPrompt("y", prompt));
-	}
+	}*/
 	return prompts;
 }
 

@@ -26,6 +26,7 @@
 #include "LangParser.h"
 #include "resources/ResourceManager.h"
 #include "RetroAchievements.h"
+#include "SaveStateRepository.h"
 
 FileData::FileData(FileType type, const std::string& path, SystemData* system)
 	: mType(type), mSystem(system), mParent(NULL), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
@@ -170,15 +171,20 @@ const std::string FileData::getThumbnailPath()
 			}
 		}
 
-		if (thumbnail.empty() && getSystemName() == "imageviewer")
+		if (thumbnail.empty() && getType() == GAME && getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		{
-			auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(getPath()));
-			if (ext == ".pdf" && ResourceManager::getInstance()->fileExists(":/pdf.jpg"))
-				return ":/pdf.jpg";
-			else if ((ext == ".mp4" || ext == ".avi" || ext == ".mkv") && ResourceManager::getInstance()->fileExists(":/vid.jpg"))
-				return ":/vid.jpg";
+			if (getType() == FOLDER && ((FolderData*)this)->mChildren.size())
+				return ((FolderData*)this)->mChildren[0]->getThumbnailPath();
+			else if (getType() == GAME)
+			{
+				thumbnail = getPath();
 
-			return getPath();
+				auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(thumbnail));
+				if (ext == ".pdf" && ResourceManager::getInstance()->fileExists(":/pdf.jpg"))
+					return ":/pdf.jpg";
+				else if ((ext == ".mp4" || ext == ".avi" || ext == ".mkv") && ResourceManager::getInstance()->fileExists(":/vid.jpg"))
+					return ":/vid.jpg";
+			}
 		}
 
 	}
@@ -210,22 +216,16 @@ const bool FileData::hasCheevos()
 	return Utils::String::toInteger(getMetadata(MetaDataId::CheevosId)) > 0;
 }
 
-static std::shared_ptr<bool> showFilenames;
 static std::shared_ptr<bool> collectionShowSystemInfo;
 
 void FileData::resetSettings() 
 {
-	showFilenames = nullptr;
 	collectionShowSystemInfo = nullptr;
 }
 
 const std::string FileData::getName()
 {
-	if (showFilenames == nullptr)
-		showFilenames = std::make_shared<bool>(Settings::getInstance()->getBool("ShowFilenames"));
-
-	// Faster than accessing map each time
-	if (*showFilenames)
+	if (mSystem != nullptr && mSystem->getShowFilenames())
 	{
 		if (mSystem != nullptr && !mSystem->hasPlatformId(PlatformIds::ARCADE) && !mSystem->hasPlatformId(PlatformIds::NEOGEO))
 			return Utils::FileSystem::getStem(getPath());
@@ -306,15 +306,20 @@ const std::string FileData::getImagePath()
 			}
 		}
 
-		if (image.empty() && getSystemName() == "imageviewer")
+		if (image.empty() && getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		{
-			image = getPath();
+			if (getType() == FOLDER && ((FolderData*)this)->mChildren.size())
+				return ((FolderData*)this)->mChildren[0]->getImagePath();
+			else if (getType() == GAME)
+			{
+				image = getPath();
 
-			auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(image));
-			if (ext == ".pdf" && ResourceManager::getInstance()->fileExists(":/pdf.jpg"))
-				return ":/pdf.jpg";
-			else if ((ext == ".mp4" || ext == ".avi" || ext == ".mkv") && ResourceManager::getInstance()->fileExists(":/vid.jpg"))
-				return ":/vid.jpg";
+				auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(image));
+				if (ext == ".pdf" && ResourceManager::getInstance()->fileExists(":/pdf.jpg"))
+					return ":/pdf.jpg";
+				else if ((ext == ".mp4" || ext == ".avi" || ext == ".mkv") && ResourceManager::getInstance()->fileExists(":/vid.jpg"))
+					return ":/vid.jpg";
+			}
 		}
 	}
 
@@ -331,6 +336,17 @@ const bool FileData::isArcadeAsset()
 	{	
 		const std::string stem = Utils::FileSystem::getStem(getPath());
 		return MameNames::getInstance()->isBios(stem) || MameNames::getInstance()->isDevice(stem);		
+	}
+
+	return false;
+}
+
+const bool FileData::isVerticalArcadeGame()
+{
+	if (mSystem && mSystem->hasPlatformId(PlatformIds::ARCADE))
+	{
+		const std::string stem = Utils::FileSystem::getStem(getPath());
+		return MameNames::getInstance()->isVertical(stem);
 	}
 
 	return false;
@@ -454,6 +470,9 @@ bool FileData::launchGame(Window* window, LaunchGameOptions options)
 	int monitorId = Settings::getInstance()->getInt("MonitorID");
 	if (monitorId >= 0 && command.find(" -system ") != std::string::npos)
 		command = command + " -monitor " + std::to_string(monitorId);
+	
+	if (SaveStateRepository::isEnabled(this))
+		command = options.saveStateInfo.setupSaveState(this, command);
 
 	Scripting::fireEvent("game-start", rom, basename);
 
@@ -466,6 +485,12 @@ bool FileData::launchGame(Window* window, LaunchGameOptions options)
 	int exitCode = runSystemCommand(command, getDisplayName(), hideWindow ? NULL : window);
 	if (exitCode != 0)
 		LOG(LogWarning) << "...launch terminated with nonzero exit code " << exitCode << "!";
+
+	if (SaveStateRepository::isEnabled(this))
+	{
+		options.saveStateInfo.onGameEnded();
+		getSourceFileData()->getSystem()->getSaveStateRepository()->refresh();
+	}
 
 	if (!p2kConv.empty()) // delete .keys file if it has been converted from p2k
 		Utils::FileSystem::removeFile(p2kConv);
@@ -1113,7 +1138,7 @@ void FolderData::removeVirtualFolders()
 
 void FileData::checkCrc32(bool force)
 {
-	if (getSourceFileData() != this)
+	if (getSourceFileData() != this && getSourceFileData() != nullptr)
 	{
 		getSourceFileData()->checkCrc32(force);
 		return;
@@ -1123,6 +1148,9 @@ void FileData::checkCrc32(bool force)
 		return;
 
 	SystemData* system = getSystem();
+	if (system == nullptr)
+		return;
+
 	auto crc = ApiSystem::getInstance()->getCRC32(getPath(), system->shouldExtractHashesFromArchives());
 	if (!crc.empty())
 	{
@@ -1133,7 +1161,7 @@ void FileData::checkCrc32(bool force)
 
 void FileData::checkMd5(bool force)
 {
-	if (getSourceFileData() != this)
+	if (getSourceFileData() != this && getSourceFileData() != nullptr)
 	{
 		getSourceFileData()->checkMd5(force);
 		return;
@@ -1143,6 +1171,9 @@ void FileData::checkMd5(bool force)
 		return;
 
 	SystemData* system = getSystem();
+	if (system == nullptr)
+		return;
+
 	auto crc = ApiSystem::getInstance()->getMD5(getPath(), system->shouldExtractHashesFromArchives());
 	if (!crc.empty())
 	{
@@ -1164,6 +1195,9 @@ void FileData::checkCheevosHash(bool force)
 		return;
 
 	SystemData* system = getSystem();
+	if (system == nullptr)
+		return;
+
 	auto crc = RetroAchievements::getCheevosHash(system, getPath());
 	getMetadata().set(MetaDataId::CheevosHash, Utils::String::toUpper(crc));
 	saveToGamelistRecovery(this);

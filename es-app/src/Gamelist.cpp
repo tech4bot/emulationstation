@@ -113,7 +113,7 @@ std::vector<FileData*> loadGamelistFile(const std::string xmlpath, SystemData* s
 	LOG(LogInfo) << "Parsing XML file \"" << xmlpath << "\"...";
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = fromFile ? doc.load_file(xmlpath.c_str()) : doc.load(xmlpath.c_str());
+	pugi::xml_parse_result result = fromFile ? doc.load_file(xmlpath.c_str()) : doc.load_string(xmlpath.c_str());
 
 	if (!result)
 	{
@@ -315,7 +315,7 @@ bool removeFromGamelistRecovery(FileData* file)
 
 bool hasDirtyFile(SystemData* system)
 {
-	if (system == nullptr || !system->isGameSystem() || system->getName() == "imageviewer")
+	if (system == nullptr || !system->isGameSystem()) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		return false;
 
 	FolderData* rootFolder = system->getRootFolder();
@@ -339,7 +339,7 @@ void updateGamelist(SystemData* system)
 	if(system == nullptr || Settings::getInstance()->getBool("IgnoreGamelist"))
 		return;
 
-	if (!system->isGameSystem() || system->getName() == "imageviewer")
+	if (!system->isGameSystem()) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();
@@ -440,7 +440,7 @@ void updateGamelist(SystemData* system)
 
 void cleanupGamelist(SystemData* system)
 {
-	if (!system->isGameSystem() || system->getName() == "imageviewer" || system->isCollection())
+	if (!system->isGameSystem() || system->isCollection()) //  || system->hasPlatformId(PlatformIds::IMAGEVIEWER)
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();

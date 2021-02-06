@@ -111,7 +111,7 @@ public:
 	void setVerticalAlignment(Alignment align) { mVerticalAlignment = align; }
 
 	float getRoundCorners() { return mRoundCorners; }
-	void setRoundCorners(float value) { mRoundCorners = value; }
+	void setRoundCorners(float value);
 
 	virtual void onShow() override;
 	virtual void onHide() override;
@@ -128,19 +128,25 @@ public:
 	ThemeData::ThemeElement::Property getProperty(const std::string name) override;
 	void setProperty(const std::string name, const ThemeData::ThemeElement::Property& value) override;
 
-private:
+protected:
+	std::shared_ptr<TextureResource> mTexture;
+	std::shared_ptr<TextureResource> mLoadingTexture;
+
 	Vector2f mTargetSize;
+
+private:
 
 	bool mFlipX, mFlipY, mTargetIsMax, mTargetIsMin;
 
 	// Calculates the correct mSize from our resizing information (set by setResize/setMaxSize).
 	// Used internally whenever the resizing parameters or texture change.
-	void resize();
 
 	Renderer::Vertex mVertices[4];
 
 	void updateVertices();
 	void updateColors();
+	void updateRoundCorners();
+
 	void fadeIn(bool textureLoaded);
 
 	unsigned int mColorShift;
@@ -149,7 +155,6 @@ private:
 
 	std::string mDefaultPath;
 
-	std::shared_ptr<TextureResource> mTexture;
 	unsigned char			mFadeOpacity;
 	bool					mFading;
 	bool					mForceLoad;
@@ -166,7 +171,6 @@ private:
 
 	std::string mPath;
 
-	std::shared_ptr<TextureResource> mLoadingTexture;
 	Vector4f	mPadding;
 
 	Alignment mHorizontalAlignment;
@@ -179,7 +183,10 @@ private:
 
 	bool mLinear;
 
+	std::vector<Renderer::Vertex>	mRoundCornerStencil;
+
 protected:
+	virtual void resize();
 	bool mCheckClipping;
 };
 

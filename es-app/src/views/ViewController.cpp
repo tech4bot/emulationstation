@@ -415,7 +415,7 @@ void ViewController::launch(FileData* game, LaunchGameOptions options, Vector3f 
 		return;
 	}
 
-	if (game->getSourceFileData()->getSystem()->getName() == "imageviewer")
+	if (game->getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER))
 	{
 		auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(game->getPath()));
 
@@ -423,6 +423,8 @@ void ViewController::launch(FileData* game, LaunchGameOptions options, Vector3f 
 			GuiVideoViewer::playVideo(mWindow, game->getPath());
 		else if (ext == ".pdf")
 			GuiImageViewer::showPdf(mWindow, game->getPath());
+		else if (ext == ".cbz")
+			GuiImageViewer::showCbz(mWindow, game->getPath());
 		else
 		{
 			auto gameImage = game->getImagePath();
@@ -479,7 +481,10 @@ void ViewController::launch(FileData* game, LaunchGameOptions options, Vector3f 
 		setAnimation(new LambdaAnimation(fadeFunc, 800), 0, [this, game, fadeFunc, options]
 		{
 			if (doLaunchGame(game, options))
-				mWindow->postToUiThread([](Window* w) { reloadAllGames(w, false); });
+			{
+				Window* w = mWindow;
+				mWindow->postToUiThread([w]() { reloadAllGames(w, false); });
+			}
 			else
 			{
 				setAnimation(new LambdaAnimation(fadeFunc, 800), 0, [this] { mLockInput = false; mWindow->closeSplashScreen(); }, true, 3);
@@ -493,7 +498,10 @@ void ViewController::launch(FileData* game, LaunchGameOptions options, Vector3f 
 		setAnimation(new LaunchAnimation(mCamera, mFadeOpacity, center, 1500), 0, [this, origCamera, center, game, options]
 		{
 			if (doLaunchGame(game, options))
-				mWindow->postToUiThread([](Window* w) { reloadAllGames(w, false); });
+			{
+				Window* w = mWindow;
+				mWindow->postToUiThread([w]() { reloadAllGames(w, false); });
+			}
 			else
 			{
 				mCamera = origCamera;
@@ -507,7 +515,10 @@ void ViewController::launch(FileData* game, LaunchGameOptions options, Vector3f 
 		setAnimation(new LaunchAnimation(mCamera, mFadeOpacity, center, 10), 0, [this, origCamera, center, game, options]
 		{			
 			if (doLaunchGame(game, options))
-				mWindow->postToUiThread([](Window* w) { reloadAllGames(w, false); });
+			{
+				Window* w = mWindow;
+				mWindow->postToUiThread([w]() { reloadAllGames(w, false); });
+			}
 			else
 			{
 				mCamera = origCamera;
@@ -766,7 +777,7 @@ bool ViewController::input(InputConfig* config, Input input)
 	}
 #else
 	// Batocera next song
-	if(config->isMappedTo("l3", input) && input.value != 0) // batocera
+	if (((mState.viewing != GAME_LIST && config->isMappedTo("l3", input)) || config->isMappedTo("r3", input)) && input.value != 0) // batocera
 	{
 		// next song
 		AudioManager::getInstance()->playRandomMusic(false);
@@ -795,7 +806,7 @@ void ViewController::update(int deltaTime)
 		auto destView = mDeferPlayViewTransitionTo;
 		mDeferPlayViewTransitionTo.reset();
 		
-		mWindow->postToUiThread([this, destView](Window* w) 
+		mWindow->postToUiThread([this, destView]() 
 		{ 
 			if (mCurrentView)
 				mCurrentView->onHide();

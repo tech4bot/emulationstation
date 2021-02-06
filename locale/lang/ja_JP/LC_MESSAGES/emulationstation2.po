@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: batocera-es.5.29\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-22 20:28+0100\n"
+"POT-Creation-Date: 2021-01-30 09:05+0100\n"
 "PO-Revision-Date: 2020-12-03 08:03+0900\n"
 "Last-Translator: mikakunin\n"
 "Language-Team: mikakunin\n"
@@ -217,6 +217,9 @@ msgstr ""
 msgid "Cheevos Game ID"
 msgstr ""
 
+msgid "Screenscraper Game ID"
+msgstr ""
+
 msgid "all games"
 msgstr "すべてのゲーム"
 
@@ -241,16 +244,11 @@ msgstr ""
 msgid "arcade"
 msgstr "アーケード"
 
+msgid "vertical arcade"
+msgstr ""
+
 msgid "collections"
 msgstr "コレクション"
-
-#, c-format
-msgid "Editing the '%s' Collection. Add/remove games with Y."
-msgstr "'%s' コレクションを編集。Yでゲームを追加/削除します。"
-
-#, c-format
-msgid "Finished editing the '%s' Collection."
-msgstr "'%s' コレクションの編集が完了しました。"
 
 #, c-format
 msgid "Added '%s' to '%s'"
@@ -423,9 +421,6 @@ msgstr "隠しシステム内にあるゲームをコレクションに表示"
 msgid "UPDATE GAMES LISTS"
 msgstr "ゲームリストを更新"
 
-msgid "FINISH EDITING COLLECTION"
-msgstr "コレクション編集を終了"
-
 msgid "Loading..."
 msgstr "読み込み中…"
 
@@ -478,41 +473,26 @@ msgstr "完了"
 msgid "OK"
 msgstr "OK"
 
+msgid "VIEW OPTIONS"
+msgstr "表示設定"
+
 msgid "go back"
 msgstr "戻る"
 
 msgid "NAVIGATION"
 msgstr "ナビゲーション"
 
-msgid "JUMP TO..."
-msgstr "移動(英数字のみ有効)..."
+msgid "JUMP TO LETTER"
+msgstr ""
+
+msgid "SELECT RANDOM GAME"
+msgstr ""
 
 msgid "SORT GAMES BY"
 msgstr "ゲーム別のソート"
 
 msgid "OTHER FILTERS"
 msgstr "その他のフィルタ"
-
-msgid "FIND SIMILAR GAMES..."
-msgstr "類似のゲームを探す..."
-
-msgid "GAME MEDIAS"
-msgstr "ゲームメディア"
-
-msgid "VIEW GAME MANUAL"
-msgstr "ゲームマニュアルを表示"
-
-msgid "VIEW GAME MAP"
-msgstr "ゲームマップを表示"
-
-msgid "CURRENT CORE IS NOT COMPATIBLE"
-msgstr ""
-
-msgid "REQUIRED CORE"
-msgstr ""
-
-msgid "VIEW GAME ACHIEVEMENTS"
-msgstr ""
 
 msgid "COLLECTION"
 msgstr "コレクション"
@@ -526,41 +506,14 @@ msgstr "ゲームリスト表示スタイル"
 msgid "automatic"
 msgstr "自動"
 
-msgid "VIEW OPTIONS"
-msgstr "表示設定"
-
 msgid "VIEW CUSTOMISATION"
 msgstr "表示をカスタマイズ"
-
-msgid "COLLECTION MANAGEMENT"
-msgstr "コレクション管理"
-
-msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
-msgstr "ゲームコレクションへのゲームの追加/削除"
 
 msgid "GAME OPTIONS"
 msgstr "ゲーム設定"
 
 msgid "ADVANCED SYSTEM OPTIONS"
 msgstr "システム詳細設定"
-
-msgid "ADVANCED GAME OPTIONS"
-msgstr "ゲーム詳細設定"
-
-msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
-msgstr "パッドをキーボードに割当て設定編集"
-
-msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
-msgstr "パッドをキーボードに割当て設定作成"
-
-msgid "EDIT FOLDER METADATA"
-msgstr "フォルダのメタ情報を編集"
-
-msgid "EDIT THIS GAME'S METADATA"
-msgstr "このゲームのメタ情報を編集"
-
-msgid "VIEW PAD TO KEYBOARD INFORMATION"
-msgstr "パッドからキーボード情報を表示"
 
 msgid "RESET FILTERS"
 msgstr "フィルターのリセット"
@@ -835,6 +788,12 @@ msgstr "プレイヤー 1"
 msgid "PLAYER 2"
 msgstr "プレイヤー 2"
 
+msgid "PLAYER 3"
+msgstr ""
+
+msgid "PLAYER 4"
+msgstr ""
+
 msgid "COMBINATIONS"
 msgstr "同時押しキー"
 
@@ -901,6 +860,86 @@ msgstr "ネットワーク接続が必要です"
 msgid "INVALID PARAMETERS"
 msgstr "無効なパラメーター"
 
+msgid "GAME MEDIAS"
+msgstr "ゲームメディア"
+
+msgid "VIEW GAME MANUAL"
+msgstr "ゲームマニュアルを表示"
+
+msgid "VIEW GAME MAP"
+msgstr "ゲームマップを表示"
+
+msgid "CURRENT CORE IS NOT COMPATIBLE"
+msgstr ""
+
+msgid "REQUIRED CORE"
+msgstr ""
+
+msgid "VIEW GAME ACHIEVEMENTS"
+msgstr ""
+
+msgid "GAME"
+msgstr ""
+
+msgid "SAVE SNAPSHOTS"
+msgstr ""
+
+msgid "START NETPLAY HOST"
+msgstr "ホスト(ネットプレイ)を開始"
+
+msgid "NETPLAY"
+msgstr "ネットプレイ"
+
+msgid "START GAME"
+msgstr "ゲームを開始"
+
+msgid "YOU ARE NOT CONNECTED TO A NETWORK"
+msgstr "ネットワークに接続されていません"
+
+msgid "SET PLAYER PASSWORD"
+msgstr "プレーヤーパスワードの設定"
+
+msgid "SET VIEWER PASSWORD"
+msgstr "ビューアパスワードの設定"
+
+msgid "FIND SIMILAR GAMES..."
+msgstr "類似のゲームを探す..."
+
+msgid "COLLECTIONS"
+msgstr "コレクション"
+
+#, c-format
+msgid "REMOVE FROM %s"
+msgstr ""
+
+#, c-format
+msgid "ADD TO %s"
+msgstr ""
+
+msgid "FAVORITES"
+msgstr "お気に入り"
+
+msgid "SCRAPE"
+msgstr "スクレイプ"
+
+msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
+msgstr "パッドをキーボードに割当て設定編集"
+
+msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
+msgstr "パッドをキーボードに割当て設定作成"
+
+msgid "ADVANCED GAME OPTIONS"
+msgstr "ゲーム詳細設定"
+
+msgid "EDIT FOLDER METADATA"
+msgstr "フォルダのメタ情報を編集"
+
+msgid "EDIT THIS GAME'S METADATA"
+msgstr "このゲームのメタ情報を編集"
+
+msgid "VIEW PAD TO KEYBOARD INFORMATION"
+msgstr "パッドからキーボード情報を表示"
+
 msgid "SCRAPING IN PROGRESS"
 msgstr "情報を取得中"
 
@@ -958,6 +997,21 @@ msgstr ""
 msgid "%d%% complete"
 msgstr ""
 
+msgid "AUTO SAVE"
+msgstr ""
+
+msgid "SLOT"
+msgstr ""
+
+msgid "START NEW GAME"
+msgstr ""
+
+msgid "START AUTO SAVE"
+msgstr ""
+
+msgid "COPY TO FREE SLOT"
+msgstr ""
+
 msgid "SCRAPE NOW"
 msgstr "スクレイプ 実行"
 
@@ -975,9 +1029,6 @@ msgstr "フィルター"
 
 msgid "SCRAPE THESE SYSTEMS"
 msgstr "選択したシステムをスクレイプ"
-
-msgid "USER DECIDES ON CONFLICTS"
-msgstr "ユーザーが手動で修正"
 
 msgid "START"
 msgstr "スタート"
@@ -1083,9 +1134,6 @@ msgstr "コントローラー設定"
 
 msgid "EMULATOR SETTINGS"
 msgstr "エミュレーター設定"
-
-msgid "SCRAPE"
-msgstr "スクレイプ"
 
 msgid "UPDATES & DOWNLOADS"
 msgstr "更新とダウンロード"
@@ -1347,9 +1395,6 @@ msgstr "更新 開始"
 msgid "UPDATE IS ALREADY RUNNING"
 msgstr "更新は既に実行中です"
 
-msgid "YOU ARE NOT CONNECTED TO A NETWORK"
-msgstr "ネットワークに接続されていません"
-
 msgid "LANGUAGE"
 msgstr "言語"
 
@@ -1467,6 +1512,12 @@ msgstr "詳細な処理モード"
 msgid "AUTOMATIC SCREENSHOT"
 msgstr "自動スクリーンショット"
 
+msgid "RETROACHIEVEMENTS UNLOCK SOUND"
+msgstr ""
+
+msgid "UNLOCK SOUND"
+msgstr ""
+
 msgid "SHOW IN MAIN MENU"
 msgstr "メインメニューに表示"
 
@@ -1479,7 +1530,7 @@ msgstr ""
 msgid "FIND NEW GAMES"
 msgstr ""
 
-msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS :\r\n"
+msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS :"
 msgstr ""
 
 msgid "ENABLE NETPLAY"
@@ -1625,6 +1676,9 @@ msgstr "ゲームがあるフォルダ"
 msgid "SHOW '..' PARENT FOLDER"
 msgstr "親フォルダ'..'を表示"
 
+msgid "SHOW FILENAMES IN LISTS"
+msgstr "リストにファイル名を表示"
+
 msgid "FILE EXTENSIONS"
 msgstr "ファイル拡張子設定"
 
@@ -1667,9 +1721,6 @@ msgstr "アイコン"
 
 msgid "ICON AND TEXT"
 msgstr "アイコンと文字"
-
-msgid "SHOW FILENAMES IN LISTS"
-msgstr "リストにファイル名を表示"
 
 msgid "VOLUME"
 msgstr "音量"
@@ -1873,9 +1924,6 @@ msgstr "クイック検索"
 msgid "GO TO LETTER"
 msgstr "英数字に移動"
 
-msgid "COLLECTIONS"
-msgstr "コレクション"
-
 msgid "GO TO MANUFACTURER"
 msgstr "システムに移動"
 
@@ -1902,9 +1950,6 @@ msgstr[0] "%i 個 のゲーム"
 msgid "%i GAME"
 msgid_plural "%i GAMES"
 msgstr[0] "%i 個 のゲーム"
-
-msgid "NETPLAY"
-msgstr "ネットプレイ"
 
 msgid "RANDOM"
 msgstr "ランダム"
@@ -1959,18 +2004,6 @@ msgstr "エントリが見つかりません"
 
 msgid "Favorites"
 msgstr "お気に入り"
-
-msgid "START GAME"
-msgstr "ゲームを開始"
-
-msgid "START NETPLAY HOST"
-msgstr "ホスト(ネットプレイ)を開始"
-
-msgid "SET PLAYER PASSWORD"
-msgstr "プレーヤーパスワードの設定"
-
-msgid "SET VIEWER PASSWORD"
-msgstr "ビューアパスワードの設定"
 
 msgid "Games similar to"
 msgstr "類似ゲーム→"
@@ -2092,8 +2125,11 @@ msgstr ""
 msgid "SEARCHING NETPLAY GAMES"
 msgstr ""
 
-msgid "FAVORITES"
-msgstr "お気に入り"
+msgid "INDEXING COMPLETED"
+msgstr ""
+
+msgid "UPDATE GAMES LISTS TO APPLY CHANGES."
+msgstr ""
 
 msgid "GENRE"
 msgstr "ジャンル"
@@ -2122,14 +2158,25 @@ msgstr "プレイ済み"
 msgid "HAS ACHIEVEMENTS"
 msgstr ""
 
+msgid "VERTICAL"
+msgstr ""
+
 msgid "SCRAPING"
 msgstr "情報を取得中"
 
 msgid "SCRAPE FAILED"
 msgstr "スクレイプ失敗"
 
-msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
-msgstr "スクレイプが終了しました。 ゲームリストを更新して変更を適用します。"
+msgid "SCRAPING FINISHED"
+msgstr ""
+
+#, c-format
+msgid "%s connected"
+msgstr ""
+
+#, c-format
+msgid "%s disconnected"
+msgstr ""
 
 msgid "SHIFTS FOR UPPER,LOWER, AND SPECIAL"
 msgstr "大文字,小文字,特殊記号用の SHIFT"
@@ -2304,6 +2351,30 @@ msgstr "%d 分"
 #, c-format
 msgid "%d s"
 msgstr "%d 秒"
+
+#~ msgid "USER DECIDES ON CONFLICTS"
+#~ msgstr "ユーザーが手動で修正"
+
+#~ msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
+#~ msgstr "スクレイプが終了しました。 ゲームリストを更新して変更を適用します。"
+
+#~ msgid "Editing the '%s' Collection. Add/remove games with Y."
+#~ msgstr "'%s' コレクションを編集。Yでゲームを追加/削除します。"
+
+#~ msgid "Finished editing the '%s' Collection."
+#~ msgstr "'%s' コレクションの編集が完了しました。"
+
+#~ msgid "FINISH EDITING COLLECTION"
+#~ msgstr "コレクション編集を終了"
+
+#~ msgid "JUMP TO..."
+#~ msgstr "移動(英数字のみ有効)..."
+
+#~ msgid "COLLECTION MANAGEMENT"
+#~ msgstr "コレクション管理"
+
+#~ msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
+#~ msgstr "ゲームコレクションへのゲームの追加/削除"
 
 #~ msgid "REINDEX ALL GAMES"
 #~ msgstr "すべてのゲームを再インデックス"

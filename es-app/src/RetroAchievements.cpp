@@ -6,9 +6,8 @@
 #include "SystemData.h"
 #include "utils/StringUtil.h"
 #include "utils/ZipFile.h"
-#include "scrapers/md5.h"
 #include "ApiSystem.h"
-
+#include "Log.h"
 #include <algorithm>
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/pointer.h>
@@ -362,6 +361,7 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 
 	info.userpic = "https://retroachievements.org" + ret.UserPic;
 	info.rank = ret.Rank;
+	info.points = ret.TotalPoints;
 	info.totalpoints = ret.TotalTruePoints;
 	info.username = ret.Username;
 	info.registered = ret.MemberSince;
@@ -387,7 +387,7 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 			rg.totalAchievements = aw->second.NumPossibleAchievements;
 
 			rg.achievements = std::to_string(aw->second.NumAchieved) + " of " + std::to_string(aw->second.NumPossibleAchievements);
-			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);			
+			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);						
 		}
 
 		info.games.push_back(rg);
@@ -466,8 +466,11 @@ std::map<std::string, std::string> RetroAchievements::getCheevosHashes()
 
 std::string RetroAchievements::getCheevosHashFromFile(int consoleId, const std::string fileName)
 {
+	LOG(LogDebug) << "getCheevosHashFromFile : " << fileName;
+
 	try
 	{
+
 		char hash[33];
 		if (generateHashFromFile(hash, consoleId, fileName.c_str()))
 			return hash;
@@ -476,7 +479,8 @@ std::string RetroAchievements::getCheevosHashFromFile(int consoleId, const std::
 	{
 	}
 
-	return "";
+	LOG(LogWarning) << "cheevos -> Unable to extract hash from file :" << fileName;
+	return "00000000000000000000000000000000";	
 }
 
 std::string RetroAchievements::getCheevosHash( SystemData* system, const std::string fileName)

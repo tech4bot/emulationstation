@@ -564,7 +564,7 @@ void ThemeData::loadFile(const std::string system, std::map<std::string, std::st
 	mVariables["lang"] = mLanguage;
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result res = fromFile ? doc.load_file(path.c_str()) : doc.load(path.c_str());
+	pugi::xml_parse_result res = fromFile ? doc.load_file(path.c_str()) : doc.load_string(path.c_str());
 	if(!res)
 		throw error << "XML parsing error: \n    " << res.description();
 
@@ -989,6 +989,17 @@ bool ThemeData::parseFilterAttributes(const pugi::xml_node& node)
 			return false;
 	}
 
+	if (node.attribute("ifCheevos"))
+	{
+		const std::string hasCheevosAttr = node.attribute("ifCheevos").as_string();
+		bool hasCheevos = mVariables.find("system.cheevos") != mVariables.cend();
+
+		if (!hasCheevos && hasCheevosAttr == "true")
+			return false;
+		else if (hasCheevos && hasCheevosAttr == "false")
+			return false;
+	}
+
 	if (node.attribute("ifSubset"))
 	{
 		const std::string ifSubset = node.attribute("ifSubset").as_string();
@@ -1035,7 +1046,7 @@ bool ThemeData::parseFilterAttributes(const pugi::xml_node& node)
 				auto values = Utils::String::split(Utils::String::trim(subsetValue), '|', true);
 				for (auto value : values)
 					if (selectedSubset == value)
-						hasValue = true;;
+						hasValue = true;
 
 				if (!hasValue)
 					return false;

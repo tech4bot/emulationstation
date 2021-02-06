@@ -10,7 +10,7 @@
 #include "FileData.h"
 #include "ApiSystem.h"
 #include "utils/StringUtil.h"
-
+#include "Log.h"
 #include <unordered_set>
 #include <queue>
 
@@ -59,6 +59,9 @@ ThreadedHasher::ThreadedHasher(Window* window, HasherType type, std::queue<FileD
 
 ThreadedHasher::~ThreadedHasher()
 {
+	if ((mType & HASH_CHEEVOS_MD5) == HASH_CHEEVOS_MD5)
+		mWindow->displayNotificationMessage(ICONINDEX + _("INDEXING COMPLETED") + std::string(". ") + _("UPDATE GAMES LISTS TO APPLY CHANGES."));
+
 	mWndNotification->close();
 	mWndNotification = nullptr;
 
@@ -70,12 +73,12 @@ std::string ThreadedHasher::formatGameName(FileData* game)
 	return "[" + game->getSystemName() + "] " + game->getName();
 }
 
-void ThreadedHasher::updateUI(FileData* fileData)
+void ThreadedHasher::updateUI(const std::string label)
 {
 	std::string idx = std::to_string(mTotal + 1 - mSearchQueue.size()) + "/" + std::to_string(mTotal);
 	int percent = 100 - (mSearchQueue.size() * 100 / mTotal);
 		
-	mWndNotification->updateText(formatGameName(fileData));
+	mWndNotification->updateText(label);
 	mWndNotification->updatePercent(percent);	
 }
 
@@ -89,7 +92,12 @@ void ThreadedHasher::run()
 	while (!mExit && !mSearchQueue.empty())
 	{
 		FileData* game = mSearchQueue.front();
-		updateUI(game);
+
+		auto label = formatGameName(game);
+
+		LOG(LogDebug) << "Hashing " << formatGameName(game);
+		updateUI(label);
+
 		mSearchQueue.pop();
 
 		lock.unlock();
@@ -104,10 +112,14 @@ void ThreadedHasher::run()
 		}		
 
 		if (netplay)
+		{
+			LOG(LogDebug) << "CheckCrc32 : " << label;
 			game->checkCrc32(mForce);
+		}
 
 		if (cheevos)
 		{
+			LOG(LogDebug) << "CheckCheevosHash : " << label;
 			game->checkCheevosHash(mForce);
 
 			auto hash = Utils::String::toUpper(game->getMetadata(MetaDataId::CheevosHash));
@@ -119,6 +131,8 @@ void ThreadedHasher::run()
 				else
 					game->setMetadata(MetaDataId::CheevosId, "");
 			}
+
+			LOG(LogDebug) << "CheckCheevosHash OK : " << label;;
 		}		
 
 		lock.lock();
@@ -131,6 +145,7 @@ void ThreadedHasher::run()
 		lock.unlock();
 		delete this;
 		ThreadedHasher::mInstance = nullptr;
+
 	}
 }
 
@@ -162,7 +177,14 @@ void ThreadedHasher::start(Window* window, HasherType type, bool forceAllGames, 
 		for (auto file : sys->getRootFolder()->getFilesRecursive(GAME))
 		{
 			bool netPlay = takeNetplay && (forceAllGames || file->getMetadata(MetaDataId::Crc32).empty());
-			bool cheevos = takeCheevos; // && (forceAllGames || file->getMetadata(MetaDataId::CheevosId).empty());
+			bool cheevos = takeCheevos && (forceAllGames || file->getMetadata(MetaDataId::CheevosHash).empty());
+
+			if (cheevos)
+			{
+				std::string ext = Utils::String::toLower(Utils::FileSystem::getExtension(file->getPath()));
+				if (ext == ".pbp")
+					cheevos = false;
+			}
 
 			if (netPlay || cheevos)
 				searchQueue.push(file);
