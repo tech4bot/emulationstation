@@ -565,17 +565,17 @@ void DetailedContainer::updateControls(FileData* file, bool isClearing)
 			mNoMap->setVisible(!Utils::FileSystem::exists(file->getMetadata(MetaDataId::Map)));
 
 		// Save states
-		bool hasSaveState = false;
-		bool systemSupportsSaveStates = SaveStateRepository::isEnabled(file);
+		//bool hasSaveState = false;
+		//bool systemSupportsSaveStates = SaveStateRepository::isEnabled(file);
 
-		if (systemSupportsSaveStates && (mSaveState != nullptr || mNoSaveState != nullptr))
-			hasSaveState = file->getSourceFileData()->getSystem()->getSaveStateRepository()->hasSaveStates(file);
+		//if (systemSupportsSaveStates && (mSaveState != nullptr || mNoSaveState != nullptr))
+		//	hasSaveState = file->getSourceFileData()->getSystem()->getSaveStateRepository()->hasSaveStates(file);
 
-		if (mSaveState != nullptr)
-			mSaveState->setVisible(systemSupportsSaveStates && hasSaveState);
+		//if (mSaveState != nullptr)
+		//	mSaveState->setVisible(systemSupportsSaveStates && hasSaveState);
 
-		if (mNoSaveState != nullptr)
-			mNoSaveState->setVisible(systemSupportsSaveStates && !hasSaveState);
+		//if (mNoSaveState != nullptr)
+		//	mNoSaveState->setVisible(systemSupportsSaveStates && !hasSaveState);
 
 		// Kid game
 		if (mKidGame != nullptr)
