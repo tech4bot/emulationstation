@@ -1530,13 +1530,14 @@ void GuiMenu::openSystemSettings_batocera()
                 s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
                 s->addSaveFunc([this, oc_enabled] {
 			bool oc_need_reboot = false;
-                        if (oc_enabled->getState() == false) {
-                                runSystemCommand("351elec-overclock off", "", nullptr);
+			if (oc_enabled->changed()) {
+                        	if (oc_enabled->getState() == false) {
+                        	        runSystemCommand("351elec-overclock off", "", nullptr);
+                        	} else {
+                        	        runSystemCommand("351elec-overclock on", "", nullptr);
+                        	}
 				oc_need_reboot = true;
-                        } else {
-                                runSystemCommand("351elec-overclock on", "", nullptr);
-				oc_need_reboot = true;
-                        }
+			}
                 	bool ocenabled = oc_enabled->getState();
                 	SystemConf::getInstance()->set("ee_oc.enabled", ocenabled ? "1" : "0");
                 	SystemConf::getInstance()->saveSystemConf();
