@@ -21,6 +21,7 @@
 #include "math/Vector2i.h"
 #include "SystemConf.h"
 #include "ImageIO.h"
+#include "platform.h"
 
 #define FADE_TIME 			500
 
@@ -125,6 +126,10 @@ void SystemScreenSaver::startScreenSaver()
 			mTimer = 0;
 			return;
 		}
+	}
+	else if (screensaver_behavior == "sleep")
+	{
+		runSystemCommand("systemctl suspend", "", nullptr);
 	}
 	else if (screensaver_behavior == "slideshow")
 	{
