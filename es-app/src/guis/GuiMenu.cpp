@@ -1525,7 +1525,7 @@ void GuiMenu::openSystemSettings_batocera()
 	});
 
        auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("ee_oc.enabled") == "1";
+                bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
                 oc_enabled->setState(baseEnabled);
                 s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
                 s->addSaveFunc([this, oc_enabled] {
@@ -1539,7 +1539,7 @@ void GuiMenu::openSystemSettings_batocera()
 				oc_need_reboot = true;
 			}
                 	bool ocenabled = oc_enabled->getState();
-                	SystemConf::getInstance()->set("ee_oc.enabled", ocenabled ? "1" : "0");
+                	SystemConf::getInstance()->set("overclock", ocenabled ? "1" : "0");
                 	SystemConf::getInstance()->saveSystemConf();
 			if (oc_need_reboot) {
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
