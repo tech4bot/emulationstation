@@ -130,6 +130,8 @@ void SystemScreenSaver::startScreenSaver()
 	else if (screensaver_behavior == "sleep")
 	{
 		runSystemCommand("systemctl suspend", "", nullptr);
+		mTimer = 0;
+		return;
 	}
 	else if (screensaver_behavior == "slideshow")
 	{
