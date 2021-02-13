@@ -2156,12 +2156,6 @@ void GuiMenu::openGamesSettings_batocera()
 	s->addWithLabel(_("AUTO SAVE/LOAD"), autosave_enabled);
 	s->addSaveFunc([autosave_enabled] { SystemConf::getInstance()->set("global.autosave", autosave_enabled->getSelected()); });
 	
-	// TATE mode
-	auto tate_mode = std::make_shared<OptionListComponent<std::string>>(mWindow, _("TATE MODE"));
-	tate_mode->addRange({ { _("OFF"), "0" },{ _("ON") , "1" },{ _("REVERSED") , "2" } }, SystemConf::getInstance()->get("global.tatemode"));
-	s->addWithLabel(_("TATE MODE"), tate_mode);
-	s->addSaveFunc([tate_mode] { SystemConf::getInstance()->set("global.tatemode", tate_mode->getSelected()); });
-	
 	// Shaders preset
 #ifndef _ENABLEEMUELEC	
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS))
