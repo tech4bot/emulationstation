@@ -198,7 +198,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			if (!file->isFeatureSupported(EmulatorFeatures::cheevos))
 			{				
 				std::string coreList = file->getSourceFileData()->getSystem()->getCompatibleCoreNames(EmulatorFeatures::cheevos);
-				std::string msg = _U("\uF06A  ");
+				//std::string msg = _U("\uF06A  ");
 				//msg += _("CURRENT CORE IS NOT COMPATIBLE") + " : " + Utils::String::toUpper(file->getCore(true));
 				if (!coreList.empty())
 				{
