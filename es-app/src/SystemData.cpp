@@ -1655,20 +1655,10 @@ bool SystemData::isCheevosSupported()
 		mIsCheevosSupported = 0;
 
 	const std::set<std::string> cheevosSystems = {
-#ifdef _ENABLEEMUELEC
 		"arcade","atari2600","atari7800","atarilynx","colecovision","fbneo","gamegear","gb",
 		"gba","gbc","genesis","mastersystem","megadrive","msx","msx2","n64","neogeo","nes","ngp",
 		"ngpc","odyssey2","pcengine","pcenginecd","pokemini","psx","sega32x","segacd","sg-1000",
 		"snes","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
-#else
-		"megadrive", "n64", "snes", "gb", "gba", "gbc", "nes", "fds", "pcengine", "segacd", "sega32x", "mastersystem", 
-		"atarilynx", "lynx", "ngp", "gamegear", "pokemini", "atari2600", "fbneo", "fbn", "virtualboy", "pcfx", "tg16", "famicom", "msx1",
-		"psx", "sg-1000", "sg1000", "coleco", "colecovision", "atari7800", "wonderswan", "pc88", "saturn", "3do", "apple2", "neogeo", "arcade", "mame" };
-#endif 
-
-		// "nds" -> Disabled for now
-		// "psx" -> Missing cd reader library	
-		// "atarijaguar", "jaguar" -> No games yet
 
 		if (cheevosSystems.find(getName()) != cheevosSystems.cend())
 		{
