@@ -1656,9 +1656,10 @@ bool SystemData::isCheevosSupported()
 
 	const std::set<std::string> cheevosSystems = {
 #ifdef _ENABLEEMUELEC
-		"3do", "arcade", "atari2600", "atari7800", "atarilynx", "coleco", "colecovision", "famicom", "fbn", "fbneo", "fds", "gamegear", 
-        "gb", "gba", "gbc", "lynx", "mame", "genesis", "mastersystem", "megadrive", "megadrive-japan", "msx", "n64", "neogeo", "nes", "ngp", 
-        "pcengine", "pcfx", "pokemini", "psx", "saturn", "sega32x", "segacd", "sfc", "sg-1000", "snes", "tg16", "vectrex", "virtualboy", "wonderswan" };
+		"arcade","atari2600","atari7800","atarilynx","colecovision","fbneo","gamegear","gb",
+		"gba","gbc","genesis","mastersystem","megadrive","msx","msx2","n64","neogeo","nes","ngp",
+		"ngpc","odyssey2","pcengine","pcenginecd","pokemini","psx","sega32x","segacd","sg-1000",
+		"snes","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
 #else
 		"megadrive", "n64", "snes", "gb", "gba", "gbc", "nes", "fds", "pcengine", "segacd", "sega32x", "mastersystem", 
 		"atarilynx", "lynx", "ngp", "gamegear", "pokemini", "atari2600", "fbneo", "fbn", "virtualboy", "pcfx", "tg16", "famicom", "msx1",
