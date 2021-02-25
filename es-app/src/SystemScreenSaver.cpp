@@ -127,12 +127,6 @@ void SystemScreenSaver::startScreenSaver()
 			return;
 		}
 	}
-	else if (screensaver_behavior == "sleep")
-	{
-		runSystemCommand("systemctl suspend", "", nullptr);
-		mTimer = 0;
-		return;
-	}
 	else if (screensaver_behavior == "slideshow")
 	{
 		mVideoChangeTime = Settings::getInstance()->getInt("ScreenSaverSwapImageTimeout");
@@ -174,6 +168,14 @@ void SystemScreenSaver::startScreenSaver()
 			return;
 		}	
 	}
+	else if (screensaver_behavior == "sleep")
+        {
+                PowerSaver::runningScreenSaver(true);
+                mTimer = 0;
+		mCurrentGame = NULL;
+                runSystemCommand("systemctl suspend", "", nullptr);
+                return;
+        }
 
 	// No videos. Just use a standard screensaver
 	mState = STATE_SCREENSAVER_ACTIVE;
