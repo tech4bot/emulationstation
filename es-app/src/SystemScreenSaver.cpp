@@ -170,10 +170,9 @@ void SystemScreenSaver::startScreenSaver()
 	}
 	else if (screensaver_behavior == "sleep")
         {
-                PowerSaver::runningScreenSaver(true);
-                mTimer = 0;
+                runSystemCommand("systemctl suspend &", "", nullptr);
 		mCurrentGame = NULL;
-                runSystemCommand("systemctl suspend", "", nullptr);
+                mTimer = 0;
                 return;
         }
 
