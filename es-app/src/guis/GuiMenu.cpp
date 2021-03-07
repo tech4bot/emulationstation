@@ -4555,9 +4555,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
 	
 	// TATE mode
-	auto tate_mode = std::make_shared<OptionListComponent<std::string>>(mWindow, _("TATE MODE (VERTICAL MODE)"));
+	auto tate_mode = std::make_shared<OptionListComponent<std::string>>(mWindow, _("TATE (VERTICAL) MODE"));
 	tate_mode->addRange({ { _("OFF"), "0" },{ _("ON") , "1" },{ _("REVERSED") , "2" } }, SystemConf::getInstance()->get("global.tatemode"));
-	s->addWithLabel(_("TATE MODE (VERTICAL MODE)"), tate_mode);
+	s->addWithLabel(_("TATE (VERTICAL) MODE"), tate_mode);
 	s->addSaveFunc([tate_mode] { SystemConf::getInstance()->set("global.tatemode", tate_mode->getSelected()); });
 
 	// Shaders preset
