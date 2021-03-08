@@ -4553,6 +4553,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("AUTO SAVE/LOAD"), autosave_enabled);
 		systemConfiguration->addSaveFunc([configName, autosave_enabled] { getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + configName + ".autosave' " + autosave_enabled->getSelected()); });
 	}
+	
+	// TATE mode
+	auto tate_mode = std::make_shared<OptionListComponent<std::string>>(mWindow, _("TATE (VERTICAL) MODE"));
+	tate_mode->addRange({ { _("OFF"), "0" },{ _("ON") , "1" },{ _("REVERSED") , "2" } }, SystemConf::getInstance()->get("global.tatemode"));
+	s->addWithLabel(_("TATE (VERTICAL) MODE"), tate_mode);
+	s->addSaveFunc([tate_mode] { SystemConf::getInstance()->set("global.tatemode", tate_mode->getSelected()); });
 
 	// Shaders preset
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
@@ -4594,7 +4600,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
                 systemConfiguration->addSaveFunc([rgascale_enabled, configName] { getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + configName + ".rgascale' " + rgascale_enabled->getSelected()); });
         }
 
-	// Vertical Game
+	/*/ Vertical Game - not used
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::vertical))
 	{
 		auto vertical_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE VERTICAL"));
@@ -4602,7 +4608,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		vertical_enabled->add(_("ON"), "1", getShOutput(R"(/usr/bin/emuelec-utils setemu get ')" + configName + ".vertical'") == "1");
 		systemConfiguration->addWithLabel(_("ENABLE VERTICAL"), vertical_enabled);
 		systemConfiguration->addSaveFunc([vertical_enabled, configName] { getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + configName + ".vertical' " + vertical_enabled->getSelected()); });
-	}
+	}*/
 
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::latency_reduction))	
 		systemConfiguration->addEntry(_("LATENCY REDUCTION"), true, [mWindow, configName] { openLatencyReductionConfiguration(mWindow, configName); });
