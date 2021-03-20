@@ -1255,25 +1255,23 @@ void GuiMenu::openUpdatesSettings()
 	updateGui->addGroup(_("SOFTWARE UPDATES"));
 
 	// Enable updates
-	auto updates_enabled = std::make_shared<SwitchComponent>(mWindow);
-	updates_enabled->setState(SystemConf::getInstance()->getBool("updates.enabled"));
+	//auto updates_enabled = std::make_shared<SwitchComponent>(mWindow);
+	//updates_enabled->setState(SystemConf::getInstance()->getBool("updates.enabled"));
 	
-	updateGui->addWithLabel(_("CHECK FOR UPDATES"), updates_enabled);
-	updateGui->addSaveFunc([updates_enabled]
-	{
-		SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
-	});
+	//updateGui->addWithLabel(_("CHECK FOR UPDATES"), updates_enabled);
+	//updateGui->addSaveFunc([updates_enabled]
+	//{
+	//	SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
+	//});
 
 	// Update Bands
 	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE CHANNEL"), false);
 	
 	std::string updatesType = SystemConf::getInstance()->get("updates.type");
 	if (updatesType.empty())
-		updatesType = "stable";
+		updatesType = "daily";
 	
-	updatesTypeList->add("stable", "stable", updatesType == "stable");
-	updatesTypeList->add("rc", "rc", updatesType == "rc");
-	updatesTypeList->add("nightly", "nightly", updatesType == "nightly");
+	updatesTypeList->add("daily", "daily", updatesType == "daily");
 	
 	updateGui->addWithLabel(_("UPDATE CHANNEL"), updatesTypeList);
 	updatesTypeList->setSelectedChangedCallback([](std::string name)
