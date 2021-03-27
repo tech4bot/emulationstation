@@ -1126,19 +1126,7 @@ void GuiMenu::openDeveloperSettings()
 #endif
 
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
-	{
-		// start old
-		// // retroarch.menu_driver = rgui
-		// auto retroarchRgui = std::make_shared<SwitchComponent>(mWindow);
-		// retroarchRgui->setState(SystemConf::getInstance()->get("global.retroarch.menu_driver") == "rgui");
-		// s->addWithLabel(_("USE RETROARCH RGUI MENU"), retroarchRgui);
-		// s->addSaveFunc([retroarchRgui]
-		// {
-		// 	SystemConf::getInstance()->set("global.retroarch.menu_driver", retroarchRgui->getState() ? "rgui" : "");
-		// });
-		// end old
-
-		// start new
+	{		
 		// retroarch.menu_driver choose from 'xmb' (default), 'rgui', 'ozone', 'glui'
 		auto retroarchRgui = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETROARCH MENU DRIVER"), false);
 		std::vector<std::string> driver;
@@ -1160,9 +1148,7 @@ void GuiMenu::openDeveloperSettings()
 			SystemConf::getInstance()->set("global.retroarch.menu_driver", retroarchRgui->getSelected());
 			SystemConf::getInstance()->saveSystemConf();
 		});
-		// end new
-
-
+	
 		auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
 		invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
 		s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
