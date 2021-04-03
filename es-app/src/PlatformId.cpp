@@ -127,6 +127,7 @@ namespace PlatformIds
 		{ "palm",					PALMOS },
 		{ "daphne",					DAPHNE },
 		{ "solarus",				SOLARUS },
+		{ "easyrpg",				EASYRPG },
 
 		{ "vic20",					VIC20 },
 		{ "c20",					VIC20 },
