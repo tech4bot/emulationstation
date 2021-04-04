@@ -29,6 +29,7 @@ const std::map<PlatformId, unsigned short> cheevosConsoleID
 	{ GAME_BOY_ADVANCE, 5 },
 	{ GAME_BOY_COLOR, 6 },
 	{ NINTENDO_ENTERTAINMENT_SYSTEM, 7 },
+	{ TURBOGRAFX_16, 8 },
 	{ TURBOGRAFX_CD, 8 },
 	{ SEGA_CD, 9 },
 	{ SEGA_32X, 10 },
