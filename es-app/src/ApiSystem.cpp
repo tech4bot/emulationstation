@@ -853,11 +853,21 @@ std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
 std::string ApiSystem::getUpdateUrl()
 {
 	auto systemsetting = SystemConf::getInstance()->get("global.updates.url");
-        auto MyArch = executeScript("cat /storage/.config/.OS_ARCH");
+
+	std::ifstream fh("/storage/.config/.OS_ARCH");
+	std::string MyArch;
+	if(fh) {
+		std::ostringstream ss;
+		ss << fh.rdbuf();
+		MyArch = ss.str();
+	}
+
+	std::regex newline("\n$");
+	MyArch = std::regex_replace(MyArch, newline, "");
+
 	if (!systemsetting.empty())
 		return systemsetting;
 	std::string SendBack = "https://github.com/351ELEC/351ELEC/raw/main/metadata/" + MyArch;
-	LOG(LogDebug) << SendBack;
 	return SendBack;
 }
 
