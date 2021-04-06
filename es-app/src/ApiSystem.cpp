@@ -853,10 +853,12 @@ std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
 std::string ApiSystem::getUpdateUrl()
 {
 	auto systemsetting = SystemConf::getInstance()->get("global.updates.url");
+        auto MyArch = executeScript("cat /storage/.config/.OS_ARCH");
 	if (!systemsetting.empty())
 		return systemsetting;
-
-	return "https://github.com/351ELEC/351ELEC/raw/main/metadata/";
+	std::string SendBack = "https://github.com/351ELEC/351ELEC/raw/main/metadata/" + MyArch;
+	LOG(LogDebug) << SendBack;
+	return SendBack;
 }
 
 void ApiSystem::getBatoceraThemesImages(std::vector<BatoceraTheme>& items)
