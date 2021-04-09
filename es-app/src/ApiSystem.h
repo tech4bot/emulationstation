@@ -207,7 +207,7 @@ public:
 
 	virtual std::vector<std::string> getRetroachievementsSoundsList();
 	virtual std::vector<std::string> getShaderList(const std::string systemName = "");
-	virtual std::string getSevenZipCommand() { return "7zr"; }
+	virtual std::string getSevenZipCommand() { return "/usr/bin/7z"; }
 
 
 protected:
