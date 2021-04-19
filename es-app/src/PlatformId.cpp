@@ -68,6 +68,7 @@ namespace PlatformIds
 		{ "psvita",					PLAYSTATION_VITA },
 		{ "psp",					PLAYSTATION_PORTABLE },
 		{ "snes",					SUPER_NINTENDO },
+		{ "snesmsu1",				SNESMSU1 },
 		{ "scummvm",				SCUMMVM },
 		{ "x1",						SHARP_X1 },
 		{ "x68000",					SHARP_X6800 },
