@@ -1658,7 +1658,7 @@ bool SystemData::isCheevosSupported()
 		"arcade","atari2600","atari7800","atarilynx","colecovision","fbn","gamegear","gb",
 		"gba","gbc","genesis","intellivision","mastersystem","megacd","megadrive","msx","msx2","n64","neogeo","nes","ngp",
 		"ngpc","odyssey2","pcengine","pcenginecd","pokemini","psx","sega32x","segacd","sg-1000",
-		"snes","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
+		"snes","snesmsu1","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
 
 		if (cheevosSystems.find(getName()) != cheevosSystems.cend())
 		{

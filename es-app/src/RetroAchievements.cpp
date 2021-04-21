@@ -25,6 +25,7 @@ const std::map<PlatformId, unsigned short> cheevosConsoleID
 	{ SEGA_MEGA_DRIVE, 1 },
 	{ NINTENDO_64, 2 },
 	{ SUPER_NINTENDO, 3 },
+	{ SNESMSU1, 3 },
 	{ GAME_BOY, 4 },
 	{ GAME_BOY_ADVANCE, 5 },
 	{ GAME_BOY_COLOR, 6 },
