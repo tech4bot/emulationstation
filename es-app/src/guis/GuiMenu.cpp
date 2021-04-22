@@ -1127,9 +1127,10 @@ void GuiMenu::openDeveloperSettings()
 
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 	{
-		// retroarch.menu_driver choose from 'xmb' (default), 'rgui', 'ozone', 'glui'
+		// retroarch.menu_driver choose from 'auto' (default), 'xmb', 'rgui', 'ozone', 'glui'
 		auto retroarchRgui = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETROARCH MENU DRIVER"), false);
 		std::vector<std::string> driver;
+		driver.push_back("auto");
 		driver.push_back("xmb");
 		driver.push_back("rgui");
 		driver.push_back("ozone");
@@ -1137,7 +1138,7 @@ void GuiMenu::openDeveloperSettings()
 
 		auto currentDriver = SystemConf::getInstance()->get("global.retroarch.menu_driver");
 		if (currentDriver.empty())
-			currentDriver = "xmb";
+			currentDriver = "auto";
 
 		for (auto it = driver.cbegin(); it != driver.cend(); it++)
 			retroarchRgui->add(_(it->c_str()), *it, currentDriver == *it);
