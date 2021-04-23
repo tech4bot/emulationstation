@@ -3,6 +3,8 @@ EmulationStation
 
 EmulationStation is a cross-platform graphical front-end for emulators with controller navigation.
 
+> Note: This project has been archived.
+
 Building
 ========
 
