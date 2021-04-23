@@ -1184,6 +1184,21 @@ bool ApiSystem::getBrighness(int& value)
 	char buffer[BACKLIGHT_BUFFER_SIZE + 1];
 	ssize_t count;
 
+	fd = open(BACKLIGHT_BRIGHTNESS_MAX_NAME, O_RDONLY);
+	if (fd < 0)
+		return false;
+
+	memset(buffer, 0, BACKLIGHT_BUFFER_SIZE + 1);
+
+	count = read(fd, buffer, BACKLIGHT_BUFFER_SIZE);
+	if (count > 0)
+		max = atoi(buffer);
+
+	close(fd);
+
+	if (max == 0) 
+		return 0;
+
 	fd = open(BACKLIGHT_BRIGHTNESS_NAME, O_RDONLY);
 	if (fd < 0)
 		return false;
@@ -1196,18 +1211,19 @@ bool ApiSystem::getBrighness(int& value)
 
 	close(fd);
 
+	value = (uint32_t) (value / (float)max * 100.0f);
 	return true;
 #endif
 }
 
 void ApiSystem::setBrighness(int value)
 {
-#if !WIN32
+#if !WIN32	
 	if (value < 5)
 		value = 5;
 
-	if (value > 255)
-		value = 255;
+	if (value > 100)
+		value = 100;
 
 	int fd;
 	int max = 255;
@@ -1233,28 +1249,18 @@ void ApiSystem::setBrighness(int value)
 	if (fd < 0)
 		return;
 	
-	sprintf(buffer, "%d\n", (uint32_t)value);
+	float percent = value / 100.0f * (float)max;
+	sprintf(buffer, "%d\n", (uint32_t)percent);
 
 	count = write(fd, buffer, strlen(buffer));
 	if (count < 0)
 		LOG(LogError) << "ApiSystem::setBrighness failed";
+	SystemConf::getInstance()->set("system.brightness", buffer);
 
 	close(fd);
-
-        fd = open("/storage/.brightness", O_RDWR);
-        if (fd < 0)
-                return;
-
-        sprintf(buffer, "%d", (int)value);
-
-        count = write(fd, buffer, strlen(buffer));
-        if (count < 0)
-                LOG(LogError) << "ApiSystem::setBrighness (save) failed";
-
-        close(fd);
-
 #endif
 }
+
 
 std::vector<std::string> ApiSystem::getWifiNetworks(bool scan)
 {
