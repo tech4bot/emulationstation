@@ -185,7 +185,7 @@ void SystemData::populateFolder(FolderData* folder, std::unordered_map<std::stri
 			//ignore folders that do not contain games
 			if(newFolder->getChildren().size() == 0)
 				delete newFolder;
-			else 
+			else
 			{
 				const std::string& key = newFolder->getPath();
 				if (fileMap.find(key) == fileMap.end())
@@ -258,7 +258,7 @@ void SystemData::createGroupedSystems()
 	{
 		if (sys->isCollection() || sys->getSystemEnvData()->mGroup.empty())
 			continue;
-		
+
 		if (Settings::getInstance()->getBool(sys->getSystemEnvData()->mGroup + ".ungroup"))
 			continue;
 
@@ -268,11 +268,11 @@ void SystemData::createGroupedSystems()
 			continue;
 		}
 
-		map[sys->getSystemEnvData()->mGroup].push_back(sys);		
+		map[sys->getSystemEnvData()->mGroup].push_back(sys);
 	}
 
 	for (auto item : map)
-	{	
+	{
 		SystemData* system = nullptr;
 		bool existingSystem = false;
 
@@ -325,9 +325,9 @@ void SystemData::createGroupedSystems()
 		}
 
 		FolderData* root = system->getRootFolder();
-		
+
 		for (auto childSystem : item.second)
-		{			
+		{
 			auto children = childSystem->getRootFolder()->getChildren();
 			if (children.size() > 0)
 			{
@@ -363,7 +363,7 @@ void SystemData::createGroupedSystems()
 			system->loadTheme();
 			sSystemVector.push_back(system);
 		}
-		
+
 		root->getMetadata().resetChangedFlag();
 	}
 }
@@ -401,13 +401,13 @@ EmulatorFeatures::Features EmulatorFeatures::parseFeatures(const std::string fea
 		if (trim == "screen_layout") ret = ret | EmulatorFeatures::Features::screen_layout;
 		if (trim == "internal_resolution") ret = ret | EmulatorFeatures::Features::internal_resolution;
 		if (trim == "videomode") ret = ret | EmulatorFeatures::Features::videomode;
-		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;		
-		if (trim == "padtokeyboard") ret = ret | EmulatorFeatures::Features::padTokeyboard;		
+		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;
+		if (trim == "padtokeyboard") ret = ret | EmulatorFeatures::Features::padTokeyboard;
 		if (trim == "joystick2pad") ret = ret | EmulatorFeatures::Features::padTokeyboard;
 		if (trim == "cheevos") ret = ret | EmulatorFeatures::Features::cheevos;
 		if (trim == "autocontrollers") ret = ret | EmulatorFeatures::Features::autocontrollers;
 #ifdef _ENABLEEMUELEC
-		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;		
+		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;
 #endif
 	}
 
@@ -431,13 +431,13 @@ std::vector<CustomFeature>  SystemData::loadCustomFeatures(pugi::xml_node node)
 
 		CustomFeature feat;
 		feat.name = featureNode.attribute("name").value();
-		
+
 		if (featureNode.attribute("description"))
 			feat.description = featureNode.attribute("description").value();
 
 		if (featureNode.attribute("value"))
 			feat.value = featureNode.attribute("value").value();
-		else 
+		else
 			feat.value = Utils::String::replace(feat.name, " ", "_");
 
 		for (pugi::xml_node value = featureNode.child("choice"); value; value = value.next_sibling("choice"))
@@ -510,7 +510,7 @@ bool SystemData::loadFeatures()
 	}
 
 	for (pugi::xml_node emulator = systemList.child("emulator"); emulator; emulator = emulator.next_sibling("emulator"))
-	{		
+	{
 		if (!emulator.attribute("name"))
 			continue;
 
@@ -518,7 +518,7 @@ bool SystemData::loadFeatures()
 		for (auto tmpName : Utils::String::split(emulatorNames, ','))
 		{
 			std::string emulatorName = Utils::String::trim(tmpName);
-		
+
 			EmulatorFeatures::Features emulatorFeatures = EmulatorFeatures::Features::none;
 
 			auto customEmulatorFeatures = loadCustomFeatures(emulator);
@@ -575,7 +575,7 @@ bool SystemData::loadFeatures()
 								emul.features = emulatorFeatures;
 
 								for (auto feat : customEmulatorFeatures)
-									emul.customFeatures.push_back(feat);							
+									emul.customFeatures.push_back(feat);
 
 								CoreData core;
 								core.name = coreName;
@@ -653,11 +653,11 @@ bool SystemData::loadFeatures()
 				}
 			}
 		}
-		
+
 		pugi::xml_node systemsNode = emulator.child("systems");
 		if (systemsNode == nullptr)
 			systemsNode = emulator;
-		
+
 		for (pugi::xml_node systemNode = systemsNode.child("system"); systemNode; systemNode = systemNode.next_sibling("system"))
 		{
 			if (!systemNode.attribute("name") || !systemNode.attribute("features"))
@@ -672,10 +672,10 @@ bool SystemData::loadFeatures()
 				if (sys->getName() == systemName)
 					for (auto& emul : sys->mEmulators) {
 						emul.features = emul.features | systemFeatures;
-						for (auto ft : customSystemFeatures)							
+						for (auto ft : customSystemFeatures)
 							emul.customFeatures.push_back(ft);
 					}
-		}		
+		}
 	}
 
 	return true;
@@ -750,7 +750,7 @@ bool SystemData::isFeatureSupported(std::string emulatorName, std::string coreNa
 				if (coreName == core.name)
 					if ((core.features & feature) == feature)
 						return true;
-			
+
 			return (emulator.features & feature) == feature;
 		}
 	}
@@ -804,22 +804,22 @@ void SystemData::loadAdditionnalConfig(pugi::xml_node& srcSystems)
 				std::string srcName = srcSystem.child("name").text().get();
 				if (srcName != name)
 					continue;
-				
+
 				found = true;
-					
+
 				for (pugi::xml_node& child : system.children())
 				{
 					std::string tag = child.name();
 					if (tag == "name")
 						continue;
-						
+
 					srcSystem.remove_child(tag.c_str());
 
-					if (tag == "emulators" || !std::string(child.text().get()).empty())				
-						srcSystem.append_copy(child);												
+					if (tag == "emulators" || !std::string(child.text().get()).empty())
+						srcSystem.append_copy(child);
 				}
-					
-				break;				
+
+				break;
 			}
 
 			if (!found)
@@ -954,7 +954,7 @@ bool SystemData::loadConfig(Window* window)
 		delete[] systems;
 		delete pThreadPool;
 
-		
+
 
 		if (window != NULL)
 			window->renderSplashScreen(_("Collections"), systemCount == 0 ? 0 : currentSystem / systemCount);
@@ -975,7 +975,7 @@ bool SystemData::loadConfig(Window* window)
 	if (SystemData::sSystemVector.size() > 0)
 	{
 		auto theme = SystemData::sSystemVector.at(0)->getTheme();
-		ViewController::get()->onThemeChanged(theme);		
+		ViewController::get()->onThemeChanged(theme);
 	}
 
 	loadFeatures();
@@ -985,7 +985,7 @@ bool SystemData::loadConfig(Window* window)
 		if (Settings::getInstance()->getBool("NetPlayCheckIndexesAtStart"))
 			ThreadedHasher::start(window, ThreadedHasher::HASH_NETPLAY_CRC, false, true);
 	}
-	
+
 	return true;
 }
 
@@ -1046,7 +1046,7 @@ std::map<std::string, std::string> SystemData::getKnownSystemNames()
 		std::string fullName = system.child("fullname").text().get();
 		if (fullName.empty())
 			continue;
-		
+
 		ret[name] = fullName;
 	}
 
@@ -1132,12 +1132,12 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 	envData->mLaunchCommand = cmd;
 	envData->mPlatformIds = platformIds;
 	envData->mGroup = system.child("group").text().get();
-	
+
 	// batocera
 // emulators and cores
 
 	std::vector<EmulatorData> systemEmulators;
-	
+
 	pugi::xml_node emulatorsNode = system.child("emulators");
 	if (emulatorsNode != nullptr)
 	{
@@ -1167,7 +1167,7 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 					core.name = coreNode.text().as_string();
 					core.netplay = coreNode.attribute("netplay") && strcmp(coreNode.attribute("netplay").value(), "true") == 0;
 					core.isDefault = coreNode.attribute("default") && strcmp(coreNode.attribute("default").value(), "true") == 0;
-					
+
 					if (coreNode.attribute("incompatible_extensions"))
 					{
 						for (auto ext : readList(coreNode.attribute("incompatible_extensions").value()))
@@ -1193,13 +1193,13 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 
 	if (!fullMode)
 		return newSys;
-	
+
 	if (newSys->getRootFolder()->getChildren().size() == 0)
 	{
 		LOG(LogWarning) << "System \"" << md.name << "\" has no games! Ignoring it.";
 		delete newSys;
 		return nullptr;
-	}	
+	}
 
 	return newSys;
 }
@@ -1275,7 +1275,7 @@ bool SystemData::hasDirtySystems()
 		SystemData* pData = sSystemVector.at(i);
 		if (pData->mIsCollectionSystem)
 			continue;
-		
+
 		if (hasDirtyFile(pData))
 			return true;
 	}
@@ -1385,7 +1385,7 @@ std::string SystemData::getGamelistPath(bool forWrite) const
 
 	if (forWrite)
 		Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(filePath));
-	
+
 	return filePath;
 }
 
@@ -1397,7 +1397,7 @@ std::string SystemData::getThemePath() const
 	// 3. default system theme from currently selected theme set [CURRENT_THEME_PATH]/theme.xml
 
 	// first, check game folder
-	
+
 	if (!mEnvData->mStartPath.empty())
 	{
 		std::string rootThemePath = mRootFolder->getPath() + "/theme.xml";
@@ -1472,7 +1472,7 @@ FileData* SystemData::getRandomGame()
 GameCountInfo* SystemData::getGameCountInfo()
 {
 	if (mGameCountInfo != nullptr)
-		return mGameCountInfo;	
+		return mGameCountInfo;
 
 	std::vector<FileData*> games = mRootFolder->getFilesRecursive(GAME, true);
 
@@ -1577,7 +1577,7 @@ void SystemData::loadTheme()
 			sysData.insert(std::pair<std::string, std::string>("system.cheevos", "true"));
 
 		mTheme->loadFile(getThemeFolder(), sysData, path);
-	} 
+	}
 	catch(ThemeException& e)
 	{
 		LOG(LogError) << e.what();
@@ -1658,7 +1658,7 @@ bool SystemData::isCheevosSupported()
 		"arcade","atari2600","atari7800","atarilynx","colecovision","fbn","gamegear","gb",
 		"gba","gbc","genesis","intellivision","mastersystem","megacd","megadrive","msx","msx2","n64","neogeo","nes","ngp",
 		"ngpc","odyssey2","pcengine","pcenginecd","pokemini","psx","sega32x","segacd","sg-1000",
-		"snes","snesmsu1","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
+		"snes","snesmsu1","supervision","tg16","tg16cd","vectrex","virtualboy","wonderswan","wonderswancolor"};
 
 		if (cheevosSystems.find(getName()) != cheevosSystems.cend())
 		{
@@ -1691,11 +1691,11 @@ bool SystemData::isNetplayActivated()
 		if (sys->isNetplaySupported())
 			return true;
 
-	return false;	
+	return false;
 }
 
-bool SystemData::isGroupChildSystem() 
-{ 
+bool SystemData::isGroupChildSystem()
+{
 	if (mEnvData != nullptr && !mEnvData->mGroup.empty())
 		return !Settings::getInstance()->getBool(mEnvData->mGroup + ".ungroup");
 
@@ -1705,7 +1705,7 @@ bool SystemData::isGroupChildSystem()
 std::unordered_set<std::string> SystemData::getAllGroupNames()
 {
 	std::unordered_set<std::string> names;
-	
+
 	for (auto sys : SystemData::sSystemVector)
 	{
 		if (sys->isGroupSystem())
@@ -1724,7 +1724,7 @@ std::unordered_set<std::string> SystemData::getGroupChildSystemNames(const std::
 	for (auto sys : SystemData::sSystemVector)
 		if (sys->mEnvData != nullptr && sys->mEnvData->mGroup == groupName)
 			names.insert(sys->getFullName());
-		
+
 	return names;
 }
 
@@ -1746,7 +1746,11 @@ std::string SystemData::getEmulator(bool resolveDefault)
 #if WIN32 && !_DEBUG
 	std::string emulator = Settings::getInstance()->getString(getName() + ".emulator");
 #else
+#ifndef _ENABLEEMUELEC
 	std::string emulator = SystemConf::getInstance()->get(getName() + ".emulator");
+#else
+	std::string emulator = getShOutput(R"(emuelec-utils setemu get ')" + getName() + ".emulator' ");
+#endif
 #endif
 
 	for (auto emul : mEmulators)
@@ -1764,7 +1768,11 @@ std::string SystemData::getCore(bool resolveDefault)
 #if WIN32 && !_DEBUG
 	std::string core = Settings::getInstance()->getString(getName() + ".core");
 #else
+#ifndef _ENABLEEMUELEC
 	std::string core = SystemConf::getInstance()->get(getName() + ".core");
+#else
+	std::string core = getShOutput(R"(emuelec-utils setemu get ')" + getName() + ".core' ");
+#endif
 #endif
 
 	if (!core.empty() && core != "auto")
@@ -1795,7 +1803,7 @@ std::string SystemData::getDefaultEmulator()
 		for (auto core : emul.cores)
 			if (core.isDefault)
 				return emul.name;
-		
+
 	auto emulators = getEmulators();
 	if (emulators.size() > 0)
 		return emulators.begin()->name;
@@ -1811,7 +1819,7 @@ std::string SystemData::getDefaultCore(const std::string emulatorName)
 
 	if (emul.empty())
 		return "";
-	
+
 	for (auto it : mEmulators)
 	{
 		if (it.name == emul)
@@ -1823,7 +1831,7 @@ std::string SystemData::getDefaultCore(const std::string emulatorName)
 			if (it.cores.size() > 0)
 				return it.cores.begin()->name;
 		}
-	}	
+	}
 
 	return "";
 }
@@ -1894,10 +1902,10 @@ SystemData* SystemData::getSystem(const std::string name)
     # /usr/share/evmapy/${system}.keys*/
 
 std::string SystemData::getKeyboardMappingFilePath()
-{		
+{
 #if WIN32
 	return Utils::FileSystem::getEsConfigPath() + "/padtokey/" + getName() + ".keys";
-#else	
+#else
 	return "/userdata/system/config/evmapy/" + getName() + ".keys";
 #endif
 }

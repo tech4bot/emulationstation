@@ -82,7 +82,7 @@ namespace PlatformIds
 		VIDEOPAC_ODYSSEY2,
 		VECTREX,
 		TRS80_COLOR_COMPUTER,
-		TANDY,		
+		TANDY,
 		SUPERGRAFX,
 		AMIGACD32,
 		AMIGACDTV,
@@ -104,6 +104,7 @@ namespace PlatformIds
 		TIC80,
 		MODEL3,
 		IMAGEVIEWER,
+		WATARA_SUPERVISION,
 
 		// Windows Specific
 		VISUALPINBALL,

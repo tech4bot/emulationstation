@@ -43,6 +43,9 @@ const char* rc_console_name(int console_id)
     case RC_CONSOLE_CASSETTEVISION:
       return "CassetteVision";
 
+    case RC_CONSOLE_SUPERVISION:
+      return "Watara Supervision";
+
     case RC_CONSOLE_CDI:
       return "CD-I";
 
@@ -288,8 +291,8 @@ static const rc_memory_region_t _rc_memory_regions_gameboy[] = {
     { 0x00FF80U, 0x00FFFEU, 0x00FF80U, RC_MEMORY_TYPE_SYSTEM_RAM, "Quick RAM"},
     { 0x00FFFFU, 0x00FFFFU, 0x00FFFFU, RC_MEMORY_TYPE_HARDWARE_CONTROLLER, "Interrupt enable"},
 
-    /* GameBoy Color provides six extra banks of memory that can be paged out through the $DXXX 
-     * memory space, but the timing of that does not correspond with blanks, which is when achievements 
+    /* GameBoy Color provides six extra banks of memory that can be paged out through the $DXXX
+     * memory space, but the timing of that does not correspond with blanks, which is when achievements
      * are processed. As such, it is desirable to always have access to these extra banks. We do this
      * by expecting the extra banks to be addressable at addresses not supported by the native system. */
     { 0x010000U, 0x015FFFU, 0x010000U, RC_MEMORY_TYPE_SYSTEM_RAM, "System RAM (banks 2-7, GBC only)" }
@@ -523,6 +526,15 @@ static const rc_memory_region_t _rc_memory_regions_virtualboy[] = {
 };
 static const rc_memory_regions_t rc_memory_regions_virtualboy = { _rc_memory_regions_virtualboy, 2 };
 
+/* ===== Watara Supervision ===== */
+/* https://github.com/libretro/potator/blob/b5e5ba02914fcdf4a8128072dbc709da28e08832/common/memorymap.c#L231-L259 */
+static const rc_memory_region_t _rc_memory_regions_watara_supervision[] = {
+    { 0x0000U, 0x001FFFU, 0x0000U, RC_MEMORY_TYPE_SYSTEM_RAM, "System RAM" },
+    { 0x2000U, 0x003FFFU, 0x2000U, RC_MEMORY_TYPE_HARDWARE_CONTROLLER, "Registers" },
+    { 0x4000U, 0x005FFFU, 0x4000U, RC_MEMORY_TYPE_VIDEO_RAM, "Video RAM" }
+};
+static const rc_memory_regions_t rc_memory_regions_watara_supervision = { _rc_memory_regions_watara_supervision, 3 };
+
 /* ===== WonderSwan ===== */
 /* http://daifukkat.su/docs/wsman/#ovr_memmap */
 static const rc_memory_region_t _rc_memory_regions_wonderswan[] = {
@@ -591,7 +603,7 @@ const rc_memory_regions_t* rc_console_memory_regions(int console_id)
 
     case RC_CONSOLE_MEGA_DRIVE:
     case RC_CONSOLE_SEGA_32X:
-      /* NOTE: 32x adds an extra 512KB of memory (256KB RAM + 256KB VRAM) to the 
+      /* NOTE: 32x adds an extra 512KB of memory (256KB RAM + 256KB VRAM) to the
        *       Genesis, but we currently don't support it. */
       return &rc_memory_regions_megadrive;
 
