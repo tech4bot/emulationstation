@@ -85,9 +85,6 @@ const std::string FileData::getConfigurationName()
 	std::string gameConf = Utils::FileSystem::getFileName(getPath());
 	gameConf = Utils::String::replace(gameConf, "=", "");
 	gameConf = Utils::String::replace(gameConf, "#", "");
-#ifdef _ENABLEEMUELEC
-	gameConf = Utils::String::replace(gameConf, "'", "'\\''");
-#endif
 	gameConf = getSourceFileData()->getSystem()->getName() + std::string("[\"") + gameConf + std::string("\"]");
 	return gameConf;
 }
@@ -962,11 +959,7 @@ const std::string FileData::getCore(bool resolveDefault)
 #if WIN32 && !_DEBUG
 	std::string core = getMetadata(MetaDataId::Core);
 #else
-#ifndef _ENABLEEMUELEC	
 	std::string core = SystemConf::getInstance()->get(getConfigurationName() + ".core"); 
-#else
-	std::string core = getShOutput(R"(/usr/bin/emuelec-utils setemu get ')" + getConfigurationName() + ".core'");
-#endif
 #endif
 
 	if (core == "auto")
@@ -1016,11 +1009,7 @@ const std::string FileData::getEmulator(bool resolveDefault)
 #if WIN32 && !_DEBUG
 	std::string emulator = getMetadata(MetaDataId::Emulator);
 #else
-#ifndef _ENABLEEMUELEC	
 	std::string emulator = SystemConf::getInstance()->get(getConfigurationName() + ".emulator");
-#else
-	std::string emulator = getShOutput(R"(/usr/bin/emuelec-utils setemu get ')" + getConfigurationName() + ".emulator'");
-#endif
 #endif
 
 	if (emulator == "auto")
@@ -1049,11 +1038,7 @@ void FileData::setCore(const std::string value)
 #if WIN32 && !_DEBUG
 	setMetadata(MetaDataId::Core, value == "auto" ? "" : value);
 #else
-#ifndef _ENABLEEMUELEC	
 	SystemConf::getInstance()->set(getConfigurationName() + ".core", value);
-#else
-	getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + getConfigurationName() + ".core' " + value);
-#endif
 #endif
 }
 
@@ -1062,11 +1047,7 @@ void FileData::setEmulator(const std::string value)
 #if WIN32 && !_DEBUG
 	setMetadata(MetaDataId::Emulator, value == "auto" ? "" : value);
 #else
-#ifndef _ENABLEEMUELEC
 	SystemConf::getInstance()->set(getConfigurationName() + ".emulator", value);
-#else
-	getShOutput(R"(/usr/bin/emuelec-utils setemu set ')" + getConfigurationName() + ".emulator' " + value);
-#endif
 #endif
 }
 
