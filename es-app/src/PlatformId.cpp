@@ -98,6 +98,8 @@ namespace PlatformIds
 		{ "sufami",					SUFAMITURBO },
 		{ "zx81",					ZX81 },
 		{ "tic80",					TIC80 },
+		{ "watara",					WATARA_SUPERVISION },
+		{ "supervision",			WATARA_SUPERVISION },
 
 		// batocera specific names
 		{ "gb2players",				GAME_BOY },
@@ -134,7 +136,7 @@ namespace PlatformIds
 		{ "c20",					VIC20 },
 
 		{ "model3",					MODEL3 },
-			
+
 		{ "imageviewer",			IMAGEVIEWER },
 
 		{ "ignore",					PLATFORM_IGNORE },
@@ -161,7 +163,7 @@ namespace PlatformIds
 
 		return "unknown";
 	}
-	
+
 	std::map<unsigned short, std::pair<std::string, std::string>> ArcadeSystems
 	{
 		{ 6,   { "cps1", "CPS-1" } },
@@ -169,7 +171,7 @@ namespace PlatformIds
 		{ 8,   { "cps3", "CPS-3" } },
 		{ 35,  { "aae", "Another Arcade Emulator" } },
 		{ 47,  { "cave", "Cave" } },
-		{ 49,  { "daphne", "Daphne" } },		
+		{ 49,  { "daphne", "Daphne" } },
 		{ 53,  { "atomiswave", "Atomiswave" } },
 		{ 54,  { "model2", "Sega Model 2" } },
 		{ 55,  { "model3", "Sega Model 3" } },
@@ -183,7 +185,7 @@ namespace PlatformIds
 		{ 148, { "seta", "Seta" } },
 		{ 150, { "midway", "Midway" } },
 		{ 151, { "capcom", "Capcom" } },
-		{ 152, { "eighting", "Eighting / Raizing" } },		
+		{ 152, { "eighting", "Eighting / Raizing" } },
 		{ 153, { "tecmo", "Tecmo" } },
 		{ 154, { "snk", "SNK" } },
 		{ 155, { "namco", "Namco" } },
@@ -214,7 +216,7 @@ namespace PlatformIds
 		{ 183, { "coleco", "Coleco" } },
 		{ 184, { "playchoice", "PlayChoice" } },
 		{ 185, { "atlus", "Atlus" } },
-		{ 186, { "banpresto", "Banpresto" } },		
+		{ 186, { "banpresto", "Banpresto" } },
 		{ 187, { "semicom", "SemiCom" } },
 		{ 188, { "universal", "Universal" } },
 		{ 189, { "mitchell", "Mitchell" } },

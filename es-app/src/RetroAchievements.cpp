@@ -17,11 +17,11 @@
 
 using namespace PlatformIds;
 
-const std::map<PlatformId, unsigned short> cheevosConsoleID 
+const std::map<PlatformId, unsigned short> cheevosConsoleID
 {
 	{ ARCADE, RC_CONSOLE_ARCADE },
 	{ NEOGEO, RC_CONSOLE_ARCADE },
-	
+
 	{ SEGA_MEGA_DRIVE, 1 },
 	{ NINTENDO_64, 2 },
 	{ SUPER_NINTENDO, 3 },
@@ -78,7 +78,8 @@ const std::map<PlatformId, unsigned short> cheevosConsoleID
 	{ CHANNELF, 57 },
 	{ ZX_SPECTRUM, 59 },
 	{ NINTENDO_GAME_AND_WATCH, 60 },
-	{ NINTENDO_3DS, 62 }
+	{ NINTENDO_3DS, 62 },
+	{ WATARA_SUPERVISION, RC_CONSOLE_SUPERVISION },
 
 	// { VIC20, 34 },
 	//	{ CDI, 42 },
@@ -89,7 +90,7 @@ const std::map<PlatformId, unsigned short> cheevosConsoleID
 
 };
 
-const std::set<unsigned short> consolesWithmd5hashes 
+const std::set<unsigned short> consolesWithmd5hashes
 {
 	RC_CONSOLE_APPLE_II,
 	RC_CONSOLE_ATARI_2600,
@@ -114,7 +115,8 @@ const std::set<unsigned short> consolesWithmd5hashes
 	RC_CONSOLE_SG1000,
 	RC_CONSOLE_VECTREX,
 	RC_CONSOLE_VIRTUAL_BOY,
-	RC_CONSOLE_WONDERSWAN
+	RC_CONSOLE_WONDERSWAN,
+	RC_CONSOLE_SUPERVISION
 };
 
 const std::string API_DEV_L = { 42, 88, 35, 2, 36, 10, 2, 6, 23, 65, 45, 7, 10, 85, 26, 67, 89, 74, 28, 90, 41, 113, 41, 47, 16, 76, 82, 86, 22, 71, 12, 22, 54, 61, 45, 51, 16, 99, 3, 55, 54, 122, 4, 46, 69, 33, 2, 59, 5, 115 };
@@ -130,7 +132,7 @@ std::string GameInfoAndUserProgress::getImageUrl(const std::string image)
 {
 	if (image.empty())
 		return "http://i.retroachievements.org" + ImageIcon;
-	
+
 	return "http://i.retroachievements.org" + image;
 }
 
@@ -149,10 +151,10 @@ int jsonInt(const rapidjson::Value& val, const std::string name)
 		return 0;
 
 	const rapidjson::Value& value = val[name.c_str()];
-	
+
 	if (value.IsInt())
 		return value.GetInt();
-	
+
 	if (value.IsString())
 		return Utils::String::toInteger(value.GetString());
 
@@ -228,7 +230,7 @@ GameInfoAndUserProgress RetroAchievements::getGameInfoAndUserProgress(int gameId
 		for (auto achivId = ra.MemberBegin(); achivId != ra.MemberEnd(); ++achivId)
 		{
 			auto& recent = achivId->value;
-						
+
 			Achievement item;
 			item.ID = jsonString(recent, "ID");
 			item.NumAwarded = jsonString(recent, "NumAwarded");
@@ -329,9 +331,9 @@ UserSummary RetroAchievements::getUserSummary(const std::string userName, int ga
 
 	if (doc.HasMember("RecentAchievements"))
 	{
-		const rapidjson::Value& ra = doc["RecentAchievements"];		
+		const rapidjson::Value& ra = doc["RecentAchievements"];
 		for (auto achivId = ra.MemberBegin(); achivId != ra.MemberEnd(); ++achivId)
-		{			
+		{
 			std::string gameID = achivId->name.GetString();
 
 			for (auto itrc = achivId->value.MemberBegin(); itrc != achivId->value.MemberEnd(); ++itrc)
@@ -349,7 +351,7 @@ UserSummary RetroAchievements::getUserSummary(const std::string userName, int ga
 				item.DateAwarded = jsonString(recent, "DateAwarded");
 				item.HardcoreAchieved = jsonString(recent, "HardcoreAchieved");
 				ret.RecentAchievements[gameID].push_back(item);
-			}			
+			}
 		}
 	}
 
@@ -371,7 +373,7 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 	for (auto played : ret.RecentlyPlayed)
 	{
 		RetroAchievementGame rg;
-		rg.id = played.GameID;		
+		rg.id = played.GameID;
 
 		if (!played.ImageIcon.empty())
 			rg.badge = "http://i.retroachievements.org" + played.ImageIcon;
@@ -389,7 +391,7 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 			rg.totalAchievements = aw->second.NumPossibleAchievements;
 
 			rg.achievements = std::to_string(aw->second.NumAchieved) + " of " + std::to_string(aw->second.NumPossibleAchievements);
-			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);						
+			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);
 		}
 
 		info.games.push_back(rg);
@@ -449,13 +451,13 @@ std::map<std::string, std::string> RetroAchievements::getCheevosHashes()
 
 			if (!it->value.IsInt())
 				continue;
-			
+
 			int gameId = it->value.GetInt();
 
 			if (officialGames.find(gameId) == officialGames.cend())
 				continue;
 
-			ret[name] = std::to_string(gameId);			
+			ret[name] = std::to_string(gameId);
 		}
 	}
 	catch (...)
@@ -482,7 +484,7 @@ std::string RetroAchievements::getCheevosHashFromFile(int consoleId, const std::
 	}
 
 	LOG(LogWarning) << "cheevos -> Unable to extract hash from file :" << fileName;
-	return "00000000000000000000000000000000";	
+	return "00000000000000000000000000000000";
 }
 
 std::string RetroAchievements::getCheevosHash( SystemData* system, const std::string fileName)
@@ -560,7 +562,7 @@ bool RetroAchievements::testAccount(const std::string& username, const std::stri
 	{
 		HttpReq request("https://retroachievements.org/dorequest.php?r=login&u=" + username + "&p=" + password);
 		if (!request.wait())
-		{						
+		{
 			error = request.getErrorMsg();
 			return false;
 		}
@@ -574,7 +576,7 @@ bool RetroAchievements::testAccount(const std::string& username, const std::stri
 		}
 
 		if (ogdoc["Success"].IsTrue())
-			return true;		
+			return true;
 
 		if (ogdoc.HasMember("Error"))
 			error = ogdoc["Error"].GetString();

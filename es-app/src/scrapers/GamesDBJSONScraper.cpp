@@ -36,7 +36,7 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ ATARI_LYNX, "4924" },
 	{ ATARI_ST, "4937" },
 	{ ATARI_XE, "30" },
-	{ COLECOVISION, "31" },	
+	{ COLECOVISION, "31" },
 	{ COMMODORE_64, "40" },
 	{ COMMODORE_VIC20, "4945" },
 	{ INTELLIVISION, "32" },
@@ -86,8 +86,9 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ VIDEOPAC_ODYSSEY2, "4927" },
 	{ VECTREX, "4939" },
 	{ TRS80_COLOR_COMPUTER, "4941" },
-	{ TANDY, "4941" },	
+	{ TANDY, "4941" },
 	{ SUPERGRAFX, "34" }, // The code is TurboGrafx 16, but they manage SUPERGRAFX into this one....
+	{ WATARA_SUPERVISION, "4959" },
 
 	{ AMIGACD32, "130" },
 	{ AMIGACDTV, "129" },
@@ -104,7 +105,7 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ SUFAMITURBO, "6" },
 	{ ZX81, "77" },
 	{ MOONLIGHT, "1" }, // "PC" // 138
-	
+
 	// Windows
 	{ VISUALPINBALL, "198" },
 	{ FUTUREPINBALL, "199" },
@@ -182,7 +183,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 				"include=boxart&id=" +
 				HttpReq::urlEncode(gameID);
 		usingGameID = true;
-	} 
+	}
 	else
 	{
 		if (cleanName.empty())
@@ -199,7 +200,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 	{
 		// if we have the ID already, we don't need the GetGameList request
 		requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBJSONRequest(results, path)));
-	} 
+	}
 	else
 	{
 		std::string platformQueryParam;
@@ -218,7 +219,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 
 					platformQueryParam += HttpReq::urlEncode(mapIt->second);
 					first = false;
-				} 
+				}
 				else
 				{
 					LOG(LogWarning) << "TheGamesDB scraper warning - no support for platform "
@@ -499,7 +500,7 @@ namespace
 			if (!art.empty())
 				result.urls[MetaDataId::FanArt] = ScraperSearchItem(art);
 		}
-		
+
 		results.push_back(result);
 	}
 } // namespace
@@ -547,7 +548,7 @@ bool TheGamesDBJSONRequest::process(HttpReq* request, std::vector<ScraperSearchR
 	}
 
 	resources.ensureResources();
-	
+
 	for (int i = 0; i < (int)games.Size(); ++i)
 	{
 		auto& v = games[i];
