@@ -3614,8 +3614,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                 });
 
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
-                sshd_enabled->setState(baseEnabled);
+                bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+                sshd_enabled->setState(sshbaseEnabled);
                 s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
                 s->addSaveFunc([sshd_enabled] {
                         if (sshd_enabled->getState() == false) {
@@ -3634,8 +3634,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                 });
 
        auto samba_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
-                samba_enabled->setState(baseEnabled);
+                bool smbbaseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
+                samba_enabled->setState(smbbaseEnabled);
                 s->addWithLabel(_("ENABLE SAMBA"), samba_enabled);
                 s->addSaveFunc([samba_enabled] {
                         if (samba_enabled->getState() == false) {
