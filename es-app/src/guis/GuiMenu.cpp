@@ -3614,8 +3614,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                 });
 
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
-                sshd_enabled->setState(baseEnabled);
+                bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+                sshd_enabled->setState(sshbaseEnabled);
                 s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
                 s->addSaveFunc([sshd_enabled] {
                         if (sshd_enabled->getState() == false) {
@@ -3630,6 +3630,30 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                         }
                 bool sshenabled = sshd_enabled->getState();
                 SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                });
+
+       auto samba_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool smbbaseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
+                samba_enabled->setState(smbbaseEnabled);
+                s->addWithLabel(_("ENABLE SAMBA"), samba_enabled);
+                s->addSaveFunc([samba_enabled] {
+                        if (samba_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop nmbd", "", nullptr);
+                                runSystemCommand("systemctl disable nmbd", "", nullptr);
+                                runSystemCommand("systemctl stop smbd", "", nullptr);
+                                runSystemCommand("systemctl disable smbd", "", nullptr);
+                                runSystemCommand("rm /storage/.cache/services/smb.conf", "", nullptr);
+                        } else {
+                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+                                runSystemCommand("touch /storage/.cache/services/smb.conf", "", nullptr);
+                                runSystemCommand("systemctl enable nmbd", "", nullptr);
+                                runSystemCommand("systemctl start nmbd", "", nullptr);
+                                runSystemCommand("systemctl enable smbd", "", nullptr);
+                                runSystemCommand("systemctl start smbd", "", nullptr);
+                        }
+                bool sambaenabled = samba_enabled->getState();
+                SystemConf::getInstance()->set("ee_samba.enabled", sambaenabled ? "1" : "0");
                                 SystemConf::getInstance()->saveSystemConf();
                 });
 
