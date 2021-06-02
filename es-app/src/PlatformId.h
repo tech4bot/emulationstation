@@ -105,6 +105,7 @@ namespace PlatformIds
 		MODEL3,
 		IMAGEVIEWER,
 		WATARA_SUPERVISION,
+		MEGADUCK,
 
 		// Windows Specific
 		VISUALPINBALL,
