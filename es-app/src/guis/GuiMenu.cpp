@@ -4247,18 +4247,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			});
 
 #if !defined(WIN32) || defined(_DEBUG)
-			// stretch bezels
-			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));
-			bezel_stretch_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".bezel_stretch") != "0" && SystemConf::getInstance()->get(configName + ".bezel_stretch") != "1");
-			bezel_stretch_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "1");
-			bezel_stretch_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "0");
-			systemConfiguration->addWithLabel(_("STRETCH BEZELS (4K & ULTRAWIDE)"), bezel_stretch_enabled);
-			systemConfiguration->addSaveFunc([bezel_stretch_enabled, configName] {
-					if (bezel_stretch_enabled->changed()) {
-					SystemConf::getInstance()->set(configName + ".bezel_stretch", bezel_stretch_enabled->getSelected());
-					SystemConf::getInstance()->saveSystemConf();
-					}
-					});
+//			// stretch bezels
+//			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));
+//			bezel_stretch_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".bezel_stretch") != "0" && SystemConf::getInstance()->get(configName + ".bezel_stretch") != "1");
+//			bezel_stretch_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "1");
+//			bezel_stretch_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "0");
+//			systemConfiguration->addWithLabel(_("STRETCH BEZELS (4K & ULTRAWIDE)"), bezel_stretch_enabled);
+//			systemConfiguration->addSaveFunc([bezel_stretch_enabled, configName] {
+//					if (bezel_stretch_enabled->changed()) {
+//					SystemConf::getInstance()->set(configName + ".bezel_stretch", bezel_stretch_enabled->getSelected());
+//					SystemConf::getInstance()->saveSystemConf();
+//					}
+//					});
 #endif
 		}
 	}
