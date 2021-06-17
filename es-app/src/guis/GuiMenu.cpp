@@ -1255,16 +1255,16 @@ void GuiMenu::openUpdatesSettings()
         });
 
 	// Batocera integration with theBezelProject
-	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEBEZELPROJECT))
-	{
-		updateGui->addEntry(_("THE BEZEL PROJECT"), true, [this]
-		{
-			if (!checkNetwork())
-				return;
+	//if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEBEZELPROJECT))
+	//{
+	//	updateGui->addEntry(_("THE BEZEL PROJECT"), true, [this]
+	//	{
+	//		if (!checkNetwork())
+	//			return;
 
-			mWindow->pushGui(new GuiBezelInstallStart(mWindow));
-		});
-	}
+	//		mWindow->pushGui(new GuiBezelInstallStart(mWindow));
+	//	});
+	//}
 
 	//updateGui->addGroup(_("SOFTWARE UPDATES"));
 
@@ -2108,12 +2108,12 @@ void GuiMenu::openGamesSettings_batocera()
 
 #ifdef _ENABLEEMUELEC
 	// bezel (Disable as they don't work with the low res display
-	//auto bezel_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE RA BEZELS"));
-	//bezel_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get("global.bezel") != "0" && SystemConf::getInstance()->get("global.bezel") != "1");
-	//bezel_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.bezel") == "1");
-	//bezel_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.bezel") == "0");
-	//s->addWithLabel(_("ENABLE RA BEZELS"), bezel_enabled);
-    //s->addSaveFunc([bezel_enabled] { SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected()); });
+//	auto bezel_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE RA BEZELS"));
+//	bezel_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get("global.bezel") != "0" && SystemConf::getInstance()->get("global.bezel") != "1");
+//	bezel_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.bezel") == "1");
+//	bezel_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.bezel") == "0");
+//	s->addWithLabel(_("ENABLE RA BEZELS"), bezel_enabled);
+// s->addSaveFunc([bezel_enabled] { SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected()); });
 
 	//maxperf
 	auto maxperf_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE MAX PERFORMANCE"));
@@ -4198,7 +4198,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	//	bezel_enabled->add(_("YES"), "1", SystemConf::getInstance()->get(configName + ".bezel") == "1");
 	//	bezel_enabled->add(_("NO"), "0", SystemConf::getInstance()->get(configName + ".bezel") == "0");
 	//	systemConfiguration->addWithLabel(_("BEZEL"), bezel_enabled);
-	//	systemConfiguration->addSaveFunc([bezel_enabled, configName] { SystemConf::getInstance()->set(configName + ".bezel", bezel_enabled->getSelected()); }//);
+	//	systemConfiguration->addSaveFunc([bezel_enabled, configName] { SystemConf::getInstance()->set(configName + ".bezel", bezel_enabled->getSelected()); });
 	//}
 
 	// maxperf
