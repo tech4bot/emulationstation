@@ -1907,7 +1907,6 @@ void GuiMenu::openRetroachievementsSettings()
 	// retroachievements_leaderboards list
 	auto retroachievements_leaderboards_list = std::make_shared< OptionListComponent<std::string> >(mWindow, _("LEADERBOARDS"), false);
 	std::vector<std::string> leader;
-	leader.push_back("auto");
 	leader.push_back("disabled");
 	leader.push_back("enabled");
 	leader.push_back("trackers only");
@@ -1915,7 +1914,7 @@ void GuiMenu::openRetroachievementsSettings()
 
 	auto currentLeader = SystemConf::getInstance()->get("global.retroachievements.leaderboards");
 	if (currentLeader.empty())
-		currentLeader = "auto";
+		currentLeader = "disabled";
 
 	for (auto it = leader.cbegin(); it != leader.cend(); it++)
 		retroachievements_leaderboards_list->add(_(it->c_str()), *it, currentLeader == *it);
