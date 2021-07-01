@@ -1920,8 +1920,8 @@ void GuiMenu::openRetroachievementsSettings()
 	for (auto it = leader.cbegin(); it != leader.cend(); it++)
 		retroachievements_leaderboards_list->add(_(it->c_str()), *it, currentLeader == *it);
 
-		addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_list);
-		addSaveFunc([retroachievements_leaderboards_list]
+		retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_list);
+		retroachievements->addSaveFunc([retroachievements_leaderboards_list]
 	{
 		SystemConf::getInstance()->set("global.retroachievements.leaderboards", retroachievements_leaderboards_list->getSelected());
 		SystemConf::getInstance()->saveSystemConf();
