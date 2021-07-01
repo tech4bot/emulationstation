@@ -1898,11 +1898,35 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements->addWithLabel(_("HARDCORE MODE"), retroachievements_hardcore_enabled);
 	retroachievements->addSaveFunc([retroachievements_hardcore_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.hardcore", retroachievements_hardcore_enabled->getState()); });
 
-	// retroachievements_leaderboards
-	auto retroachievements_leaderboards_enabled = std::make_shared<SwitchComponent>(mWindow);
-	retroachievements_leaderboards_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.leaderboards"));
-	retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_enabled);
-	retroachievements->addSaveFunc([retroachievements_leaderboards_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.leaderboards", retroachievements_leaderboards_enabled->getState()); });
+	//// retroachievements_leaderboards
+	//auto retroachievements_leaderboards_enabled = std::make_shared<SwitchComponent>(mWindow);
+	//retroachievements_leaderboards_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.leaderboards"));
+	//retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_enabled);
+	//retroachievements->addSaveFunc([retroachievements_leaderboards_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.///leaderboards", retroachievements_leaderboards_enabled->getState()); });
+
+	// retroachievements_leaderboards list
+	auto retroachievements_leaderboards_list = std::make_shared< OptionListComponent<std::string> >(mWindow, _("LEADERBOARDS"), false);
+	std::vector<std::string> leader;
+	leader.push_back("auto");
+	leader.push_back("disabled");
+	leader.push_back("enabled");
+	leader.push_back("trackers only");
+	leader.push_back("notifications only");
+
+	auto currentLeader = SystemConf::getInstance()->get("global.retroachievements.leaderboards");
+	if (currentLeader.empty())
+		currentLeader = "auto";
+
+	for (auto it = leader.cbegin(); it != leader.cend(); it++)
+		retroachievements_leaderboards_list->add(_(it->c_str()), *it, currentLeader == *it);
+
+	s->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_list);
+	s->addSaveFunc([retroachievements_leaderboards_list]
+	{
+		SystemConf::getInstance()->set("global.retroachievements.leaderboards", retroachievements_leaderboards_list->getSelected());
+		SystemConf::getInstance()->saveSystemConf();
+	});
+
 
 	// retroachievements_verbose_mode
 	auto retroachievements_verbose_enabled = std::make_shared<SwitchComponent>(mWindow);
