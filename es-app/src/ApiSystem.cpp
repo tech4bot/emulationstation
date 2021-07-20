@@ -1250,7 +1250,7 @@ void ApiSystem::setBrighness(int value)
 		return;
 	
 	float percent = value / 100.0f * (float)max;
-	sprintf(buffer, "%d\n", (uint32_t)percent);
+	sprintf(buffer, "%d\n", (uint32_t)Math::round(percent));
 
 	count = write(fd, buffer, strlen(buffer));
 	if (count < 0)
