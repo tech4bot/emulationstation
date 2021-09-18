@@ -1216,7 +1216,7 @@ void GuiMenu::openDeveloperSettings()
 	// This allows using a different fork/repository to download releases for testing
 	createInputTextRow(s, _("GITHUB ORG"), "updates.github.org", false);
 	createInputTextRow(s, _("GITHUB REPO"), "updates.github.repo", false);
-	
+
 
 	//Force updates will tell the check script and the update script to always
 	//use an update regardless of the current version on the device.
@@ -1297,14 +1297,14 @@ void GuiMenu::openUpdatesSettings()
 	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE CHANNEL"), false);
 
 	std::string updatesType = SystemConf::getInstance()->get("updates.type");
-	
+
 	//old default was 'daily' - so update to release if they have 'daily' set.
 	if (updatesType.empty() || updatesType == "daily")
 		updatesType = "release";
-		
+
 	        //immediately save if we are setting value
 	        SystemConf::getInstance()->saveSystemConf();
-	
+
 	updatesTypeList->add("release", "release", updatesType == "release");
 	updatesTypeList->add("beta", "beta", updatesType == "beta");
 
@@ -1947,6 +1947,17 @@ void GuiMenu::openRetroachievementsSettings()
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
+	// retroachievements_challenge_indicators
+	auto retroachievements_challenge_indicators = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_challenge_indicators->setState(SystemConf::getInstance()->getBool("global.retroachievements.challengeindicators"));
+	retroachievements->addWithLabel(_("CHALLENGE INDICATORS"), retroachievements_challenge_indicators);
+	retroachievements->addSaveFunc([retroachievements_challenge_indicators] { SystemConf::getInstance()->setBool("global.retroachievements.challengeindicators", retroachievements_challenge_indicators->getState()); });
+
+	// retroachievements_richpresence_enable
+	auto retroachievements_richpresence_enable = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_richpresence_enable->setState(SystemConf::getInstance()->getBool("global.retroachievements.richpresence"));
+	retroachievements->addWithLabel(_("RICH PRESENCE"), retroachievements_richpresence_enable);
+	retroachievements->addSaveFunc([retroachievements_richpresence_enable] { SystemConf::getInstance()->setBool("global.retroachievements.richpresence", retroachievements_richpresence_enable->getState()); });
 
 	// retroachievements_verbose_mode
 	auto retroachievements_verbose_enabled = std::make_shared<SwitchComponent>(mWindow);
