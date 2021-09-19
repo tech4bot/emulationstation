@@ -1959,6 +1959,18 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements->addWithLabel(_("RICH PRESENCE"), retroachievements_richpresence_enable);
 	retroachievements->addSaveFunc([retroachievements_richpresence_enable] { SystemConf::getInstance()->setBool("global.retroachievements.richpresence", retroachievements_richpresence_enable->getState()); });
 
+	// retroachievements_test_unofficial
+	auto retroachievements_test_unofficial = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_test_unofficial->setState(SystemConf::getInstance()->getBool("global.retroachievements.testunofficial"));
+	retroachievements->addWithLabel(_("TEST UNOFFICIAL ACHIEVEMENTS"), retroachievements_test_unofficial);
+	retroachievements->addSaveFunc([retroachievements_test_unofficial] { SystemConf::getInstance()->setBool("global.retroachievements.testunofficial", retroachievements_test_unofficial->getState()); });
+
+	// retroachievements_unlock_sound_enable
+	auto retroachievements_unlock_sound_enable = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_unlock_sound_enable->setState(SystemConf::getInstance()->getBool("global.retroachievements.soundenable"));
+	retroachievements->addWithLabel(_("UNLOCK SOUND"), retroachievements_unlock_sound_enable);
+	retroachievements->addSaveFunc([retroachievements_unlock_sound_enable] { SystemConf::getInstance()->setBool("global.retroachievements.soundenable", retroachievements_unlock_sound_enable->getState()); });
+
 	// retroachievements_verbose_mode
 	auto retroachievements_verbose_enabled = std::make_shared<SwitchComponent>(mWindow);
 	retroachievements_verbose_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.verbose"));
