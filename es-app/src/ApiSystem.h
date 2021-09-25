@@ -192,8 +192,8 @@ public:
 	void updateBatoceraStorePackageList();
 	void refreshBatoceraStorePackageList();
 
-	bool	getBrighness(int& value);
-	void	setBrighness(int value);
+	bool	getBrightness(int& value);
+	void	setBrightness(int value);
 
 	std::vector<std::string> getWifiNetworks(bool scan = false);
 
