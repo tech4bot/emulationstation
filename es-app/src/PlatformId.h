@@ -123,6 +123,7 @@ namespace PlatformIds
 		PALMOS,
 		DAPHNE,
 		SOLARUS,
+		PICO8,
 		EASYRPG,
 
 		VIC20,

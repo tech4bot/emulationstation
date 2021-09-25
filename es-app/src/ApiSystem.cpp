@@ -1219,8 +1219,8 @@ bool ApiSystem::getBrightness(int& value)
 void ApiSystem::setBrightness(int value)
 {
 #if !WIN32	
-	if (value < 5)
-		value = 5;
+	if (value < 1)
+		value = 1;
 
 	if (value > 100)
 		value = 100;
@@ -1250,7 +1250,7 @@ void ApiSystem::setBrightness(int value)
 		return;
 	
 	float percent = value / 100.0f * (float)max;
-	sprintf(buffer, "%d\n", (uint32_t)percent);
+	sprintf(buffer, "%d\n", (uint32_t)Math::round(percent));
 
 	count = write(fd, buffer, strlen(buffer));
 	if (count < 0)

@@ -241,7 +241,8 @@ void Window::input(InputConfig* config, Input input)
 	}
 
 	mTimeSinceLastInput = 0;
-	if (cancelScreenSaver())
+	// Only cancel screensave if a 'mapped' button is pushed (not volume, etc)
+	if (config->getMappedTo(input).size() > 0 && cancelScreenSaver())
 		return;
 
 	if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_g && SDL_GetModState() & KMOD_LCTRL) // && Settings::getInstance()->getBool("Debug"))
@@ -563,7 +564,22 @@ void Window::render()
 
 	unsigned int screensaverTime = (unsigned int)Settings::getInstance()->getInt("ScreenSaverTime");
 	if (mTimeSinceLastInput >= screensaverTime && screensaverTime != 0)
-		startScreenSaver();
+	{
+
+		// If we just woke up from sleep, treat that like a button press
+		// and restart the screensaver timer
+		auto lastResumeFile = "/run/.last_sleep_time";
+		if (Utils::FileSystem::exists(lastResumeFile))
+		{
+			mTimeSinceLastInput = 0;
+			Utils::FileSystem::removeFile(lastResumeFile);
+			return;
+		}
+		else 
+		{
+			startScreenSaver();
+		}
+	}
 
 	// Render notifications
 	if (!mRenderScreenSaver)

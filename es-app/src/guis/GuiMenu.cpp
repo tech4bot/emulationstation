@@ -160,7 +160,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 #endif
 
 		addEntry(_("SCRAPE").c_str(), true, [this] { openScraperSettings(); }, "iconScraper");
-		addEntry(_("DOWNLOADS"), true, [this] { openUpdatesSettings(); }, "iconUpdates");
+		addEntry(_("UPDATES & DOWNLOADS"), true, [this] { openUpdatesSettings(); }, "iconUpdates");
 #ifdef _ENABLEEMUELEC
                if (isFullUI)
                        addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
@@ -1210,14 +1210,29 @@ void GuiMenu::openDeveloperSettings()
 	s->addWithLabel(_("OPTIMIZE VIDEO VRAM USE"), optimizeVideo);
 	s->addSaveFunc([optimizeVideo] { Settings::getInstance()->setBool("OptimizeVideo", optimizeVideo->getState()); });
 
+	s->addGroup(_("UPDATES"));
+
+	// Allow customizing the github org and repo used to update from
+	// This allows using a different fork/repository to download releases for testing
+	createInputTextRow(s, _("GITHUB ORG"), "updates.github.org", false);
+	createInputTextRow(s, _("GITHUB REPO"), "updates.github.repo", false);
 
 
+	//Force updates will tell the check script and the update script to always
+	//use an update regardless of the current version on the device.
+	auto forceUpdates = std::make_shared<SwitchComponent>(mWindow);
+	forceUpdates->setState(SystemConf::getInstance()->getBool("updates.force"));
+    s->addWithLabel(_("FORCE UPDATES"), forceUpdates);
+	s->addSaveFunc([forceUpdates]
+	{
+		SystemConf::getInstance()->setBool("updates.force", forceUpdates->getState());
+	});
 	mWindow->pushGui(s);
 }
 
 void GuiMenu::openUpdatesSettings()
 {
-	GuiSettings *updateGui = new GuiSettings(mWindow, _("DOWNLOADS").c_str());
+	GuiSettings *updateGui = new GuiSettings(mWindow, _("UPDATES & DOWNLOADS").c_str());
 
 	updateGui->addGroup(_("DOWNLOADS"));
 
@@ -1266,49 +1281,55 @@ void GuiMenu::openUpdatesSettings()
 	//	});
 	//}
 
-	//updateGui->addGroup(_("SOFTWARE UPDATES"));
+	updateGui->addGroup(_("SOFTWARE UPDATES"));
 
 	// Enable updates
-	//auto updates_enabled = std::make_shared<SwitchComponent>(mWindow);
-	//updates_enabled->setState(SystemConf::getInstance()->getBool("updates.enabled"));
+	auto updates_enabled = std::make_shared<SwitchComponent>(mWindow);
+	updates_enabled->setState(SystemConf::getInstance()->getBool("updates.enabled"));
 
-	//updateGui->addWithLabel(_("CHECK FOR UPDATES"), updates_enabled);
-	//updateGui->addSaveFunc([updates_enabled]
-	//{
-	//	SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
-	//});
+	updateGui->addWithLabel(_("CHECK FOR UPDATES"), updates_enabled);
+	updateGui->addSaveFunc([updates_enabled]
+	{
+		SystemConf::getInstance()->setBool("updates.enabled", updates_enabled->getState());
+	});
 
 	// Update Bands
-	// auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE CHANNEL"), false);
+	auto updatesTypeList = std::make_shared<OptionListComponent<std::string> >(mWindow, _("UPDATE CHANNEL"), false);
 
-	// std::string updatesType = SystemConf::getInstance()->get("updates.type");
-	// if (updatesType.empty())
-	//	updatesType = "daily";
+	std::string updatesType = SystemConf::getInstance()->get("updates.type");
 
-	// updatesTypeList->add("daily", "daily", updatesType == "daily");
+	//old default was 'daily' - so update to release if they have 'daily' set.
+	if (updatesType.empty() || updatesType == "daily")
+		updatesType = "release";
 
-	// updateGui->addWithLabel(_("UPDATE CHANNEL"), updatesTypeList);
-	// updatesTypeList->setSelectedChangedCallback([](std::string name)
-	// {
-	// 	if (SystemConf::getInstance()->set("updates.type", name))
-	// 		SystemConf::getInstance()->saveSystemConf();
-	// });
+	        //immediately save if we are setting value
+	        SystemConf::getInstance()->saveSystemConf();
+
+	updatesTypeList->add("release", "release", updatesType == "release");
+	updatesTypeList->add("beta", "beta", updatesType == "beta");
+
+	updateGui->addWithLabel(_("UPDATE CHANNEL"), updatesTypeList);
+	updatesTypeList->setSelectedChangedCallback([](std::string name)
+	{
+		if (SystemConf::getInstance()->set("updates.type", name))
+			SystemConf::getInstance()->saveSystemConf();
+	});
 
 	// Start update
-	//updateGui->addEntry(GuiUpdate::state == GuiUpdateState::State::UPDATE_READY ? _("APPLY UPDATE") : _("START UPDATE"), true, [this]
-	//{
-	//	if (GuiUpdate::state == GuiUpdateState::State::UPDATE_READY)
-	//		quitES(QuitMode::RESTART);
-	//	else if (GuiUpdate::state == GuiUpdateState::State::UPDATER_RUNNING)
-	//		mWindow->pushGui(new GuiMsgBox(mWindow, _("UPDATE IS ALREADY RUNNING")));
-	//	else
-	//	{
-	//		if (!checkNetwork())
-	//			return;
+	updateGui->addEntry(GuiUpdate::state == GuiUpdateState::State::UPDATE_READY ? _("APPLY UPDATE") : _("START UPDATE"), true, [this]
+	{
+		if (GuiUpdate::state == GuiUpdateState::State::UPDATE_READY)
+			quitES(QuitMode::RESTART);
+		else if (GuiUpdate::state == GuiUpdateState::State::UPDATER_RUNNING)
+			mWindow->pushGui(new GuiMsgBox(mWindow, _("UPDATE IS ALREADY RUNNING")));
+		else
+		{
+			if (!checkNetwork())
+				return;
 
-	//		mWindow->pushGui(new GuiUpdate(mWindow));
-	//	}
-	//});
+			mWindow->pushGui(new GuiUpdate(mWindow));
+		}
+	});
 	mWindow->pushGui(updateGui);
 }
 
@@ -1898,11 +1919,57 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements->addWithLabel(_("HARDCORE MODE"), retroachievements_hardcore_enabled);
 	retroachievements->addSaveFunc([retroachievements_hardcore_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.hardcore", retroachievements_hardcore_enabled->getState()); });
 
-	// retroachievements_leaderboards
-	auto retroachievements_leaderboards_enabled = std::make_shared<SwitchComponent>(mWindow);
-	retroachievements_leaderboards_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.leaderboards"));
-	retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_enabled);
-	retroachievements->addSaveFunc([retroachievements_leaderboards_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.leaderboards", retroachievements_leaderboards_enabled->getState()); });
+	//// retroachievements_leaderboards
+	//auto retroachievements_leaderboards_enabled = std::make_shared<SwitchComponent>(mWindow);
+	//retroachievements_leaderboards_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.leaderboards"));
+	//retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_enabled);
+	//retroachievements->addSaveFunc([retroachievements_leaderboards_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.///leaderboards", retroachievements_leaderboards_enabled->getState()); });
+
+	// retroachievements_leaderboards list
+	auto retroachievements_leaderboards_list = std::make_shared< OptionListComponent<std::string> >(mWindow, _("LEADERBOARDS"), false);
+	std::vector<std::string> leader;
+	leader.push_back("disabled");
+	leader.push_back("enabled");
+	leader.push_back("trackers only");
+	leader.push_back("notifications only");
+
+	auto currentLeader = SystemConf::getInstance()->get("global.retroachievements.leaderboards");
+	if (currentLeader.empty())
+		currentLeader = "disabled";
+
+	for (auto it = leader.cbegin(); it != leader.cend(); it++)
+		retroachievements_leaderboards_list->add(_(it->c_str()), *it, currentLeader == *it);
+
+		retroachievements->addWithLabel(_("LEADERBOARDS"), retroachievements_leaderboards_list);
+		retroachievements->addSaveFunc([retroachievements_leaderboards_list]
+	{
+		SystemConf::getInstance()->set("global.retroachievements.leaderboards", retroachievements_leaderboards_list->getSelected());
+		SystemConf::getInstance()->saveSystemConf();
+	});
+
+	// retroachievements_challenge_indicators
+	auto retroachievements_challenge_indicators = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_challenge_indicators->setState(SystemConf::getInstance()->getBool("global.retroachievements.challengeindicators"));
+	retroachievements->addWithLabel(_("CHALLENGE INDICATORS"), retroachievements_challenge_indicators);
+	retroachievements->addSaveFunc([retroachievements_challenge_indicators] { SystemConf::getInstance()->setBool("global.retroachievements.challengeindicators", retroachievements_challenge_indicators->getState()); });
+
+	// retroachievements_richpresence_enable
+	auto retroachievements_richpresence_enable = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_richpresence_enable->setState(SystemConf::getInstance()->getBool("global.retroachievements.richpresence"));
+	retroachievements->addWithLabel(_("RICH PRESENCE"), retroachievements_richpresence_enable);
+	retroachievements->addSaveFunc([retroachievements_richpresence_enable] { SystemConf::getInstance()->setBool("global.retroachievements.richpresence", retroachievements_richpresence_enable->getState()); });
+
+	// retroachievements_test_unofficial
+	auto retroachievements_test_unofficial = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_test_unofficial->setState(SystemConf::getInstance()->getBool("global.retroachievements.testunofficial"));
+	retroachievements->addWithLabel(_("TEST UNOFFICIAL ACHIEVEMENTS"), retroachievements_test_unofficial);
+	retroachievements->addSaveFunc([retroachievements_test_unofficial] { SystemConf::getInstance()->setBool("global.retroachievements.testunofficial", retroachievements_test_unofficial->getState()); });
+
+	// retroachievements_unlock_sound_enable
+	auto retroachievements_unlock_sound_enable = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_unlock_sound_enable->setState(SystemConf::getInstance()->getBool("global.retroachievements.soundenable"));
+	retroachievements->addWithLabel(_("UNLOCK SOUND"), retroachievements_unlock_sound_enable);
+	retroachievements->addSaveFunc([retroachievements_unlock_sound_enable] { SystemConf::getInstance()->setBool("global.retroachievements.soundenable", retroachievements_unlock_sound_enable->getState()); });
 
 	// retroachievements_verbose_mode
 	auto retroachievements_verbose_enabled = std::make_shared<SwitchComponent>(mWindow);
@@ -2113,7 +2180,7 @@ void GuiMenu::openGamesSettings_batocera()
 //	bezel_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.bezel") == "1");
 //	bezel_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.bezel") == "0");
 //	s->addWithLabel(_("ENABLE RA BEZELS"), bezel_enabled);
-//    s->addSaveFunc([bezel_enabled] { SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected()); });
+// s->addSaveFunc([bezel_enabled] { SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected()); });
 
 	//maxperf
 	auto maxperf_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE MAX PERFORMANCE"));
@@ -4208,7 +4275,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		maxperf_enabled->add(_("NO"), "0", SystemConf::getInstance()->get(configName + ".maxperf") == "0");
 		systemConfiguration->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
 		systemConfiguration->addSaveFunc([maxperf_enabled, configName] { SystemConf::getInstance()->set(configName + ".maxperf", maxperf_enabled->getSelected()); });
-#else
+// #else
+	// Enable Decorations for 351ELEC
 	// decorations
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
@@ -4246,18 +4314,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			});
 
 #if !defined(WIN32) || defined(_DEBUG)
-			// stretch bezels
-			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));
-			bezel_stretch_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".bezel_stretch") != "0" && SystemConf::getInstance()->get(configName + ".bezel_stretch") != "1");
-			bezel_stretch_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "1");
-			bezel_stretch_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "0");
-			systemConfiguration->addWithLabel(_("STRETCH BEZELS (4K & ULTRAWIDE)"), bezel_stretch_enabled);
-			systemConfiguration->addSaveFunc([bezel_stretch_enabled, configName] {
-					if (bezel_stretch_enabled->changed()) {
-					SystemConf::getInstance()->set(configName + ".bezel_stretch", bezel_stretch_enabled->getSelected());
-					SystemConf::getInstance()->saveSystemConf();
-					}
-					});
+//			// stretch bezels
+//			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));
+//			bezel_stretch_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".bezel_stretch") != "0" && SystemConf::getInstance()->get(configName + ".bezel_stretch") != "1");
+//			bezel_stretch_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "1");
+//			bezel_stretch_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".bezel_stretch") == "0");
+//			systemConfiguration->addWithLabel(_("STRETCH BEZELS (4K & ULTRAWIDE)"), bezel_stretch_enabled);
+//			systemConfiguration->addSaveFunc([bezel_stretch_enabled, configName] {
+//					if (bezel_stretch_enabled->changed()) {
+//					SystemConf::getInstance()->set(configName + ".bezel_stretch", bezel_stretch_enabled->getSelected());
+//					SystemConf::getInstance()->saveSystemConf();
+//					}
+//					});
 #endif
 		}
 	}
