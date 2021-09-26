@@ -2253,9 +2253,9 @@ void GuiMenu::openGamesSettings_batocera()
 	auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTERS SET"), false);
 	filters_choices->add(_("AUTO"), "auto", currentFilter.empty() || currentFilter == "auto");
 	filters_choices->add(_("NONE"), "none", currentFilter == "none");
-	std::string a;
-	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils getfilters)")); getline(ss, a, ','); )
-		filters_choices->add(a, a, currentFilter == a); // emuelec
+	std::string filterList;
+	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils getfilters)")); getline(ss, filterList, ','); )
+		filters_choices->add(filterList, filterList, currentFilter == filterList); // emuelec
 	s->addWithLabel(_("FILTERS SET"), filters_choices);
 	s->addSaveFunc([filters_choices] { SystemConf::getInstance()->set("global.filterset", filters_choices->getSelected()); });
 
