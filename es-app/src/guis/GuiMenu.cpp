@@ -1959,6 +1959,12 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements->addWithLabel(_("RICH PRESENCE"), retroachievements_richpresence_enable);
 	retroachievements->addSaveFunc([retroachievements_richpresence_enable] { SystemConf::getInstance()->setBool("global.retroachievements.richpresence", retroachievements_richpresence_enable->getState()); });
 
+	// retroachievements_badges_enable
+	auto retroachievements_badges_enable = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_badges_enable->setState(SystemConf::getInstance()->getBool("global.retroachievements.badges"));
+	retroachievements->addWithLabel(_("BADGES"), retroachievements_badges_enable);
+	retroachievements->addSaveFunc([retroachievements_badges_enable] { SystemConf::getInstance()->setBool("global.retroachievements.badges", retroachievements_badges_enable->getState()); });
+
 	// retroachievements_test_unofficial
 	auto retroachievements_test_unofficial = std::make_shared<SwitchComponent>(mWindow);
 	retroachievements_test_unofficial->setState(SystemConf::getInstance()->getBool("global.retroachievements.testunofficial"));
@@ -1982,6 +1988,13 @@ void GuiMenu::openRetroachievementsSettings()
 	retroachievements_screenshot_enabled->setState(SystemConf::getInstance()->getBool("global.retroachievements.screenshot"));
 	retroachievements->addWithLabel(_("AUTOMATIC SCREENSHOT"), retroachievements_screenshot_enabled);
 	retroachievements->addSaveFunc([retroachievements_screenshot_enabled] { SystemConf::getInstance()->setBool("global.retroachievements.screenshot", retroachievements_screenshot_enabled->getState()); });
+
+	// retroachievements_start_active
+	auto retroachievements_start_active = std::make_shared<SwitchComponent>(mWindow);
+	retroachievements_start_active->setState(SystemConf::getInstance()->getBool("global.retroachievements.active"));
+	retroachievements->addWithLabel(_("ENCORE MODE (LOCAL RESET OF ACHIEVEMENTS)"), retroachievements_start_active);
+	retroachievements->addSaveFunc([retroachievements_start_active] { SystemConf::getInstance()->setBool("global.retroachievements.active", retroachievements_start_active->getState()); });
+
 	// Unlock sound
 	auto installedRSounds = ApiSystem::getInstance()->getRetroachievementsSoundsList();
 	if (installedRSounds.size() > 0)
@@ -2234,6 +2247,17 @@ void GuiMenu::openGamesSettings_batocera()
         }
 	}
 #endif
+
+	// Filters preset
+	std::string currentFilter = SystemConf::getInstance()->get("global.filterset");
+	auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTERS SET"), false);
+	filters_choices->add(_("AUTO"), "auto", currentFilter.empty() || currentFilter == "auto");
+	filters_choices->add(_("NONE"), "none", currentFilter == "none");
+	std::string a;
+	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils getfilters)")); getline(ss, a, ','); )
+		filters_choices->add(a, a, currentFilter == a); // emuelec
+	s->addWithLabel(_("FILTERS SET"), filters_choices);
+	s->addSaveFunc([filters_choices] { SystemConf::getInstance()->set("global.filterset", filters_choices->getSelected()); });
 
 	// Integer scale
 	auto integerscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE (FOR MOST HANDHELDS)"));
@@ -4189,6 +4213,25 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		shaders_choices->add(a, a, currentShader == a); // emuelec
 		systemConfiguration->addWithLabel(_("SHADERS SET"), shaders_choices);
 		systemConfiguration->addSaveFunc([shaders_choices, configName] { SystemConf::getInstance()->set(configName + ".shaderset", shaders_choices->getSelected()); });
+	}
+
+	// Filters preset
+	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
+		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
+	{
+        std::string a;
+		auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTERS SET"),false);
+		std::string currentFilter = SystemConf::getInstance()->get(configName + ".filterset");
+		if (currentFilter.empty()) {
+			currentFilter = std::string("auto");
+		}
+
+		filters_choices->add(_("AUTO"), "auto", currentFilter == "auto");
+		filters_choices->add(_("NONE"), "none", currentFilter == "none");
+		for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils getfilters)")); getline(ss, a, ','); )
+		filters_choices->add(a, a, currentFilter == a); // emuelec
+		systemConfiguration->addWithLabel(_("FILTER SET"), filters_choices);
+		systemConfiguration->addSaveFunc([filters_choices, configName] { SystemConf::getInstance()->set(configName + ".filterset", filters_choices->getSelected()); });
 	}
 
 #if defined(ODROIDGOA) || defined(_ENABLEGAMEFORCE)
