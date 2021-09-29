@@ -3683,10 +3683,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	s->addGroup(_("SETTINGS"));
 
 #if !WIN32
-#ifndef _ENABLEEMUELEC
 	// Hostname
 	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
-#endif
 #endif
 
        //auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
