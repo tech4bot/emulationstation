@@ -1791,7 +1791,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup backup", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP CONFIGURATIONS"), theme->Text.font, theme->Text.color), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP CONFIGURATIONS"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
@@ -1802,7 +1802,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils identity_backup", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP IDENTITY"), theme->Text.font, theme->Text.color), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP IDENTITY"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
@@ -1813,7 +1813,7 @@ void GuiMenu::openSystemSettings_batocera()
                                 runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup restore", "", nullptr);
                                 }, _("NO"), nullptr));
         });
-        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), theme->Text.font, theme->Text.color), true);
+        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
         danger_zone->addRow(row);
         row.elements.clear();
 
@@ -1824,7 +1824,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig retroarch", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), theme->Text.font, theme->Text.color), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 	// all configs
@@ -1834,7 +1834,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig ALL", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("FACTORY RESET"), theme->Text.font, theme->Text.color), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("FACTORY RESET"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
