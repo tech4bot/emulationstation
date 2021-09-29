@@ -260,7 +260,7 @@ void GuiMenu::openEmuELECSettings()
 	//			LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
 	//			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 	//			SystemConf::getInstance()->saveSystemConf();
-				//v_need_reboot = true;
+	//			//v_need_reboot = true;
 	//		} else {
 	//			if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
 	//			runSystemCommand("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
@@ -419,6 +419,41 @@ void GuiMenu::openEmuELECSettings()
 			InputConfig::AssignActionButtons();
 			ViewController::get()->reloadAll(mWindow);
 		}
+	});
+	
+	s->addSaveFunc([window, language_choice, language, s]
+	{
+		bool reboot = false;
+
+		if (language_choice->changed())
+		{
+#ifdef _ENABLEEMUELEC
+			std::string selectedLanguage = language_choice->getSelected();
+			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
+			msg += _("Emulationstation will restart")+"\n";
+			msg += _("Do you want to proceed ?");
+			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
+			SystemConf::getInstance()->set("system.language", selectedLanguage);
+			SystemConf::getInstance()->saveSystemConf();
+					runSystemCommand("systemctl restart emustation", "", nullptr);
+			}, "NO",nullptr));
+#else
+			if (SystemConf::getInstance()->set("system.language", language_choice->getSelected()))
+			{
+				FileSorts::reset();
+				MetaDataList::initMetadata();
+
+				s->setVariable("reloadGuiMenu", true);
+#ifdef HAVE_INTL
+				reboot = true;
+#endif
+			}
+#endif
+		}
+
+		if (reboot)
+			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+
 	});
 
         // Developer options
@@ -1225,12 +1260,11 @@ void GuiMenu::openDeveloperSettings()
 	createInputTextRow(s, _("GITHUB ORG"), "updates.github.org", false);
 	createInputTextRow(s, _("GITHUB REPO"), "updates.github.repo", false);
 
-
 	//Force updates will tell the check script and the update script to always
 	//use an update regardless of the current version on the device.
 	auto forceUpdates = std::make_shared<SwitchComponent>(mWindow);
 	forceUpdates->setState(SystemConf::getInstance()->getBool("updates.force"));
-    s->addWithLabel(_("FORCE UPDATES"), forceUpdates);
+	s->addWithLabel(_("FORCE UPDATES"), forceUpdates);
 	s->addSaveFunc([forceUpdates]
 	{
 		SystemConf::getInstance()->setBool("updates.force", forceUpdates->getState());
@@ -1720,7 +1754,7 @@ void GuiMenu::openSystemSettings_batocera()
 		s->addGroup(_("ADVANCED"));
 #endif
 
-	s->addSaveFunc([overclock_choice, window, language_choice, language, optionsStorage, selectedStorage, s]
+	s->addSaveFunc([overclock_choice, window, optionsStorage, selectedStorage, s]
 	{
 		bool reboot = false;
 		if (optionsStorage->changed())
@@ -1733,32 +1767,6 @@ void GuiMenu::openSystemSettings_batocera()
 		{
 			ApiSystem::getInstance()->setOverclock(overclock_choice->getSelected());
 			reboot = true;
-		}
-
-		if (language_choice->changed())
-		{
-#ifdef _ENABLEEMUELEC
-			std::string selectedLanguage = language_choice->getSelected();
-			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
-			msg += _("Emulationstation will restart")+"\n";
-			msg += _("Do you want to proceed ?");
-			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
-			SystemConf::getInstance()->set("system.language", selectedLanguage);
-			SystemConf::getInstance()->saveSystemConf();
-					runSystemCommand("systemctl restart emustation", "", nullptr);
-			}, "NO",nullptr));
-#else
-			if (SystemConf::getInstance()->set("system.language", language_choice->getSelected()))
-			{
-				FileSorts::reset();
-				MetaDataList::initMetadata();
-
-				s->setVariable("reloadGuiMenu", true);
-#ifdef HAVE_INTL
-				reboot = true;
-#endif
-			}
-#endif
 		}
 
 		if (reboot)
