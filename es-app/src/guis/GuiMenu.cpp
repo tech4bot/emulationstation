@@ -125,7 +125,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	{
 #if !defined(WIN32) || defined(_DEBUG)
 		addEntry(_("GAMES SETTINGS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
-		addEntry(_("CONTROLLERS SETTINGS").c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
+		//addEntry(_("CONTROLLERS SETTINGS").c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
 		addEntry(_("UI SETTINGS").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(_("GAME COLLECTION SETTINGS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 		addEntry(_("SOUND SETTINGS").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
@@ -371,6 +371,18 @@ void GuiMenu::openEmuELECSettings()
 		bool bootvideoenabled = enable_bootvideo->getState();
 		SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
 		SystemConf::getInstance()->saveSystemConf();
+	});
+
+	auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
+	invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
+	s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
+	s->addSaveFunc([this, invertJoy]
+	{
+		if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
+		{
+			InputConfig::AssignActionButtons();
+			ViewController::get()->reloadAll(mWindow);
+		}
 	});
 
         // Developer options
@@ -1097,12 +1109,6 @@ void GuiMenu::openDeveloperSettings()
 	s->addWithLabel(_("CAROUSEL TRANSITIONS"), move_carousel);
 	s->addSaveFunc([move_carousel] { Settings::getInstance()->setBool("MoveCarousel", move_carousel->getState()); });
 
-	// quick system select (left/right in game list view)
-	auto quick_sys_select = std::make_shared<SwitchComponent>(mWindow);
-	quick_sys_select->setState(Settings::getInstance()->getBool("QuickSystemSelect"));
-	s->addWithLabel(_("QUICK SYSTEM SELECT"), quick_sys_select);
-	s->addSaveFunc([quick_sys_select] { Settings::getInstance()->setBool("QuickSystemSelect", quick_sys_select->getState()); });
-
 	// Enable OSK (On-Screen-Keyboard)
 	auto osk_enable = std::make_shared<SwitchComponent>(mWindow);
 	osk_enable->setState(Settings::getInstance()->getBool("UseOSK"));
@@ -1127,40 +1133,6 @@ void GuiMenu::openDeveloperSettings()
 
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 	{
-		// retroarch.menu_driver choose from 'auto' (default), 'xmb', 'rgui', 'ozone', 'glui'
-		auto retroarchRgui = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETROARCH MENU DRIVER"), false);
-		std::vector<std::string> driver;
-		driver.push_back("auto");
-		driver.push_back("xmb");
-		driver.push_back("rgui");
-		driver.push_back("ozone");
-		driver.push_back("glui");
-
-		auto currentDriver = SystemConf::getInstance()->get("global.retroarch.menu_driver");
-		if (currentDriver.empty())
-			currentDriver = "auto";
-
-		for (auto it = driver.cbegin(); it != driver.cend(); it++)
-			retroarchRgui->add(_(it->c_str()), *it, currentDriver == *it);
-
-		s->addWithLabel(_("RETROARCH MENU DRIVER"), retroarchRgui);
-		s->addSaveFunc([retroarchRgui]
-		{
-			SystemConf::getInstance()->set("global.retroarch.menu_driver", retroarchRgui->getSelected());
-			SystemConf::getInstance()->saveSystemConf();
-		});
-
-		auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
-		invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
-		s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
-		s->addSaveFunc([this, invertJoy]
-		{
-			if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
-			{
-				InputConfig::AssignActionButtons();
-				ViewController::get()->reloadAll(mWindow);
-			}
-		});
 
 #if defined(WIN32)
 		auto autoControllers = std::make_shared<SwitchComponent>(mWindow);
@@ -1478,84 +1450,84 @@ void GuiMenu::openSystemSettings_batocera()
 	}
 
 	// video device
-	auto optionsVideo = std::make_shared<OptionListComponent<std::string> >(mWindow, _("VIDEO OUTPUT"), false);
-	std::string currentDevice = SystemConf::getInstance()->get("global.videooutput");
-	if (currentDevice.empty()) currentDevice = "auto";
+	//auto optionsVideo = std::make_shared<OptionListComponent<std::string> >(mWindow, _("VIDEO OUTPUT"), false);
+	//std::string currentDevice = SystemConf::getInstance()->get("global.videooutput");
+	//if (currentDevice.empty()) currentDevice = "auto";
 
-	std::vector<std::string> availableVideo = ApiSystem::getInstance()->getAvailableVideoOutputDevices();
+	//std::vector<std::string> availableVideo = ApiSystem::getInstance()->getAvailableVideoOutputDevices();
 
-	bool vfound = false;
-	for (auto it = availableVideo.begin(); it != availableVideo.end(); it++)
-	{
-		optionsVideo->add((*it), (*it), currentDevice == (*it));
-		if (currentDevice == (*it))
-			vfound = true;
-	}
+	//bool vfound = false;
+	//for (auto it = availableVideo.begin(); it != availableVideo.end(); it++)
+	//{
+	//	optionsVideo->add((*it), (*it), currentDevice == (*it));
+	//	if (currentDevice == (*it))
+	//		vfound = true;
+	//}
 
-	if (!vfound)
-		optionsVideo->add(currentDevice, currentDevice, true);
+	//if (!vfound)
+	//	optionsVideo->add(currentDevice, currentDevice, true);
 
-	s->addWithLabel(_("VIDEO OUTPUT"), optionsVideo);
-	s->addSaveFunc([this, optionsVideo, currentDevice] {
-		if (optionsVideo->changed()) {
-			SystemConf::getInstance()->set("global.videooutput", optionsVideo->getSelected());
-			SystemConf::getInstance()->saveSystemConf();
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-		}
-	});
+	//s->addWithLabel(_("VIDEO OUTPUT"), optionsVideo);
+	//s->addSaveFunc([this, optionsVideo, currentDevice] {
+	//	if (optionsVideo->changed()) {
+	//		SystemConf::getInstance()->set("global.videooutput", optionsVideo->getSelected());
+	//		SystemConf::getInstance()->saveSystemConf();
+	//		mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+	//	}
+	//});
 
 	// audio device
-	auto optionsAudio = std::make_shared<OptionListComponent<std::string> >(mWindow, _("AUDIO OUTPUT"), false);
+	//auto optionsAudio = std::make_shared<OptionListComponent<std::string> >(mWindow, _("AUDIO OUTPUT"), false);
 
-	std::vector<std::string> availableAudio = ApiSystem::getInstance()->getAvailableAudioOutputDevices();
-	std::string selectedAudio = ApiSystem::getInstance()->getCurrentAudioOutputDevice();
-	if (selectedAudio.empty())
+	//std::vector<std::string> availableAudio = ApiSystem::getInstance()->getAvailableAudioOutputDevices();
+	//std::string selectedAudio = ApiSystem::getInstance()->getCurrentAudioOutputDevice();
+	//if (selectedAudio.empty())
 		selectedAudio = "auto";
 
-	if (SystemConf::getInstance()->get("system.es.menu") != "bartop")
-	{
-		bool vfound = false;
-		for (auto it = availableAudio.begin(); it != availableAudio.end(); it++)
-		{
-			std::vector<std::string> tokens = Utils::String::split(*it, ' ');
+	//if (SystemConf::getInstance()->get("system.es.menu") != "bartop")
+	//{
+	//	bool vfound = false;
+	//	for (auto it = availableAudio.begin(); it != availableAudio.end(); it++)
+	//	{
+	//		std::vector<std::string> tokens = Utils::String::split(*it, ' ');
 
-			if (selectedAudio == (*it))
-				vfound = true;
+	//		if (selectedAudio == (*it))
+	//			vfound = true;
 
-			if (tokens.size() >= 2)
-			{
-				// concatenat the ending words
-				std::string vname = "";
-				for (unsigned int i = 1; i < tokens.size(); i++)
-				{
-					if (i > 2) vname += " ";
-					vname += tokens.at(i);
-				}
-				optionsAudio->add(vname, (*it), selectedAudio == (*it));
-			}
-			else
-				optionsAudio->add((*it), (*it), selectedAudio == (*it));
-		}
+	//		if (tokens.size() >= 2)
+	//		{
+	//			// concatenat the ending words
+	//			std::string vname = "";
+	//			for (unsigned int i = 1; i < tokens.size(); i++)
+	//			{
+	//				if (i > 2) vname += " ";
+	//				vname += tokens.at(i);
+	//			}
+	//			optionsAudio->add(vname, (*it), selectedAudio == (*it));
+	//		}
+	//		else
+	//			optionsAudio->add((*it), (*it), selectedAudio == (*it));
+	//	}
 
-		if (vfound == false)
-			optionsAudio->add(selectedAudio, selectedAudio, true);
+	//	if (vfound == false)
+	//		optionsAudio->add(selectedAudio, selectedAudio, true);
 
-		s->addWithLabel(_("AUDIO OUTPUT"), optionsAudio);
-	}
+	//	s->addWithLabel(_("AUDIO OUTPUT"), optionsAudio);
+	//}
 
-	s->addSaveFunc([this, optionsAudio, selectedAudio]
-	{
-		bool v_need_reboot = false;
+	//s->addSaveFunc([this, optionsAudio, selectedAudio]
+	//{
+	//	bool v_need_reboot = false;
 
-		if (optionsAudio->changed()) {
-			SystemConf::getInstance()->set("audio.device", optionsAudio->getSelected());
-			ApiSystem::getInstance()->setAudioOutputDevice(optionsAudio->getSelected());
-			v_need_reboot = true;
-		}
-		SystemConf::getInstance()->saveSystemConf();
-		if (v_need_reboot)
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-	});
+	//	if (optionsAudio->changed()) {
+	//		SystemConf::getInstance()->set("audio.device", optionsAudio->getSelected());
+	//		ApiSystem::getInstance()->setAudioOutputDevice(optionsAudio->getSelected());
+	//		v_need_reboot = true;
+	//	}
+	//	SystemConf::getInstance()->saveSystemConf();
+	//	if (v_need_reboot)
+	//		mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+	//});
 
        auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
                 bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
@@ -3397,6 +3369,29 @@ void GuiMenu::openUISettings()
 		}
 	}
 
+	// retroarch.menu_driver choose from 'auto' (default), 'xmb', 'rgui', 'ozone', 'glui'
+	auto retroarchRgui = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETROARCH MENU DRIVER"), false);
+	std::vector<std::string> driver;
+	driver.push_back("auto");
+	driver.push_back("xmb");
+	driver.push_back("rgui");
+	driver.push_back("ozone");
+	driver.push_back("glui");
+
+	auto currentDriver = SystemConf::getInstance()->get("global.retroarch.menu_driver");
+	if (currentDriver.empty())
+		currentDriver = "auto";
+
+	for (auto it = driver.cbegin(); it != driver.cend(); it++)
+		retroarchRgui->add(_(it->c_str()), *it, currentDriver == *it);
+
+	s->addWithLabel(_("RETROARCH MENU DRIVER"), retroarchRgui);
+	s->addSaveFunc([retroarchRgui]
+	{
+		SystemConf::getInstance()->set("global.retroarch.menu_driver", retroarchRgui->getSelected());
+		SystemConf::getInstance()->saveSystemConf();
+	});	
+
 	s->addGroup(_("DISPLAY OPTIONS"));
 
         auto notification_time = std::make_shared<SliderComponent>(mWindow, 2.f, 120.f, 2.f, "s");
@@ -3420,9 +3415,9 @@ void GuiMenu::openUISettings()
 	s->addWithLabel(_("GAME LAUNCH TRANSITION"), transitionOfGames_style);
 	s->addSaveFunc([transitionOfGames_style] { Settings::getInstance()->setString("GameTransitionStyle", transitionOfGames_style->getSelected()); });
 
-// quick system select (left/right in game list view)
+	// quick system select (left/right in game list view)
 	auto quick_sys_select = std::make_shared<SwitchComponent>(mWindow);
-    quick_sys_select->setState(Settings::getInstance()->getBool("QuickSystemSelect"));
+	quick_sys_select->setState(Settings::getInstance()->getBool("QuickSystemSelect"));
 	s->addWithLabel(_("QUICK SYSTEM SELECT"), quick_sys_select);
 	s->addSaveFunc([quick_sys_select] {
 		Settings::getInstance()->setBool("QuickSystemSelect", quick_sys_select->getState());
@@ -3680,29 +3675,27 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	s->addGroup(_("SETTINGS"));
 
 #if !WIN32
-#ifndef _ENABLEEMUELEC
 	// Hostname
 	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
 #endif
-#endif
 
-       auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
-                bluetoothd_enabled->setState(btbaseEnabled);
-                s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
-                s->addSaveFunc([bluetoothd_enabled] {
-                        if (bluetoothd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop bluetooth", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
-                        } else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
-                                runSystemCommand("systemctl start bluetooth", "", nullptr);
-                        }
-                bool bluetoothenabled = bluetoothd_enabled->getState();
-                SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                });
+       //auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
+       //         bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
+       //         bluetoothd_enabled->setState(btbaseEnabled);
+       //         s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
+       //         s->addSaveFunc([bluetoothd_enabled] {
+       //                 if (bluetoothd_enabled->getState() == false) {
+       //                         runSystemCommand("systemctl stop bluetooth", "", nullptr);
+       //                         runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
+       //                 } else {
+       //                         runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+       //                         runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
+       //                         runSystemCommand("systemctl start bluetooth", "", nullptr);
+       //                 }
+       //         bool bluetoothenabled = bluetoothd_enabled->getState();
+       //         SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
+       //                         SystemConf::getInstance()->saveSystemConf();
+       //         });
 
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
                 bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
