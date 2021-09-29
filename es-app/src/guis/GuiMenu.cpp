@@ -212,77 +212,77 @@ void GuiMenu::openEmuELECSettings()
 	Window* window = mWindow;
 	std::string a;
 #ifndef _ENABLEGAMEFORCE && !defined(ODROIDGOA)
-	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-        std::vector<std::string> videomode;
-		videomode.push_back("1080p60hz");
-		videomode.push_back("1080i60hz");
-		videomode.push_back("720p60hz");
-		videomode.push_back("720p50hz");
-		videomode.push_back("480p60hz");
-		videomode.push_back("480cvbs");
-		videomode.push_back("576p50hz");
-		videomode.push_back("1080p50hz");
-		videomode.push_back("1080i50hz");
-		videomode.push_back("576cvbs");
-		videomode.push_back("Custom");
-		videomode.push_back("-- AUTO-DETECTED RESOLUTIONS --");
-   for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, a, ','); ) {
-        videomode.push_back(a);
-	}
-		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
-		s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
+	//auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
+	//std::vector<std::string> videomode;
+	//	videomode.push_back("1080p60hz");
+	//	videomode.push_back("1080i60hz");
+	//	videomode.push_back("720p60hz");
+	//	videomode.push_back("720p50hz");
+	//	videomode.push_back("480p60hz");
+	//	videomode.push_back("480cvbs");
+	//	videomode.push_back("576p50hz");
+	//	videomode.push_back("1080p50hz");
+	//	videomode.push_back("1080i50hz");
+	//	videomode.push_back("576cvbs");
+	//	videomode.push_back("Custom");
+	//	videomode.push_back("-- AUTO-DETECTED RESOLUTIONS --");
+	//for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, a, ','); ) {
+	//videomode.push_back(a);
+	//}
+	//	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
+	//	emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
+	//	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
 
-		s->addSaveFunc([this, emuelec_video_mode, window] {
+	//	s->addSaveFunc([this, emuelec_video_mode, window] {
 
-		//bool v_need_reboot = false;
+	//	//bool v_need_reboot = false;
 
-		if (emuelec_video_mode->changed()) {
-			std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		if (emuelec_video_mode->getSelected() != "-- AUTO-DETECTED RESOLUTIONS --") {
-			if (emuelec_video_mode->getSelected() != "Custom") {
-			std::string msg = _("You are about to set 351ELEC resolution to:") +"\n" + selectedVideoMode + "\n";
-			msg += _("Do you want to proceed ?");
+	//	if (emuelec_video_mode->changed()) {
+	//		std::string selectedVideoMode = emuelec_video_mode->getSelected();
+	//	if (emuelec_video_mode->getSelected() != "-- AUTO-DETECTED RESOLUTIONS --") {
+	//		if (emuelec_video_mode->getSelected() != "Custom") {
+	//		std::string msg = _("You are about to set 351ELEC resolution to:") +"\n" + selectedVideoMode + "\n";
+	//		msg += _("Do you want to proceed ?");
 
-			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), [selectedVideoMode] {
-					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode", "", nullptr);
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
-					runSystemCommand("/storage/.config/distribution/scripts/setres.sh", "", nullptr);
-					SystemConf::getInstance()->saveSystemConf();
-				//	v_need_reboot = true;
-				}, _("NO"),nullptr));
+	//		window->pushGui(new GuiMsgBox(window, msg,
+	//			_("YES"), [selectedVideoMode] {
+	//				runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode", "", nullptr);
+	//				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+	//				LOG(LogInfo) << "Setting video to " << selectedVideoMode;
+	//				runSystemCommand("/storage/.config/distribution/scripts/setres.sh", "", nullptr);
+	//				SystemConf::getInstance()->saveSystemConf();
+	//			//	v_need_reboot = true;
+	//			}, _("NO"),nullptr));
 
-		} else {
-			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
-				runSystemCommand("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
-				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-				SystemConf::getInstance()->saveSystemConf();
+	//	} else {
+	//		if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
+	//			runSystemCommand("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
+	//			LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
+	//			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+	//			SystemConf::getInstance()->saveSystemConf();
 				//v_need_reboot = true;
-			} else {
-				if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
-				runSystemCommand("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
-				LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << runSystemCommand("cat /flash/EE_VIDEO_MODE", "", nullptr);
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-				SystemConf::getInstance()->saveSystemConf();
-				//v_need_reboot = true;
-					} else {
-					runSystemCommand("echo " + SystemConf::getInstance()->get("ee_videomode")+ " > /sys/class/display/mode", "", nullptr);
-					std::string msg = "/storage/.config/EE_VIDEO_MODE or /flash/EE_VIDEO_MODE not found";
-					window->pushGui(new GuiMsgBox(window, msg,
-				"OK", [selectedVideoMode] {
-					LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("ee_videomode");
-			}));
-					}
-				}
-			}
-		   }
-			//if (v_need_reboot)
-		 	mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-		 }
-		});
+	//		} else {
+	//			if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
+	//			runSystemCommand("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
+	//			LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << runSystemCommand("cat /flash/EE_VIDEO_MODE", "", nullptr);
+	//			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+	//			SystemConf::getInstance()->saveSystemConf();
+	//			//v_need_reboot = true;
+	//				} else {
+	//				runSystemCommand("echo " + SystemConf::getInstance()->get("ee_videomode")+ " > /sys/class/display/mode", "", nullptr);
+	//				std::string msg = "/storage/.config/EE_VIDEO_MODE or /flash/EE_VIDEO_MODE not found";
+	//				window->pushGui(new GuiMsgBox(window, msg,
+	//			"OK", [selectedVideoMode] {
+	//				LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("ee_videomode");
+	//		}));
+	//				}
+	//			}
+	//		}
+	//	   }
+	//		//if (v_need_reboot)
+	//	 	mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+	//	 }
+	//	});
 #endif
 #ifdef _ENABLEGAMEFORCE
 		auto emuelec_blrgboptions_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "BUTTON LED COLOR", false);
@@ -336,42 +336,78 @@ void GuiMenu::openEmuELECSettings()
 			}
 		});
 #endif
-#ifndef _ENABLEGAMEFORCE && !defined(ODROIDGOA)
-		auto emuelec_audiodev_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AUDIO DEVICE", false);
-		std::vector<std::string> Audiodevices;
-		Audiodevices.push_back("auto");
-		Audiodevices.push_back("0,0");
-		Audiodevices.push_back("0,1");
-		Audiodevices.push_back("1,0");
-		Audiodevices.push_back("1,1");
+//#ifndef _ENABLEGAMEFORCE && !defined(ODROIDGOA)
+	//auto emuelec_audiodev_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AUDIO DEVICE", false);
+	//std::vector<std::string> Audiodevices;
+	//Audiodevices.push_back("auto");
+	//Audiodevices.push_back("0,0");
+	//Audiodevices.push_back("0,1");
+	//Audiodevices.push_back("1,0");
+	//Audiodevices.push_back("1,1");
 
-		auto AudiodevicesS = SystemConf::getInstance()->get("ee_audio_device");
-		if (AudiodevicesS.empty())
-		AudiodevicesS = "auto";
+	//auto AudiodevicesS = SystemConf::getInstance()->get("ee_audio_device");
+	//if (AudiodevicesS.empty())
+	//AudiodevicesS = "auto";
 
-		for (auto it = Audiodevices.cbegin(); it != Audiodevices.cend(); it++)
-		emuelec_audiodev_def->add(*it, *it, AudiodevicesS == *it);
+	//for (auto it = Audiodevices.cbegin(); it != Audiodevices.cend(); it++)
+	//emuelec_audiodev_def->add(*it, *it, AudiodevicesS == *it);
 
-		s->addWithLabel(_("AUDIO DEVICE"), emuelec_audiodev_def);
-		s->addSaveFunc([emuelec_audiodev_def] {
-			if (emuelec_audiodev_def->changed()) {
-				std::string selectedaudiodev = emuelec_audiodev_def->getSelected();
-				SystemConf::getInstance()->set("ee_audio_device", selectedaudiodev);
-				SystemConf::getInstance()->saveSystemConf();
-			}
-		});
-#endif
+	//s->addWithLabel(_("AUDIO DEVICE"), emuelec_audiodev_def);
+	//s->addSaveFunc([emuelec_audiodev_def] {
+	//	if (emuelec_audiodev_def->changed()) {
+	//		std::string selectedaudiodev = emuelec_audiodev_def->getSelected();
+	//		SystemConf::getInstance()->set("ee_audio_device", selectedaudiodev);
+	//		SystemConf::getInstance()->saveSystemConf();
+	//	}
+	//});
+//#endif
 
-	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
-	bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
-	enable_bootvideo->setState(bootEnabled);
-	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
+	//auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
+	//bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
+	//enable_bootvideo->setState(bootEnabled);
+	//s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
 
-	s->addSaveFunc([enable_bootvideo, window] {
-		bool bootvideoenabled = enable_bootvideo->getState();
-		SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
-		SystemConf::getInstance()->saveSystemConf();
-	});
+	//s->addSaveFunc([enable_bootvideo, window] {
+	//	bool bootvideoenabled = enable_bootvideo->getState();
+	//	SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
+	//	SystemConf::getInstance()->saveSystemConf();
+	//});
+
+	// language choice
+	auto language_choice = std::make_shared<OptionListComponent<std::string> >(window, _("LANGUAGE"), false);
+
+	std::string language = SystemConf::getInstance()->get("system.language");
+	if (language.empty())
+		language = "en_US";
+
+	language_choice->add("ARABIC",               "ar_YE", language == "ar_YE");
+	language_choice->add("CATALÀ",               "ca_ES", language == "ca_ES");
+	language_choice->add("CYMRAEG",              "cy_GB", language == "cy_GB");
+	language_choice->add("DEUTSCH", 	     "de_DE", language == "de_DE");
+	language_choice->add("GREEK",                "el_GR", language == "el_GR");
+	language_choice->add("ENGLISH", 	     "en_US", language == "en_US" || language == "en");
+	language_choice->add("ESPAÑOL", 	     "es_ES", language == "es_ES" || language == "es");
+	language_choice->add("ESPAÑOL MEXICANO",     "es_MX", language == "es_MX");
+	language_choice->add("BASQUE",               "eu_ES", language == "eu_ES");
+	language_choice->add("FRANÇAIS",             "fr_FR", language == "fr_FR" || language == "fr");
+	language_choice->add("HUNGARIAN",            "hu_HU", language == "hu_HU");
+	language_choice->add("ITALIANO",             "it_IT", language == "it_IT");
+	language_choice->add("JAPANESE", 	     "ja_JP", language == "ja_JP");
+	language_choice->add("KOREAN",   	     "ko_KR", language == "ko_KR" || language == "ko");
+	language_choice->add("NORWEGIAN BOKMAL",     "nb_NO", language == "nb_NO");
+	language_choice->add("DUTCH",                "nl_NL", language == "nl_NL");
+	language_choice->add("NORWEGIAN",            "nn_NO", language == "nn_NO");
+	language_choice->add("OCCITAN",              "oc_FR", language == "oc_FR");
+	language_choice->add("POLISH",               "pl_PL", language == "pl_PL");
+	language_choice->add("PORTUGUES BRASILEIRO", "pt_BR", language == "pt_BR");
+	language_choice->add("PORTUGUES PORTUGAL",   "pt_PT", language == "pt_PT");
+	language_choice->add("RUSSIAN",              "ru_RU", language == "ru_RU");
+	language_choice->add("SVENSKA", 	     "sv_SE", language == "sv_SE");
+	language_choice->add("TÜRKÇE",  	     "tr_TR", language == "tr_TR");
+	language_choice->add("Українська",           "uk_UA", language == "uk_UA");
+	language_choice->add("简体中文", 	     "zh_CN", language == "zh_CN");
+	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
+	s->addWithLabel(_("LANGUAGE"), language_choice);
 
 	auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
 	invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
@@ -1345,42 +1381,6 @@ void GuiMenu::openSystemSettings_batocera()
 		SystemConf::getInstance()->set("system.timezone", emuelec_timezones->getSelected());
 	});
 
-	// language choice
-	auto language_choice = std::make_shared<OptionListComponent<std::string> >(window, _("LANGUAGE"), false);
-
-	std::string language = SystemConf::getInstance()->get("system.language");
-	if (language.empty())
-		language = "en_US";
-
-	language_choice->add("ARABIC",               "ar_YE", language == "ar_YE");
-	language_choice->add("CATALÀ",               "ca_ES", language == "ca_ES");
-	language_choice->add("CYMRAEG",              "cy_GB", language == "cy_GB");
-	language_choice->add("DEUTSCH", 	     "de_DE", language == "de_DE");
-	language_choice->add("GREEK",                "el_GR", language == "el_GR");
-	language_choice->add("ENGLISH", 	     "en_US", language == "en_US" || language == "en");
-	language_choice->add("ESPAÑOL", 	     "es_ES", language == "es_ES" || language == "es");
-	language_choice->add("ESPAÑOL MEXICANO",     "es_MX", language == "es_MX");
-	language_choice->add("BASQUE",               "eu_ES", language == "eu_ES");
-	language_choice->add("FRANÇAIS",             "fr_FR", language == "fr_FR" || language == "fr");
-	language_choice->add("HUNGARIAN",            "hu_HU", language == "hu_HU");
-	language_choice->add("ITALIANO",             "it_IT", language == "it_IT");
-	language_choice->add("JAPANESE", 	     "ja_JP", language == "ja_JP");
-	language_choice->add("KOREAN",   	     "ko_KR", language == "ko_KR" || language == "ko");
-	language_choice->add("NORWEGIAN BOKMAL",     "nb_NO", language == "nb_NO");
-	language_choice->add("DUTCH",                "nl_NL", language == "nl_NL");
-	language_choice->add("NORWEGIAN",            "nn_NO", language == "nn_NO");
-	language_choice->add("OCCITAN",              "oc_FR", language == "oc_FR");
-	language_choice->add("POLISH",               "pl_PL", language == "pl_PL");
-	language_choice->add("PORTUGUES BRASILEIRO", "pt_BR", language == "pt_BR");
-	language_choice->add("PORTUGUES PORTUGAL",   "pt_PT", language == "pt_PT");
-	language_choice->add("RUSSIAN",              "ru_RU", language == "ru_RU");
-	language_choice->add("SVENSKA", 	     "sv_SE", language == "sv_SE");
-	language_choice->add("TÜRKÇE",  	     "tr_TR", language == "tr_TR");
-	language_choice->add("Українська",           "uk_UA", language == "uk_UA");
-	language_choice->add("简体中文", 	     "zh_CN", language == "zh_CN");
-	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
-	s->addWithLabel(_("LANGUAGE"), language_choice);
-
 	// UI RESTRICTIONS
 	auto UImodeSelection = std::make_shared< OptionListComponent<std::string> >(mWindow, _("UI MODE"), false);
 	std::vector<std::string> UImodes = UIModeController::getInstance()->getUIModes();
@@ -1783,7 +1783,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup backup", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP CONFIGURATIONS"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP CONFIGURATIONS"), theme->Text.font, theme->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
@@ -1794,7 +1794,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils identity_backup", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP IDENTITY"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP IDENTITY"), theme->Text.font, theme->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
@@ -1805,7 +1805,7 @@ void GuiMenu::openSystemSettings_batocera()
                                 runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup restore", "", nullptr);
                                 }, _("NO"), nullptr));
         });
-        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), theme->Text.font, theme->Text.color), true);
         danger_zone->addRow(row);
         row.elements.clear();
 
@@ -1816,7 +1816,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig retroarch", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET RETROARCH CONFIG TO DEFAULT"), theme->Text.font, theme->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 	// all configs
@@ -1826,7 +1826,7 @@ void GuiMenu::openSystemSettings_batocera()
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig ALL", "", nullptr);
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("FACTORY RESET"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("FACTORY RESET"), theme->Text.font, theme->Text.color), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 
@@ -3675,8 +3675,10 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	s->addGroup(_("SETTINGS"));
 
 #if !WIN32
+#ifndef _ENABLEEMUELEC
 	// Hostname
 	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
+#endif
 #endif
 
        //auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
