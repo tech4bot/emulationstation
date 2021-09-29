@@ -1482,7 +1482,7 @@ void GuiMenu::openSystemSettings_batocera()
 	//std::vector<std::string> availableAudio = ApiSystem::getInstance()->getAvailableAudioOutputDevices();
 	//std::string selectedAudio = ApiSystem::getInstance()->getCurrentAudioOutputDevice();
 	//if (selectedAudio.empty())
-		selectedAudio = "auto";
+	//	selectedAudio = "auto";
 
 	//if (SystemConf::getInstance()->get("system.es.menu") != "bartop")
 	//{
