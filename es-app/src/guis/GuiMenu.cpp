@@ -10,6 +10,7 @@
 #include "guis/GuiScraperStart.h"
 #include "guis/GuiThemeInstallStart.h" //batocera
 #include "guis/GuiPackageInstallStart.h" //351elec
+#include "guis/GuiDecorationOptions.h" //351elec
 #include "guis/GuiBezelInstallStart.h" //batocera
 #include "guis/GuiBatoceraStore.h" //batocera
 #include "guis/GuiSettings.h"
@@ -928,7 +929,18 @@ void GuiMenu::openSystemInformations_batocera()
 
 	window->pushGui(informationsGui);
 }
+void GuiMenu::openDecorationConfiguration(Window *mWindow, std::string configName, std::vector<DecorationSetInfo> sets)
+{
+	//Using a shared pointer to ensure the memory doesn't cause issues in the other class
+	std::map<std::string, std::string> decorationSetNameToPath;
+	for (auto set : sets)
+	{
+		decorationSetNameToPath.insert(std::make_pair(set.name, set.path));
+	}
 
+	auto decorationOptions = new GuiDecorationOptions(mWindow, configName, decorationSetNameToPath);
+	mWindow->pushGui(decorationOptions);
+}
 void GuiMenu::openDeveloperSettings()
 {
 	Window *window = mWindow;
@@ -2251,7 +2263,7 @@ void GuiMenu::openGamesSettings_batocera()
 	s->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
 	s->addSaveFunc([rgascale_enabled] { SystemConf::getInstance()->set("global.rgascale", rgascale_enabled->getSelected()); });
 
-#ifndef _ENABLEEMUELEC
+//#ifndef _ENABLEEMUELEC - 351elec - enable decorations
 	// decorations
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
 	{
@@ -2277,11 +2289,23 @@ void GuiMenu::openGamesSettings_batocera()
 					(SystemConf::getInstance()->get("global.bezel") == "" && *it == _("AUTO")));
 
 			s->addWithLabel(_("DECORATION"), decorations);
-			s->addSaveFunc([decorations]
+
+			decorations->setSelectedChangedCallback([decorations](std::string value)
 			{
-				SystemConf::getInstance()->set("global.bezel", decorations->getSelected() == _("NONE") ? "none" : decorations->getSelected() == _("AUTO") ? "" : decorations->getSelected());
+				LOG(LogDebug) << "Setting bezel on change to: " << value;
+
+				SystemConf::getInstance()->set("global.bezel", Utils::String::toLower(value));
 			});
-#if !defined(WIN32) || defined(_DEBUG)
+
+			if (decorations->getSelectedName() == "")
+			{
+				decorations->selectFirstItem();
+			}
+
+
+//351elec - stretch bezels does not have a place in 351elec
+#ifndef _ENABLEEMUELEC
+//#if !defined(WIN32) || defined(_DEBUG)
 			// stretch bezels
 			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));
 			bezel_stretch_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get("global.bezel_stretch") != "0" && SystemConf::getInstance()->get("global.bezel_stretch") != "1");
@@ -2297,7 +2321,7 @@ void GuiMenu::openGamesSettings_batocera()
 #endif
 		}
 	}
-#endif
+// #endif - 351elec - enable decorations
 	// latency reduction
 	s->addEntry(_("LATENCY REDUCTION"), true, [this] { openLatencyReductionConfiguration(mWindow, "global"); });
 
@@ -4350,11 +4374,22 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				);
 			}
 			systemConfiguration->addWithLabel(_("DECORATION"), decorations);
-			systemConfiguration->addSaveFunc([decorations, configName]
+
+			//351elec - set decoration on change so it's update for decoration options without exiting screen
+			decorations->setSelectedChangedCallback([decorations, configName](std::string value)
 			{
-				SystemConf::getInstance()->set(configName + ".bezel", decorations->getSelected() == _("NONE") ? "none" : decorations->getSelected() == _("AUTO") ? "" : decorations->getSelected());
+				LOG(LogDebug) << "Setting bezel on change: " << configName << " to: " << value;
+
+				SystemConf::getInstance()->set(configName + ".bezel", Utils::String::toLower(value));
 			});
 
+			if (decorations->getSelectedName() == "")
+			{
+				decorations->selectFirstItem();
+			}
+
+            systemConfiguration->addEntry(_("DECORATION OPTIONS"), true, [mWindow, configName, sets]
+                                              { openDecorationConfiguration(mWindow, configName, sets); });
 #if !defined(WIN32) || defined(_DEBUG)
 //			// stretch bezels
 //			auto bezel_stretch_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("STRETCH BEZELS (4K & ULTRAWIDE)"));

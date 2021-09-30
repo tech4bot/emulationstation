@@ -102,6 +102,7 @@ private:
 	std::vector<StrInputConfig*> mLoadedInput; // used to keep information about loaded devices in case there are unpluged between device window load and save
 	void clearLoadedInput();
 	static void createDecorationItemTemplate(Window* window, std::vector<DecorationSetInfo> sets, std::string data, ComponentListRow& row);
+	static void openDecorationConfiguration(Window *mWindow, std::string configName, std::vector<DecorationSetInfo> sets);
 
 	bool checkNetwork();
 
