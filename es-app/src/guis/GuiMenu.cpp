@@ -162,8 +162,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 		addEntry(_("SCRAPE").c_str(), true, [this] { openScraperSettings(); }, "iconScraper");
 		addEntry(_("UPDATES & DOWNLOADS"), true, [this] { openUpdatesSettings(); }, "iconUpdates");
 #ifdef _ENABLEEMUELEC
-               if (isFullUI)
-                       addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+		if (isFullUI)
+			addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
 	}
 	else
@@ -307,17 +307,17 @@ void GuiMenu::openEmuELECSettings()
 		s->addSaveFunc([emuelec_blrgboptions_def] {
 			if (emuelec_blrgboptions_def->changed()) {
 				std::string selectedblrgb = emuelec_blrgboptions_def->getSelected();
-                runSystemCommand("/usr/bin/odroidgoa_utils.sh bl " +selectedblrgb, "", nullptr);
+		runSystemCommand("/usr/bin/odroidgoa_utils.sh bl " +selectedblrgb, "", nullptr);
 				SystemConf::getInstance()->set("bl_rgb", selectedblrgb);
-                SystemConf::getInstance()->saveSystemConf();
+		SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 
-        auto emuelec_powerled_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "POWER LED COLOR", false);
+	auto emuelec_powerled_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "POWER LED COLOR", false);
 		std::vector<std::string> powerledoptions;
 		powerledoptions.push_back("off");
 		powerledoptions.push_back("heartbeat");
-        powerledoptions.push_back("on");
+		powerledoptions.push_back("on");
 
 		auto powerledoptionsS = SystemConf::getInstance()->get("gf_powerled");
 		if (powerledoptionsS.empty())
@@ -330,9 +330,9 @@ void GuiMenu::openEmuELECSettings()
 		s->addSaveFunc([emuelec_powerled_def] {
 			if (emuelec_powerled_def->changed()) {
 				std::string selectedpowerled = emuelec_powerled_def->getSelected();
-                runSystemCommand("/usr/bin/odroidgoa_utils.sh pl " +selectedpowerled, "", nullptr);
+		runSystemCommand("/usr/bin/odroidgoa_utils.sh pl " +selectedpowerled, "", nullptr);
 				SystemConf::getInstance()->set("gf_powerled", selectedpowerled);
-                SystemConf::getInstance()->saveSystemConf();
+		SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 #endif
@@ -456,8 +456,8 @@ void GuiMenu::openEmuELECSettings()
 
 	});
 
-        // Developer options
-        s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
+	// Developer options
+	s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
 
 	mWindow->pushGui(s);
 }
@@ -870,12 +870,12 @@ void GuiMenu::exitKidMode()
 
 void GuiMenu::openDiabloServer()
 {
-        auto theme = ThemeData::getMenuTheme();
-        std::shared_ptr<Font> font = theme->Text.font;
-        unsigned int color = theme->Text.color;
+	auto theme = ThemeData::getMenuTheme();
+	std::shared_ptr<Font> font = theme->Text.font;
+	unsigned int color = theme->Text.color;
 
-        Window *window = mWindow;
-        bool isFullUI = UIModeController::getInstance()->isUIModeFull();
+	Window *window = mWindow;
+	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
 
 	auto DiabloGui = new GuiSettings(mWindow, _("DIABLO SERVER").c_str());
 
@@ -915,11 +915,11 @@ void GuiMenu::openSystemInformations_batocera()
 			std::string vname = "";
 			for (unsigned int i = 1; i < tokens.size(); i++) {
 				if (i > 1) vname += " ";
-                                vname += tokens.at(i);
+				vname += tokens.at(i);
 			}
 
 			auto space = std::make_shared<TextComponent>(window,
-                               vname,
+				vname,
 				font,
 				color);
 			informationsGui->addWithLabel(_(tokens.at(0).c_str()), space);
@@ -1302,14 +1302,14 @@ void GuiMenu::openUpdatesSettings()
 		});
 	}
 
-        // Community package installer/browser
-        updateGui->addEntry(_("PACKAGES"), true, [this]
-        {
-                if (!checkNetwork())
-                        return;
+	// Community package installer/browser
+	updateGui->addEntry(_("PACKAGES"), true, [this]
+	{
+		if (!checkNetwork())
+			return;
 
-                mWindow->pushGui(new GuiPackageInstallStart(mWindow));
-        });
+		mWindow->pushGui(new GuiPackageInstallStart(mWindow));
+	});
 
 	// Batocera integration with theBezelProject
 	//if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEBEZELPROJECT))
@@ -1344,8 +1344,8 @@ void GuiMenu::openUpdatesSettings()
 	if (updatesType.empty() || updatesType == "daily")
 		updatesType = "release";
 
-	        //immediately save if we are setting value
-	        SystemConf::getInstance()->saveSystemConf();
+		//immediately save if we are setting value
+		SystemConf::getInstance()->saveSystemConf();
 
 	updatesTypeList->add("release", "release", updatesType == "release");
 	updatesTypeList->add("beta", "beta", updatesType == "beta");
@@ -1564,26 +1564,26 @@ void GuiMenu::openSystemSettings_batocera()
 	//});
 
        auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
-                oc_enabled->setState(baseEnabled);
-                s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
-                s->addSaveFunc([this, oc_enabled] {
+		bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
+		oc_enabled->setState(baseEnabled);
+		s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
+		s->addSaveFunc([this, oc_enabled] {
 			bool oc_need_reboot = false;
 			if (oc_enabled->changed()) {
-                        	if (oc_enabled->getState() == false) {
-                        	        runSystemCommand("351elec-overclock off", "", nullptr);
-                        	} else {
-                        	        runSystemCommand("351elec-overclock on", "", nullptr);
-                        	}
+				if (oc_enabled->getState() == false) {
+					runSystemCommand("351elec-overclock off", "", nullptr);
+				} else {
+					runSystemCommand("351elec-overclock on", "", nullptr);
+				}
 				oc_need_reboot = true;
 			}
-                	bool ocenabled = oc_enabled->getState();
-                	SystemConf::getInstance()->set("overclock", ocenabled ? "1" : "0");
-                	SystemConf::getInstance()->saveSystemConf();
+			bool ocenabled = oc_enabled->getState();
+			SystemConf::getInstance()->set("overclock", ocenabled ? "1" : "0");
+			SystemConf::getInstance()->saveSystemConf();
 			if (oc_need_reboot) {
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 			}
-                });
+		});
 
 #else
 	if (!ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
@@ -1806,16 +1806,16 @@ void GuiMenu::openSystemSettings_batocera()
 	danger_zone->addRow(row);
 	row.elements.clear();
 
-        // restore configs
-        row.makeAcceptInputHandler([window] {
-                window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
-                                [] {
-                                runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup restore", "", nullptr);
-                                }, _("NO"), nullptr));
-        });
-        row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
-        danger_zone->addRow(row);
-        row.elements.clear();
+	// restore configs
+	row.makeAcceptInputHandler([window] {
+		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
+				[] {
+				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup restore", "", nullptr);
+				}, _("NO"), nullptr));
+	});
+	row.addElement(std::make_shared<TextComponent>(window, _("RESTORE FROM BACKUP"), ThemeData::getMenuTheme()->Text.font, ThemeData::getMenuTheme()->Text.color), true);
+	danger_zone->addRow(row);
+	row.elements.clear();
 
 	// retroarch config
 	row.makeAcceptInputHandler([window] {
@@ -2147,24 +2147,24 @@ void GuiMenu::openGamesSettings_batocera()
 	s->addSaveFunc([smoothing_enabled] { SystemConf::getInstance()->set("global.smooth", smoothing_enabled->getSelected()); });
 
        auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
-                fps_enabled->setState(fpsEnabled);
-                s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
-                s->addSaveFunc([fps_enabled] {
-                        bool fpsenabled = fps_enabled->getState();
-                SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                        });
+		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
+		fps_enabled->setState(fpsEnabled);
+		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
+		s->addSaveFunc([fps_enabled] {
+			bool fpsenabled = fps_enabled->getState();
+		SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
+			});
 
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
-                splash_enabled->setState(splashEnabled);
-                s->addWithLabel(_("ENABLE GAME SPLASH"), splash_enabled);
-                s->addSaveFunc([splash_enabled] {
-                bool splashenabled = splash_enabled->getState();
-                SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                        });
+		bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
+		splash_enabled->setState(splashEnabled);
+		s->addWithLabel(_("ENABLE GAME SPLASH"), splash_enabled);
+		s->addSaveFunc([splash_enabled] {
+		bool splashenabled = splash_enabled->getState();
+		SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
+			});
 
 #ifdef _ENABLEEMUELEC
 	// bezel (Disable as they don't work with the low res display
@@ -2224,7 +2224,7 @@ void GuiMenu::openGamesSettings_batocera()
 			s->addWithLabel(_("SHADERS SET"), shaders_choices);
 			s->addSaveFunc([shaders_choices] { SystemConf::getInstance()->set("global.shaderset", shaders_choices->getSelected()); });
 #ifndef _ENABLEEMUELEC
-        }
+	}
 	}
 #endif
 
@@ -2245,11 +2245,11 @@ void GuiMenu::openGamesSettings_batocera()
 	s->addWithLabel(_("INTEGER SCALE (FOR MOST HANDHELDS)"), integerscale_enabled);
 	s->addSaveFunc([integerscale_enabled] { SystemConf::getInstance()->set("global.integerscale", integerscale_enabled->getSelected()); });
 
-        // RGA scale
-        auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
-        rgascale_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF") , "0" } }, SystemConf::getInstance()->get("global.rgascale"));
-        s->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
-        s->addSaveFunc([rgascale_enabled] { SystemConf::getInstance()->set("global.rgascale", rgascale_enabled->getSelected()); });
+	// RGA scale
+	auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
+	rgascale_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF") , "0" } }, SystemConf::getInstance()->get("global.rgascale"));
+	s->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
+	s->addSaveFunc([rgascale_enabled] { SystemConf::getInstance()->set("global.rgascale", rgascale_enabled->getSelected()); });
 
 #ifndef _ENABLEEMUELEC
 	// decorations
@@ -2438,7 +2438,7 @@ void GuiMenu::openGamesSettings_batocera()
 			s->addEntry(_("NETPLAY SETTINGS"), true, [this] { openNetplaySettings(); }, "iconNetplay");
 
 		// Add an entry to the Diablo phone book for Multiplayer
-                s->addEntry(_("DIABLO SERVER"), true, [this] { openDiabloServer(); });
+		s->addEntry(_("DIABLO SERVER"), true, [this] { openDiabloServer(); });
 
 		// Missing Bios
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::BIOSINFORMATION))
@@ -3402,12 +3402,10 @@ void GuiMenu::openUISettings()
 
 	s->addGroup(_("DISPLAY OPTIONS"));
 
-        auto notification_time = std::make_shared<SliderComponent>(mWindow, 2.f, 120.f, 2.f, "s");
-        notification_time->setValue(Settings::getInstance()->getInt("notification.display_time"));
-        s->addWithLabel(_("POPUP NOTIFICATION TIMEOUT"), notification_time);
-        s->addSaveFunc([notification_time] {
-                Settings::getInstance()->setInt("notification.display_time", (int)Math::round(notification_time->getValue()));
-        });
+	auto notification_time = std::make_shared<SliderComponent>(mWindow, 2.f, 120.f, 2.f, "s");
+	notification_time->setValue(Settings::getInstance()->getInt("notification.display_time"));
+	s->addWithLabel(_("POPUP NOTIFICATION TIMEOUT"), notification_time);
+	s->addSaveFunc([notification_time] { Settings::getInstance()->setInt("notification.display_time", (int)Math::round(notification_time->getValue())); });
 
 	s->addEntry(_("SCREENSAVER SETTINGS"), true, std::bind(&GuiMenu::openScreensaverOptions, this));
 
@@ -3706,48 +3704,48 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
        //         });
 
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
-                sshd_enabled->setState(sshbaseEnabled);
-                s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
-                s->addSaveFunc([sshd_enabled] {
-                        if (sshd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop sshd", "", nullptr);
-                                runSystemCommand("systemctl disable sshd", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr);
-                        } else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
-                                runSystemCommand("systemctl enable sshd", "", nullptr);
-                                runSystemCommand("systemctl start sshd", "", nullptr);
-                        }
-                bool sshenabled = sshd_enabled->getState();
-                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                });
+		bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+		sshd_enabled->setState(sshbaseEnabled);
+		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
+		s->addSaveFunc([sshd_enabled] {
+			if (sshd_enabled->getState() == false) {
+				runSystemCommand("systemctl stop sshd", "", nullptr);
+				runSystemCommand("systemctl disable sshd", "", nullptr);
+				runSystemCommand("rm /storage/.cache/services/sshd.conf", "", nullptr);
+			} else {
+				runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+				runSystemCommand("touch /storage/.cache/services/sshd.conf", "", nullptr);
+				runSystemCommand("systemctl enable sshd", "", nullptr);
+				runSystemCommand("systemctl start sshd", "", nullptr);
+			}
+		bool sshenabled = sshd_enabled->getState();
+		SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
+		});
 
        auto samba_enabled = std::make_shared<SwitchComponent>(mWindow);
-                bool smbbaseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
-                samba_enabled->setState(smbbaseEnabled);
-                s->addWithLabel(_("ENABLE SAMBA"), samba_enabled);
-                s->addSaveFunc([samba_enabled] {
-                        if (samba_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop nmbd", "", nullptr);
-                                runSystemCommand("systemctl disable nmbd", "", nullptr);
-                                runSystemCommand("systemctl stop smbd", "", nullptr);
-                                runSystemCommand("systemctl disable smbd", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/smb.conf", "", nullptr);
-                        } else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/smb.conf", "", nullptr);
-                                runSystemCommand("systemctl enable nmbd", "", nullptr);
-                                runSystemCommand("systemctl start nmbd", "", nullptr);
-                                runSystemCommand("systemctl enable smbd", "", nullptr);
-                                runSystemCommand("systemctl start smbd", "", nullptr);
-                        }
-                bool sambaenabled = samba_enabled->getState();
-                SystemConf::getInstance()->set("ee_samba.enabled", sambaenabled ? "1" : "0");
-                                SystemConf::getInstance()->saveSystemConf();
-                });
+		bool smbbaseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
+		samba_enabled->setState(smbbaseEnabled);
+		s->addWithLabel(_("ENABLE SAMBA"), samba_enabled);
+		s->addSaveFunc([samba_enabled] {
+			if (samba_enabled->getState() == false) {
+				runSystemCommand("systemctl stop nmbd", "", nullptr);
+				runSystemCommand("systemctl disable nmbd", "", nullptr);
+				runSystemCommand("systemctl stop smbd", "", nullptr);
+				runSystemCommand("systemctl disable smbd", "", nullptr);
+				runSystemCommand("rm /storage/.cache/services/smb.conf", "", nullptr);
+			} else {
+				runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+				runSystemCommand("touch /storage/.cache/services/smb.conf", "", nullptr);
+				runSystemCommand("systemctl enable nmbd", "", nullptr);
+				runSystemCommand("systemctl start nmbd", "", nullptr);
+				runSystemCommand("systemctl enable smbd", "", nullptr);
+				runSystemCommand("systemctl start smbd", "", nullptr);
+			}
+		bool sambaenabled = samba_enabled->getState();
+		SystemConf::getInstance()->set("ee_samba.enabled", sambaenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
+		});
 
 	// Wifi enable
 	auto enable_wifi = std::make_shared<SwitchComponent>(mWindow);
@@ -3905,16 +3903,16 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		}, _("NO"), nullptr));
 	}, "iconRestart");
 
-	s->addEntry(_("START RETROARCH"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY START RETROARCH?"), _("YES"),
-			[] {
-			remove("/var/lock/start.games");
-            runSystemCommand("touch /var/lock/start.retro", "", nullptr);
-			runSystemCommand("systemctl start retroarch.service", "", nullptr);
-			Scripting::fireEvent("quit", "retroarch");
-			quitES(QuitMode::QUIT);
-		}, _("NO"), nullptr));
-	}, "iconControllers");
+	//s->addEntry(_("START RETROARCH"), false, [window] {
+	//	window->pushGui(new GuiMsgBox(window, _("REALLY START RETROARCH?"), _("YES"),
+	//		[] {
+	//		remove("/var/lock/start.games");
+	//		runSystemCommand("touch /var/lock/start.retro", "", nullptr);
+	//		runSystemCommand("systemctl start retroarch.service", "", nullptr);
+	//		Scripting::fireEvent("quit", "retroarch");
+	//		quitES(QuitMode::QUIT);
+	//	}, _("NO"), nullptr));
+	//}, "iconControllers");
 
 #endif
 
@@ -4201,7 +4199,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
 		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
 	{
-        std::string a;
+		std::string a;
 		auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADERS SET"),false);
 		std::string currentShader = SystemConf::getInstance()->get(configName + ".shaderset");
 		if (currentShader.empty()) {
@@ -4220,7 +4218,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
 		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
 	{
-        std::string a;
+		std::string a;
 		auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTERS SET"),false);
 		std::string currentFilter = SystemConf::getInstance()->get(configName + ".filterset");
 		if (currentFilter.empty()) {
@@ -4290,16 +4288,16 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([integerscale_enabled, configName] { SystemConf::getInstance()->set(configName + ".integerscale", integerscale_enabled->getSelected()); });
 	}
 #ifdef _ENABLEEMUELEC
-        // RGA scale
-        if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
-        {
-                auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
-                rgascale_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".rgascale") != "0" && SystemConf::getInstance()->get(configName + ".rgascale") != "1");
-                rgascale_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".rgascale") == "1");
-                rgascale_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".rgascale") == "0");
-                systemConfiguration->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
-                systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
-        }
+	// RGA scale
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
+	{
+		auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
+		rgascale_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".rgascale") != "0" && SystemConf::getInstance()->get(configName + ".rgascale") != "1");
+		rgascale_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".rgascale") == "1");
+		rgascale_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".rgascale") == "0");
+		systemConfiguration->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
+		systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
+	}
 
 	// bezel
 	//if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
@@ -4388,7 +4386,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		colorizations_choices->add(_("AUTO"), "auto", currentColorization == "auto");
 		colorizations_choices->add(_("NONE"), "none", currentColorization == "none");
 #ifdef _ENABLEEMUELEC
-        colorizations_choices->add(_("GBC"), "GBC", currentColorization == "GBC");
+		colorizations_choices->add(_("GBC"), "GBC", currentColorization == "GBC");
 		colorizations_choices->add(_("SGB"), "SGB", currentColorization == "SGB");
 #endif
 		colorizations_choices->add(_("Best Guess"), "Best Guess", currentColorization == "Best Guess");
@@ -4524,9 +4522,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		for (int i = 0; i < n_all_gambate_gc_colors_modes; i++)
 			colorizations_choices->add(all_gambate_gc_colors_modes[i], all_gambate_gc_colors_modes[i], currentColorization == std::string(all_gambate_gc_colors_modes[i]));
 #ifdef _ENABLEEMUELEC
-        if (SystemData::es_features_loaded || (!SystemData::es_features_loaded && (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players" || systemData->getName() == "gbh" || systemData->getName() == "gbch"))) // only for gb, gbc and gb2players gbh gbch
+	if (SystemData::es_features_loaded || (!SystemData::es_features_loaded && (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players" || systemData->getName() == "gbh" || systemData->getName() == "gbch"))) // only for gb, gbc and gb2players gbh gbch
 #else
-        if (SystemData::es_features_loaded || (!SystemData::es_features_loaded && (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players")))  // only for gb, gbc and gb2players
+	if (SystemData::es_features_loaded || (!SystemData::es_features_loaded && (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players")))  // only for gb, gbc and gb2players
 #endif
 		{
 			systemConfiguration->addWithLabel(_("COLORIZATION"), colorizations_choices);
