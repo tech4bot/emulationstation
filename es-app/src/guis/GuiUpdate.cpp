@@ -20,7 +20,7 @@ public:
 
 		mWndNotification = mWindow->createAsyncNotificationComponent();
 #ifdef _ENABLEEMUELEC
-		mWndNotification->updateTitle(_U("\uF019 ") + _("UPDATING EMUELEC"));
+		mWndNotification->updateTitle(_U("\uF019 ") + _("UPDATING 351ELEC"));
 #else
 		mWndNotification->updateTitle(_U("\uF019 ") + _("UPDATING BATOCERA"));
 #endif
