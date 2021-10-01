@@ -2292,9 +2292,12 @@ void GuiMenu::openGamesSettings_batocera()
 
 			decorations->setSelectedChangedCallback([decorations](std::string value)
 			{
+				if (Utils::String::toLower(value) == "auto") {
+					value = "";
+				}
 				LOG(LogDebug) << "Setting bezel on change to: " << value;
 
-				SystemConf::getInstance()->set("global.bezel", Utils::String::toLower(value));
+				SystemConf::getInstance()->set("global.bezel", value);
 			});
 
 			if (decorations->getSelectedName() == "")
@@ -4379,8 +4382,10 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			decorations->setSelectedChangedCallback([decorations, configName](std::string value)
 			{
 				LOG(LogDebug) << "Setting bezel on change: " << configName << " to: " << value;
-
-				SystemConf::getInstance()->set(configName + ".bezel", Utils::String::toLower(value));
+				if (Utils::String::toLower(value) == "auto") {
+					value = "";
+				}
+				SystemConf::getInstance()->set(configName + ".bezel", value);
 			});
 
 			if (decorations->getSelectedName() == "")

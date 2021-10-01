@@ -26,10 +26,10 @@ GuiDecorationOptions::GuiDecorationOptions(Window *window,
 	auto selectedDecoration = SystemConf::getInstance()->get(mConfigName + ".bezel");
 
 	//Check for both <system>.bezel and then global.bezel if <system>.bezel is set to auto
-	if (Utils::String::toUpper(selectedDecoration) == "AUTO" || selectedDecoration == "")
+	if (Utils::String::toLower(selectedDecoration) == "auto" || selectedDecoration == "")
 	{
 		selectedDecoration = SystemConf::getInstance()->get("global.bezel");
-		if (Utils::String::toUpper(selectedDecoration) == "AUTO" || selectedDecoration == "")
+		if (Utils::String::toLower(selectedDecoration) == "auto" || selectedDecoration == "")
 		{
 			selectedDecoration = "default";
 		}
@@ -69,7 +69,10 @@ GuiDecorationOptions::GuiDecorationOptions(Window *window,
 	addWithDescription(_("SYSTEM"), _("Forces specific system bezel"), systemsList);
 	systemsList->setSelectedChangedCallback([this](std::string system)
 	{
-		if (SystemConf::getInstance()->set(mConfigName + ".bezel.system.override", system))
+		if(Utils::String::toLower(system) == "auto") {
+			system = "";
+		}
+		if (SystemConf::getInstance()->set(mConfigName + ".bezel.system.override", Utils::String::toLower(system)))
 		{
 			LOG(LogDebug) << "Pushing new GUI Decorations page: " << mConfigName;
 
@@ -94,10 +97,12 @@ GuiDecorationOptions::GuiDecorationOptions(Window *window,
 
 	std::string systemOverride = SystemConf::getInstance()->get(mConfigName + ".bezel.system.override");
 
-    auto systemName = mConfigName;
+
+    //deal mConfigName will like like <systemname>['<rom name'] in the rom specific case.  Just remove stuff in after '['
+    auto systemName =  Utils::String::split(mConfigName, '[', true).front();
 	LOG(LogDebug) << "System Override: " << systemOverride << " Current System: " << systemName;
 
-	if (systemOverride != "" && Utils::String::toUpper(systemOverride) != "AUTO")
+	if (systemOverride != "" && Utils::String::toLower(systemOverride) != "auto")
 	{
 		systemName = systemOverride;
 	}
@@ -117,6 +122,9 @@ GuiDecorationOptions::GuiDecorationOptions(Window *window,
 	addWithDescription(_("GAME"), _("Forces specific game bezel"), gamesList);
 	gamesList->setSelectedChangedCallback([this](std::string game)
 	{
+		if(Utils::String::toLower(game) == "auto") {
+			game = "";
+		}
 		LOG(LogDebug) << "Saving game override: " << game << "for system: "+mConfigName;
 
 		SystemConf::getInstance()->set(mConfigName + ".bezel.game.override", game);
