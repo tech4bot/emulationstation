@@ -126,7 +126,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 #ifdef _ENABLEEMUELEC
 		addEntry(_("SYSTEM SETTINGS").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
-		addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+		//addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
 		addEntry(_("UI SETTINGS").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		//addEntry(_("CONTROLLERS SETTINGS").c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
@@ -378,92 +378,6 @@ void GuiMenu::openEmuELECSettings()
 	//	SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
 	//	SystemConf::getInstance()->saveSystemConf();
 	//});
-
-	// language choice
-	auto language_choice = std::make_shared<OptionListComponent<std::string> >(window, _("LANGUAGE"), false);
-
-	std::string language = SystemConf::getInstance()->get("system.language");
-	if (language.empty())
-		language = "en_US";
-
-	language_choice->add("ARABIC",               "ar_YE", language == "ar_YE");
-	language_choice->add("CATALÀ",               "ca_ES", language == "ca_ES");
-	language_choice->add("CYMRAEG",              "cy_GB", language == "cy_GB");
-	language_choice->add("DEUTSCH", 	     "de_DE", language == "de_DE");
-	language_choice->add("GREEK",                "el_GR", language == "el_GR");
-	language_choice->add("ENGLISH", 	     "en_US", language == "en_US" || language == "en");
-	language_choice->add("ESPAÑOL", 	     "es_ES", language == "es_ES" || language == "es");
-	language_choice->add("ESPAÑOL MEXICANO",     "es_MX", language == "es_MX");
-	language_choice->add("BASQUE",               "eu_ES", language == "eu_ES");
-	language_choice->add("FRANÇAIS",             "fr_FR", language == "fr_FR" || language == "fr");
-	language_choice->add("HUNGARIAN",            "hu_HU", language == "hu_HU");
-	language_choice->add("ITALIANO",             "it_IT", language == "it_IT");
-	language_choice->add("JAPANESE", 	     "ja_JP", language == "ja_JP");
-	language_choice->add("KOREAN",   	     "ko_KR", language == "ko_KR" || language == "ko");
-	language_choice->add("NORWEGIAN BOKMAL",     "nb_NO", language == "nb_NO");
-	language_choice->add("DUTCH",                "nl_NL", language == "nl_NL");
-	language_choice->add("NORWEGIAN",            "nn_NO", language == "nn_NO");
-	language_choice->add("OCCITAN",              "oc_FR", language == "oc_FR");
-	language_choice->add("POLISH",               "pl_PL", language == "pl_PL");
-	language_choice->add("PORTUGUES BRASILEIRO", "pt_BR", language == "pt_BR");
-	language_choice->add("PORTUGUES PORTUGAL",   "pt_PT", language == "pt_PT");
-	language_choice->add("RUSSIAN",              "ru_RU", language == "ru_RU");
-	language_choice->add("SVENSKA", 	     "sv_SE", language == "sv_SE");
-	language_choice->add("TÜRKÇE",  	     "tr_TR", language == "tr_TR");
-	language_choice->add("Українська",           "uk_UA", language == "uk_UA");
-	language_choice->add("简体中文", 	     "zh_CN", language == "zh_CN");
-	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
-	s->addWithLabel(_("LANGUAGE"), language_choice);
-
-	auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
-	invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
-	s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
-	s->addSaveFunc([this, invertJoy]
-	{
-		if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
-		{
-			InputConfig::AssignActionButtons();
-			ViewController::get()->reloadAll(mWindow);
-		}
-	});
-
-	s->addSaveFunc([window, language_choice, language, s]
-	{
-		bool reboot = false;
-
-		if (language_choice->changed())
-		{
-#ifdef _ENABLEEMUELEC
-			std::string selectedLanguage = language_choice->getSelected();
-			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
-			msg += _("Emulationstation will restart")+"\n";
-			msg += _("Do you want to proceed ?");
-			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
-			SystemConf::getInstance()->set("system.language", selectedLanguage);
-			SystemConf::getInstance()->saveSystemConf();
-					runSystemCommand("systemctl restart emustation", "", nullptr);
-			}, "NO",nullptr));
-#else
-			if (SystemConf::getInstance()->set("system.language", language_choice->getSelected()))
-			{
-				FileSorts::reset();
-				MetaDataList::initMetadata();
-
-				s->setVariable("reloadGuiMenu", true);
-#ifdef HAVE_INTL
-				reboot = true;
-#endif
-			}
-#endif
-		}
-
-		if (reboot)
-			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-
-	});
-
-	// Developer options
-	s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
 
 	mWindow->pushGui(s);
 }
@@ -1791,16 +1705,20 @@ void GuiMenu::openSystemSettings_batocera()
 
 	});
 
+	// Developer options
+	s->addEntry(_("DEVELOPER"), true, [this] { openDeveloperSettings(); });
+
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
 
 
 	//Danger zone options
-		s->addEntry(_("DANGER ZONE!"), true, [this]
-		{
+	s->addEntry(_("DANGER ZONE!"), true, [this]
+	{
 	Window* window = mWindow;
 	ComponentListRow row;
 	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
+
 	// backup configs
 	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/351ELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
@@ -3409,6 +3327,77 @@ void GuiMenu::openUISettings()
 		}
 	}
 
+	// language choice
+	auto language_choice = std::make_shared<OptionListComponent<std::string> >(window, _("LANGUAGE"), false);
+
+	std::string language = SystemConf::getInstance()->get("system.language");
+	if (language.empty())
+		language = "en_US";
+
+	language_choice->add("ARABIC",               "ar_YE", language == "ar_YE");
+	language_choice->add("CATALÀ",               "ca_ES", language == "ca_ES");
+	language_choice->add("CYMRAEG",              "cy_GB", language == "cy_GB");
+	language_choice->add("DEUTSCH", 	     "de_DE", language == "de_DE");
+	language_choice->add("GREEK",                "el_GR", language == "el_GR");
+	language_choice->add("ENGLISH", 	     "en_US", language == "en_US" || language == "en");
+	language_choice->add("ESPAÑOL", 	     "es_ES", language == "es_ES" || language == "es");
+	language_choice->add("ESPAÑOL MEXICANO",     "es_MX", language == "es_MX");
+	language_choice->add("BASQUE",               "eu_ES", language == "eu_ES");
+	language_choice->add("FRANÇAIS",             "fr_FR", language == "fr_FR" || language == "fr");
+	language_choice->add("HUNGARIAN",            "hu_HU", language == "hu_HU");
+	language_choice->add("ITALIANO",             "it_IT", language == "it_IT");
+	language_choice->add("JAPANESE", 	     "ja_JP", language == "ja_JP");
+	language_choice->add("KOREAN",   	     "ko_KR", language == "ko_KR" || language == "ko");
+	language_choice->add("NORWEGIAN BOKMAL",     "nb_NO", language == "nb_NO");
+	language_choice->add("DUTCH",                "nl_NL", language == "nl_NL");
+	language_choice->add("NORWEGIAN",            "nn_NO", language == "nn_NO");
+	language_choice->add("OCCITAN",              "oc_FR", language == "oc_FR");
+	language_choice->add("POLISH",               "pl_PL", language == "pl_PL");
+	language_choice->add("PORTUGUES BRASILEIRO", "pt_BR", language == "pt_BR");
+	language_choice->add("PORTUGUES PORTUGAL",   "pt_PT", language == "pt_PT");
+	language_choice->add("RUSSIAN",              "ru_RU", language == "ru_RU");
+	language_choice->add("SVENSKA", 	     "sv_SE", language == "sv_SE");
+	language_choice->add("TÜRKÇE",  	     "tr_TR", language == "tr_TR");
+	language_choice->add("Українська",           "uk_UA", language == "uk_UA");
+	language_choice->add("简体中文", 	     "zh_CN", language == "zh_CN");
+	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
+	s->addWithLabel(_("LANGUAGE"), language_choice);
+
+	s->addSaveFunc([window, language_choice, language, s]
+	{
+		bool reboot = false;
+
+		if (language_choice->changed())
+		{
+#ifdef _ENABLEEMUELEC
+			std::string selectedLanguage = language_choice->getSelected();
+			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
+			msg += _("Emulationstation will restart")+"\n";
+			msg += _("Do you want to proceed ?");
+			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
+			SystemConf::getInstance()->set("system.language", selectedLanguage);
+			SystemConf::getInstance()->saveSystemConf();
+					runSystemCommand("systemctl restart emustation", "", nullptr);
+			}, "NO",nullptr));
+#else
+			if (SystemConf::getInstance()->set("system.language", language_choice->getSelected()))
+			{
+				FileSorts::reset();
+				MetaDataList::initMetadata();
+
+				s->setVariable("reloadGuiMenu", true);
+#ifdef HAVE_INTL
+				reboot = true;
+#endif
+			}
+#endif
+		}
+
+		if (reboot)
+			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+
+	});
+
 	// retroarch.menu_driver choose from 'auto' (default), 'xmb', 'rgui', 'ozone', 'glui'
 	auto retroarchRgui = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETROARCH MENU DRIVER"), false);
 	std::vector<std::string> driver;
@@ -3486,6 +3475,18 @@ void GuiMenu::openUISettings()
 		s->addWithLabel(_("SHOW BATTERY STATUS"), batteryStatus);
 		s->addSaveFunc([batteryStatus] { Settings::getInstance()->setString("ShowBattery", batteryStatus->getSelected()); });
 	}
+
+	auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
+	invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
+	s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
+	s->addSaveFunc([this, invertJoy]
+	{
+		if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
+		{
+			InputConfig::AssignActionButtons();
+			ViewController::get()->reloadAll(mWindow);
+		}
+	});
 
 	s->addGroup(_("GAMELIST OPTIONS"));
 
