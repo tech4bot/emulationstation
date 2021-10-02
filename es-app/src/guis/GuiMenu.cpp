@@ -1346,30 +1346,6 @@ void GuiMenu::openSystemSettings_batocera()
 		SystemConf::getInstance()->set("system.timezone", emuelec_timezones->getSelected());
 	});
 
-	// UI RESTRICTIONS
-	auto UImodeSelection = std::make_shared< OptionListComponent<std::string> >(mWindow, _("UI MODE"), false);
-	std::vector<std::string> UImodes = UIModeController::getInstance()->getUIModes();
-	for (auto it = UImodes.cbegin(); it != UImodes.cend(); it++)
-		UImodeSelection->add(_(it->c_str()), *it, Settings::getInstance()->getString("UIMode") == *it);
-
-	s->addWithLabel(_("UI MODE"), UImodeSelection);
-	s->addSaveFunc([UImodeSelection, window]
-	{
-		std::string selectedMode = UImodeSelection->getSelected();
-		if (selectedMode != "Full")
-		{
-			std::string msg = _("You are changing the UI to a restricted mode:\nThis will hide most menu-options to prevent changes to the system.\nTo unlock and return to the full UI, enter this code:") + "\n";
-			msg += "\"" + UIModeController::getInstance()->getFormattedPassKeyStr() + "\"\n\n";
-			msg += _("Do you want to proceed ?");
-			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), [selectedMode] {
-				LOG(LogDebug) << "Setting UI mode to " << selectedMode;
-				Settings::getInstance()->setString("UIMode", selectedMode);
-				Settings::getInstance()->saveFile();
-			}, _("NO"), nullptr));
-		}
-	});
-
 	// KODI SETTINGS
 #ifdef _ENABLE_KODI_
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::KODI))
@@ -3396,6 +3372,30 @@ void GuiMenu::openUISettings()
 		if (reboot)
 			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
+	});
+
+	// UI RESTRICTIONS
+	auto UImodeSelection = std::make_shared< OptionListComponent<std::string> >(mWindow, _("UI MODE"), false);
+	std::vector<std::string> UImodes = UIModeController::getInstance()->getUIModes();
+	for (auto it = UImodes.cbegin(); it != UImodes.cend(); it++)
+		UImodeSelection->add(_(it->c_str()), *it, Settings::getInstance()->getString("UIMode") == *it);
+
+	s->addWithLabel(_("UI MODE"), UImodeSelection);
+	s->addSaveFunc([UImodeSelection, window]
+	{
+		std::string selectedMode = UImodeSelection->getSelected();
+		if (selectedMode != "Full")
+		{
+			std::string msg = _("You are changing the UI to a restricted mode:\nThis will hide most menu-options to prevent changes to the system.\nTo unlock and return to the full UI, enter this code:") + "\n";
+			msg += "\"" + UIModeController::getInstance()->getFormattedPassKeyStr() + "\"\n\n";
+			msg += _("Do you want to proceed ?");
+			window->pushGui(new GuiMsgBox(window, msg,
+				_("YES"), [selectedMode] {
+				LOG(LogDebug) << "Setting UI mode to " << selectedMode;
+				Settings::getInstance()->setString("UIMode", selectedMode);
+				Settings::getInstance()->saveFile();
+			}, _("NO"), nullptr));
+		}
 	});
 
 	// retroarch.menu_driver choose from 'auto' (default), 'xmb', 'rgui', 'ozone', 'glui'
