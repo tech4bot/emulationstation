@@ -112,23 +112,24 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	}, "iconKodi");
 #endif
 
-#ifdef _ENABLEEMUELEC
-		addEntry(_("SYSTEM SETTINGS").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
-#endif
-
-	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
-		SystemConf::getInstance()->getBool("global.retroachievements") &&
-		Settings::getInstance()->getBool("RetroachievementsMenuitem") &&
-		SystemConf::getInstance()->get("global.retroachievements.username") != "")
-		addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
-
 	if (isFullUI)
 	{
 #if !defined(WIN32) || defined(_DEBUG)
 		addEntry(_("GAMES SETTINGS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
-		//addEntry(_("CONTROLLERS SETTINGS").c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
-		addEntry(_("UI SETTINGS").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(_("GAME COLLECTION SETTINGS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
+
+		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
+			SystemConf::getInstance()->getBool("global.retroachievements") &&
+			Settings::getInstance()->getBool("RetroachievementsMenuitem") &&
+			SystemConf::getInstance()->get("global.retroachievements.username") != "")
+			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
+
+#ifdef _ENABLEEMUELEC
+		addEntry(_("SYSTEM SETTINGS").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
+		addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+#endif
+		addEntry(_("UI SETTINGS").c_str(), true, [this] { openUISettings(); }, "iconUI");
+		//addEntry(_("CONTROLLERS SETTINGS").c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
 		addEntry(_("SOUND SETTINGS").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::WIFI))
@@ -162,14 +163,18 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 		addEntry(_("SCRAPE").c_str(), true, [this] { openScraperSettings(); }, "iconScraper");
 		addEntry(_("UPDATES & DOWNLOADS"), true, [this] { openUpdatesSettings(); }, "iconUpdates");
-#ifdef _ENABLEEMUELEC
-		if (isFullUI)
-			addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
-#endif
 	}
 	else
 	{
-		addEntry(_("INFORMATIONS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
+
+
+		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
+			SystemConf::getInstance()->getBool("global.retroachievements") &&
+			Settings::getInstance()->getBool("RetroachievementsMenuitem") &&
+			SystemConf::getInstance()->get("global.retroachievements.username") != "")
+			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
+
+		addEntry(_("INFORMATION").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
 		addEntry(_("UNLOCK UI MODE").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
 	}
 
@@ -421,7 +426,7 @@ void GuiMenu::openEmuELECSettings()
 			ViewController::get()->reloadAll(mWindow);
 		}
 	});
-	
+
 	s->addSaveFunc([window, language_choice, language, s]
 	{
 		bool reboot = false;
@@ -3425,7 +3430,7 @@ void GuiMenu::openUISettings()
 	{
 		SystemConf::getInstance()->set("global.retroarch.menu_driver", retroarchRgui->getSelected());
 		SystemConf::getInstance()->saveSystemConf();
-	});	
+	});
 
 	s->addGroup(_("DISPLAY OPTIONS"));
 
