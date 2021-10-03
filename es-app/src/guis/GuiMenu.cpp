@@ -2364,7 +2364,7 @@ void GuiMenu::openGamesSettings_batocera()
 			s->addEntry(_("NETPLAY SETTINGS"), true, [this] { openNetplaySettings(); }, "iconNetplay");
 
 		// Add an entry to the Diablo phone book for Multiplayer
-		s->addEntry(_("DIABLO SERVER"), true, [this] { openDiabloServer(); });
+		//s->addEntry(_("DIABLO SERVER"), true, [this] { openDiabloServer(); });
 
 		// Missing Bios
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::BIOSINFORMATION))
