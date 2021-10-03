@@ -3926,6 +3926,9 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		}
 	}
 
+	if (quickAccessMenu)
+		s->addGroup(_("QUIT"));
+
 #ifdef _ENABLEEMUELEC
 	s->addEntry(_("RESTART EMULATIONSTATION"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
@@ -3948,9 +3951,6 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 	//}, "iconControllers");
 
 #endif
-
-	if (quickAccessMenu)
-		s->addGroup(_("QUIT"));
 
 	s->addEntry(_("RESTART SYSTEM"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART?"),
