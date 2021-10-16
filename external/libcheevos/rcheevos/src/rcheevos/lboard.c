@@ -1,4 +1,4 @@
-#include "internal.h"
+#include "rc_internal.h"
 
 enum {
   RC_LBOARD_START    = 1 << 0,
@@ -29,10 +29,6 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->start, &memaddr, parse);
       self->start.memrefs = 0;
-
-      if (parse->offset < 0) {
-        return;
-      }
     }
     else if ((memaddr[0] == 'c' || memaddr[0] == 'C') &&
              (memaddr[1] == 'a' || memaddr[1] == 'A') &&
@@ -46,10 +42,6 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->cancel, &memaddr, parse);
       self->cancel.memrefs = 0;
-
-      if (parse->offset < 0) {
-        return;
-      }
     }
     else if ((memaddr[0] == 's' || memaddr[0] == 'S') &&
              (memaddr[1] == 'u' || memaddr[1] == 'U') &&
@@ -63,10 +55,6 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->submit, &memaddr, parse);
       self->submit.memrefs = 0;
-
-      if (parse->offset < 0) {
-        return;
-      }
     }
     else if ((memaddr[0] == 'v' || memaddr[0] == 'V') &&
              (memaddr[1] == 'a' || memaddr[1] == 'A') &&
@@ -80,10 +68,6 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_value_internal(&self->value, &memaddr, parse);
       self->value.memrefs = 0;
-
-      if (parse->offset < 0) {
-        return;
-      }
     }
     else if ((memaddr[0] == 'p' || memaddr[0] == 'P') &&
              (memaddr[1] == 'r' || memaddr[1] == 'R') &&
@@ -99,18 +83,20 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       self->progress = RC_ALLOC(rc_value_t, parse);
       rc_parse_value_internal(self->progress, &memaddr, parse);
       self->progress->memrefs = 0;
-
-      if (parse->offset < 0) {
-        return;
-      }
     }
-    else {
+
+    /* encountered an error parsing one of the parts */
+    if (parse->offset < 0)
+      return;
+
+    /* end of string, or end of quoted string - stop processing */
+    if (memaddr[0] == '\0' || memaddr[0] == '\"')
+      break;
+
+    /* expect two colons between fields */
+    if (memaddr[0] != ':' || memaddr[1] != ':') {
       parse->offset = RC_INVALID_LBOARD_FIELD;
       return;
-    }
-
-    if (memaddr[0] != ':' || memaddr[1] != ':') {
-      break;
     }
 
     memaddr += 2;
@@ -153,6 +139,10 @@ int rc_lboard_size(const char* memaddr) {
 rc_lboard_t* rc_parse_lboard(void* buffer, const char* memaddr, lua_State* L, int funcs_ndx) {
   rc_lboard_t* self;
   rc_parse_state_t parse;
+
+  if (!buffer || !memaddr)
+    return 0;
+
   rc_init_parse_state(&parse, buffer, L, funcs_ndx);
 
   self = RC_ALLOC(rc_lboard_t, &parse);
@@ -161,7 +151,7 @@ rc_lboard_t* rc_parse_lboard(void* buffer, const char* memaddr, lua_State* L, in
   rc_parse_lboard_internal(self, memaddr, &parse);
 
   rc_destroy_parse_state(&parse);
-  return parse.offset >= 0 ? self : 0;
+  return (parse.offset >= 0) ? self : 0;
 }
 
 int rc_evaluate_lboard(rc_lboard_t* self, int* value, rc_peek_t peek, void* peek_ud, lua_State* L) {
@@ -169,7 +159,7 @@ int rc_evaluate_lboard(rc_lboard_t* self, int* value, rc_peek_t peek, void* peek
 
   rc_update_memref_values(self->memrefs, peek, peek_ud);
 
-  if (self->state == RC_LBOARD_STATE_INACTIVE)
+  if (self->state == RC_LBOARD_STATE_INACTIVE || self->state == RC_LBOARD_STATE_DISABLED)
     return RC_LBOARD_STATE_INACTIVE;
 
   /* these are always tested once every frame, to ensure hit counts work properly */

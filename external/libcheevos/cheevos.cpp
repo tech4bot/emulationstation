@@ -1,6 +1,6 @@
 #include "cheevos.h"
-#include "rcheevos/include/rhash.h"
-#include "rcheevos/include/rconsoles.h"
+#include "rcheevos/include/rc_hash.h"
+#include "rcheevos/include/rc_consoles.h"
 #include "libretro-common/include/formats/cdfs.h"
 
 #include <cstdlib>

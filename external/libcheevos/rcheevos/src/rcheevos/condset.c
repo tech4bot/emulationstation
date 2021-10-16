@@ -1,39 +1,37 @@
-#include "internal.h"
+#include "rc_internal.h"
 
-static void rc_update_condition_pause(rc_condition_t* condition, int* in_pause) {
-  if (condition->next != 0) {
-    rc_update_condition_pause(condition->next, in_pause);
-  }
+#include <string.h> /* memcpy */
 
-  switch (condition->type) {
-    case RC_CONDITION_PAUSE_IF:
-      *in_pause = condition->pause = 1;
-      break;
+static void rc_update_condition_pause(rc_condition_t* condition) {
+  rc_condition_t* subclause = condition;
 
-    case RC_CONDITION_ADD_SOURCE:
-    case RC_CONDITION_SUB_SOURCE:
-    case RC_CONDITION_ADD_HITS:
-    case RC_CONDITION_AND_NEXT:
-    case RC_CONDITION_OR_NEXT:
-    case RC_CONDITION_ADD_ADDRESS:
-      condition->pause = *in_pause;
-      break;
+  while (condition) {
+    if (condition->type == RC_CONDITION_PAUSE_IF) {
+      while (subclause != condition) {
+        subclause->pause = 1;
+        subclause = subclause->next;
+      }
+      condition->pause = 1;
+    }
+    else {
+      condition->pause = 0;
+    }
 
-    default:
-      *in_pause = condition->pause = 0;
-      break;
+    if (!rc_condition_is_combining(condition))
+      subclause = condition->next;
+
+    condition = condition->next;
   }
 }
 
 rc_condset_t* rc_parse_condset(const char** memaddr, rc_parse_state_t* parse, int is_value) {
   rc_condset_t* self;
   rc_condition_t** next;
-  int in_pause;
   int in_add_address;
   unsigned measured_target = 0;
 
   self = RC_ALLOC(rc_condset_t, parse);
-  self->has_pause = self->is_paused = 0;
+  self->has_pause = self->is_paused = self->has_indirect_memrefs = 0;
   next = &self->conditions;
 
   if (**memaddr == 'S' || **memaddr == 's' || !**memaddr) {
@@ -53,14 +51,13 @@ rc_condset_t* rc_parse_condset(const char** memaddr, rc_parse_state_t* parse, in
     if ((*next)->oper == RC_OPERATOR_NONE) {
       switch ((*next)->type) {
         case RC_CONDITION_ADD_ADDRESS:
-        case RC_CONDITION_ADD_HITS:
         case RC_CONDITION_ADD_SOURCE:
         case RC_CONDITION_SUB_SOURCE:
-        case RC_CONDITION_AND_NEXT:
-        case RC_CONDITION_OR_NEXT:
+          /* these conditions don't require a right hand size (implied *1) */
           break;
 
         case RC_CONDITION_MEASURED:
+          /* right hand side is not required when Measured is used in a value */
           if (is_value)
             break;
           /* fallthrough to default */
@@ -73,6 +70,7 @@ rc_condset_t* rc_parse_condset(const char** memaddr, rc_parse_state_t* parse, in
 
     self->has_pause |= (*next)->type == RC_CONDITION_PAUSE_IF;
     in_add_address = (*next)->type == RC_CONDITION_ADD_ADDRESS;
+    self->has_indirect_memrefs |= in_add_address;
 
     switch ((*next)->type) {
     case RC_CONDITION_MEASURED:
@@ -91,6 +89,9 @@ rc_condset_t* rc_parse_condset(const char** memaddr, rc_parse_state_t* parse, in
       }
       else if ((*next)->operand2.type == RC_OPERAND_CONST) {
         measured_target = (*next)->operand2.value.num;
+      }
+      else if ((*next)->operand2.type == RC_OPERAND_FP) {
+        measured_target = (unsigned)(*next)->operand2.value.dbl;
       }
       else {
         parse->offset = RC_INVALID_MEASURED_TARGET;
@@ -130,52 +131,89 @@ rc_condset_t* rc_parse_condset(const char** memaddr, rc_parse_state_t* parse, in
 
   *next = 0;
 
-  if (parse->buffer != 0) {
-    in_pause = 0;
-    rc_update_condition_pause(self->conditions, &in_pause);
-  }
+  if (parse->buffer != 0)
+    rc_update_condition_pause(self->conditions);
 
   return self;
 }
 
+static void rc_condset_update_indirect_memrefs(rc_condition_t* condition, int processing_pause, rc_eval_state_t* eval_state) {
+  for (; condition != 0; condition = condition->next) {
+    if (condition->pause != processing_pause)
+      continue;
+
+    if (condition->type == RC_CONDITION_ADD_ADDRESS) {
+      rc_typed_value_t value;
+      rc_evaluate_condition_value(&value, condition, eval_state);
+      rc_typed_value_convert(&value, RC_VALUE_TYPE_UNSIGNED);
+      eval_state->add_address = value.value.u32;
+      continue;
+    }
+
+    /* call rc_get_memref_value to update the indirect memrefs. it won't do anything with non-indirect
+     * memrefs and avoids a second check of is_indirect. also, we ignore the response, so it doesn't
+     * matter what operand type we pass. assume RC_OPERAND_ADDRESS is the quickest. */
+    if (rc_operand_is_memref(&condition->operand1))
+      rc_get_memref_value(condition->operand1.value.memref, RC_OPERAND_ADDRESS, eval_state);
+
+    if (rc_operand_is_memref(&condition->operand2))
+      rc_get_memref_value(condition->operand2.value.memref, RC_OPERAND_ADDRESS, eval_state);
+
+    eval_state->add_address = 0;
+  }
+}
+
 static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc_eval_state_t* eval_state) {
   rc_condition_t* condition;
-  int set_valid, cond_valid, and_next, or_next;
-  unsigned measured_value = 0;
-  unsigned total_hits = 0;
-  int can_measure = 1, measured_from_hits = 0;
+  rc_typed_value_t value;
+  int set_valid, cond_valid, and_next, or_next, reset_next, measured_from_hits, can_measure;
+  rc_typed_value_t measured_value;
+  unsigned total_hits;
+
+  measured_value.type = RC_VALUE_TYPE_NONE;
+  measured_from_hits = 0;
+  can_measure = 1;
+  total_hits = 0;
 
   eval_state->primed = 1;
   set_valid = 1;
   and_next = 1;
   or_next = 0;
-  eval_state->add_value = eval_state->add_hits = eval_state->add_address = 0;
+  reset_next = 0;
+  eval_state->add_value.type = RC_VALUE_TYPE_NONE;
+  eval_state->add_hits = eval_state->add_address = 0;
 
   for (condition = self->conditions; condition != 0; condition = condition->next) {
-    if (condition->pause != processing_pause) {
+    if (condition->pause != processing_pause)
       continue;
-    }
 
     /* STEP 1: process modifier conditions */
     switch (condition->type) {
       case RC_CONDITION_ADD_SOURCE:
-        eval_state->add_value += rc_evaluate_condition_value(condition, eval_state);
+        rc_evaluate_condition_value(&value, condition, eval_state);
+        rc_typed_value_add(&eval_state->add_value, &value);
         eval_state->add_address = 0;
         continue;
 
       case RC_CONDITION_SUB_SOURCE:
-        eval_state->add_value -= rc_evaluate_condition_value(condition, eval_state);
+        rc_evaluate_condition_value(&value, condition, eval_state);
+        rc_typed_value_convert(&value, RC_VALUE_TYPE_SIGNED);
+        value.value.i32 = -value.value.i32;
+        rc_typed_value_add(&eval_state->add_value, &value);
         eval_state->add_address = 0;
         continue;
 
       case RC_CONDITION_ADD_ADDRESS:
-        eval_state->add_address = rc_evaluate_condition_value(condition, eval_state);
+        rc_evaluate_condition_value(&value, condition, eval_state);
+        rc_typed_value_convert(&value, RC_VALUE_TYPE_UNSIGNED);
+        eval_state->add_address = value.value.u32;
         continue;
 
       case RC_CONDITION_MEASURED:
-        if (condition->required_hits == 0) {
+        if (condition->required_hits == 0 && can_measure) {
           /* Measured condition without a hit target measures the value of the left operand */
-          measured_value = rc_evaluate_condition_value(condition, eval_state) + eval_state->add_value;
+          rc_evaluate_condition_value(&measured_value, condition, eval_state);
+          rc_typed_value_add(&measured_value, &eval_state->add_value);
         }
         break;
 
@@ -184,8 +222,8 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
     }
 
     /* STEP 2: evaluate the current condition */
-    condition->is_true = rc_test_condition(condition, eval_state);
-    eval_state->add_value = 0;
+    condition->is_true = (char)rc_test_condition(condition, eval_state);
+    eval_state->add_value.type = RC_VALUE_TYPE_NONE;
     eval_state->add_address = 0;
 
     /* apply logic flags and reset them for the next condition */
@@ -195,8 +233,16 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
     and_next = 1;
     or_next = 0;
 
-    /* true conditions should update hit count */
-    if (cond_valid) {
+    if (reset_next) {
+      /* previous ResetNextIf resets the hit count on this condition and prevents it from being true */
+      if (condition->current_hits)
+        eval_state->was_cond_reset = 1;
+
+      condition->current_hits = 0;
+      cond_valid = 0;
+    }
+    else if (cond_valid) {
+      /* true conditions should update hit count */
       eval_state->has_hits = 1;
 
       if (condition->required_hits == 0) {
@@ -222,6 +268,16 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
     switch (condition->type) {
       case RC_CONDITION_ADD_HITS:
         eval_state->add_hits += condition->current_hits;
+        reset_next = 0; /* ResetNextIf was applied to this AddHits condition; don't apply it to future conditions */
+        continue;
+
+      case RC_CONDITION_SUB_HITS:
+        eval_state->add_hits -= condition->current_hits;
+        reset_next = 0; /* ResetNextIf was applied to this AddHits condition; don't apply it to future conditions */
+        continue;
+
+      case RC_CONDITION_RESET_NEXT_IF:
+        reset_next = cond_valid;
         continue;
 
       case RC_CONDITION_AND_NEXT:
@@ -236,13 +292,17 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
         break;
     }
 
+    /* reset logic flags for next condition */
+    reset_next = 0;
+
     /* STEP 4: calculate total hits */
     total_hits = condition->current_hits;
 
     if (eval_state->add_hits) {
       if (condition->required_hits != 0) {
         /* if the condition has a target hit count, we have to recalculate cond_valid including the AddHits counter */
-        total_hits = condition->current_hits + eval_state->add_hits;
+        const int signed_hits = (int)condition->current_hits + eval_state->add_hits;
+        total_hits = (signed_hits >= 0) ? (unsigned)signed_hits : 0;
         cond_valid = (total_hits >= condition->required_hits);
       }
       else {
@@ -258,6 +318,17 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
       case RC_CONDITION_PAUSE_IF:
         /* as soon as we find a PauseIf that evaluates to true, stop processing the rest of the group */
         if (cond_valid) {
+          /* indirect memrefs are not updated as part of the rc_update_memref_values call.
+           * an active pause aborts processing of the remaining part of the pause subset and the entire non-pause subset.
+           * if the set has any indirect memrefs, manually update them now so the deltas are correct */
+          if (self->has_indirect_memrefs) {
+            /* first, update any indirect memrefs in the remaining part of the pause subset  */
+            rc_condset_update_indirect_memrefs(condition->next, 1, eval_state);
+
+            /* then, update all indirect memrefs in the non-pause subset */
+            rc_condset_update_indirect_memrefs(self->conditions, 0, eval_state);
+          }
+
           return 1;
         }
 
@@ -286,13 +357,19 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
         if (condition->required_hits != 0) {
           /* if there's a hit target, capture the current hits for recording Measured value later */
           measured_from_hits = 1;
-          measured_value = total_hits;
+          if (can_measure) {
+            measured_value.value.u32 = total_hits;
+            measured_value.type = RC_VALUE_TYPE_UNSIGNED;
+          }
         }
         break;
 
       case RC_CONDITION_MEASURED_IF:
-        if (!cond_valid)
+        if (!cond_valid) {
+          measured_value.value.u32 = 0;
+          measured_value.type = RC_VALUE_TYPE_UNSIGNED;
           can_measure = 0;
+        }
         break;
 
       case RC_CONDITION_TRIGGER:
@@ -309,10 +386,13 @@ static int rc_test_condset_internal(rc_condset_t* self, int processing_pause, rc
     set_valid &= cond_valid;
   }
 
-  /* if not suppressed, update the measured value */
-  if (measured_value > eval_state->measured_value && can_measure) {
-    eval_state->measured_value = measured_value;
-    eval_state->measured_from_hits = measured_from_hits;
+  if (measured_value.type != RC_VALUE_TYPE_NONE) {
+    /* if no previous Measured value was captured, or the new one is greater, keep the new one */
+    if (eval_state->measured_value.type == RC_VALUE_TYPE_NONE ||
+        rc_typed_value_compare(&measured_value, &eval_state->measured_value, RC_OPERATOR_GT)) {
+      memcpy(&eval_state->measured_value, &measured_value, sizeof(measured_value));
+      eval_state->measured_from_hits = (char)measured_from_hits;
+    }
   }
 
   return set_valid;
@@ -325,8 +405,9 @@ int rc_test_condset(rc_condset_t* self, rc_eval_state_t* eval_state) {
   }
 
   if (self->has_pause) {
-    if ((self->is_paused = rc_test_condset_internal(self, 1, eval_state))) {
-      /* one or more Pause conditions exists, if any of them are true, stop processing this group */
+    /* one or more Pause conditions exists, if any of them are true, stop processing this group */
+    self->is_paused = (char)rc_test_condset_internal(self, 1, eval_state);
+    if (self->is_paused) {
       eval_state->primed = 0;
       return 0;
     }

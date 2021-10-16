@@ -1,11 +1,11 @@
-#ifndef RHASH_H
-#define RHASH_H
+#ifndef RC_HASH_H
+#define RC_HASH_H
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 
-#include "rconsoles.h"
+#include "rc_consoles.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,7 @@ extern "C" {
   /* generates a hash from a block of memory.
    * returns non-zero on success, or zero on failure.
    */
-  int rc_hash_generate_from_buffer(char hash[33], int console_id, uint8_t* buffer, size_t buffer_size);
+  int rc_hash_generate_from_buffer(char hash[33], int console_id, const uint8_t* buffer, size_t buffer_size);
 
   /* generates a hash from a file.
    * returns non-zero on success, or zero on failure.
@@ -66,10 +66,10 @@ extern "C" {
   typedef void* (*rc_hash_filereader_open_file_handler)(const char* path_utf8);
 
   /* moves the file pointer - standard fseek parameters */
-  typedef void (*rc_hash_filereader_seek_handler)(void* file_handle, size_t offset, int origin);
+  typedef void (*rc_hash_filereader_seek_handler)(void* file_handle, int64_t offset, int origin);
 
   /* locates the file pointer */
-  typedef size_t (*rc_hash_filereader_tell_handler)(void* file_handle);
+  typedef int64_t (*rc_hash_filereader_tell_handler)(void* file_handle);
 
   /* reads the specified number of bytes from the file starting at the read pointer.
    * returns the number of bytes actually read.
@@ -120,7 +120,7 @@ extern "C" {
     rc_hash_cdreader_absolute_sector_to_track_sector absolute_sector_to_track_sector;
   };
 
-  void rc_hash_init_default_cdreader();
+  void rc_hash_init_default_cdreader(void);
   void rc_hash_init_custom_cdreader(struct rc_hash_cdreader* reader);
 
   /* ===================================================== */
@@ -129,4 +129,4 @@ extern "C" {
 }
 #endif
 
-#endif /* RHASH_H */
+#endif /* RC_HASH_H */

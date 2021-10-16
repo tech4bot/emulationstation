@@ -1,4 +1,4 @@
-#include "internal.h"
+#include "rc_internal.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +108,7 @@ char* rc_alloc_str(rc_parse_state_t* parse, const char* text, int length) {
       next = &(*next)->right;
   }
 
-  *next = rc_alloc_scratch(NULL, &used, sizeof(rc_scratch_string_t), RC_ALIGNOF(rc_scratch_string_t), &parse->scratch, RC_OFFSETOF(parse->scratch.objs, __rc_scratch_string_t));
+  *next = (rc_scratch_string_t*)rc_alloc_scratch(NULL, &used, sizeof(rc_scratch_string_t), RC_ALIGNOF(rc_scratch_string_t), &parse->scratch, RC_OFFSETOF(parse->scratch.objs, __rc_scratch_string_t));
   ptr = (char*)rc_alloc_scratch(parse->buffer, &parse->offset, length + 1, RC_ALIGNOF(char), &parse->scratch, -1);
 
   if (!ptr || !*next) {
@@ -142,6 +142,9 @@ void rc_init_parse_state(rc_parse_state_t* parse, void* buffer, lua_State* L, in
   parse->first_memref = 0;
   parse->variables = 0;
   parse->measured_target = 0;
+  parse->lines_read = 0;
+  parse->has_required_hits = 0;
+  parse->measured_as_percent = 0;
 }
 
 void rc_destroy_parse_state(rc_parse_state_t* parse)
@@ -185,6 +188,7 @@ const char* rc_error_str(int ret)
     case RC_INVALID_MEASURED_TARGET: return "Invalid measured target";
     case RC_INVALID_COMPARISON: return "Invalid comparison";
     case RC_INVALID_STATE: return "Invalid state";
+    case RC_INVALID_JSON: return "Invalid JSON";
 
     default: return "Unknown error";
   }
