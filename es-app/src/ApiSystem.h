@@ -192,9 +192,9 @@ public:
 	virtual std::pair<std::string,int> installBatoceraTheme(std::string thname, const std::function<void(const std::string)>& func = nullptr);
 	virtual std::pair<std::string, int> uninstallBatoceraBezel(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
 
-        // Packages
-        virtual std::vector<ThreeFiftyOnePackage> getThreeFiftyOnePackagesList();
-        virtual std::pair<std::string,int> installThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func = nullptr);
+	// Packages
+	virtual std::vector<ThreeFiftyOnePackage> getThreeFiftyOnePackagesList();
+	virtual std::pair<std::string,int> installThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func = nullptr);
 
     virtual std::vector<BatoceraBezel> getBatoceraBezelsList();
 	virtual std::pair<std::string,int> installBatoceraBezel(std::string bezelsystem, const std::function<void(const std::string)>& func = nullptr);
@@ -219,8 +219,8 @@ public:
 
 	void callBatoceraPreGameListsHook();
 
-	bool	getBrighness(int& value);
-	void	setBrighness(int value);
+	bool	getBrightness(int& value);
+	void	setBrightness(int value);
 
 	std::vector<std::string> getWifiNetworks(bool scan = false);
 
@@ -255,7 +255,7 @@ protected:
 	std::string getUpdateUrl();
     static ApiSystem* instance;
 
-        void getThreeFiftyOnePackagesImages(std::vector<ThreeFiftyOnePackage>& items);
+	void getThreeFiftyOnePackagesImages(std::vector<ThreeFiftyOnePackage>& items);
 
     void launchExternalWindow_before(Window *window);
     void launchExternalWindow_after(Window *window);

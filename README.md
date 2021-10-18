@@ -190,3 +190,4 @@ Themes
 ======
 
 By default, EmulationStation looks pretty ugly. You can fix that. If you want to know more about making your own themes (or editing existing ones), read [THEMES.md](THEMES.md)!
+

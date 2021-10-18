@@ -1065,8 +1065,6 @@ std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 
 	LOG(LogDebug) << "getMD5 << " << ret;
 
-	LOG(LogDebug) << "getMD5 << " << ret;
-
 	return ret;
 }
 
@@ -1260,7 +1258,6 @@ void ApiSystem::setBrightness(int value)
 	close(fd);
 #endif
 }
-
 
 std::vector<std::string> ApiSystem::getWifiNetworks(bool scan)
 {

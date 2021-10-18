@@ -13,8 +13,6 @@
 
 #define fake_gettext_dim			_("dim")
 #define fake_gettext_black			_("black")
-#define fake_gettext_sleep			_("sleep")
-
 #define fake_gettext_randomvideo	_("random video")
 #define fake_gettext_slideshow		_("slideshow")
 
@@ -44,7 +42,7 @@ GuiGeneralScreensaverOptions::GuiGeneralScreensaverOptions(Window* window, int s
 	
 	// Screensaver behavior
 	auto ctlBehavior = std::make_shared< OptionListComponent<std::string> >(mWindow, _("SCREENSAVER BEHAVIOR"), false);
-	ctlBehavior->addRange({ "dim", "black", "sleep", "random video", "slideshow" }, ssBehavior);
+	ctlBehavior->addRange({ "dim", "black", "random video", "slideshow" }, ssBehavior);
 	addWithLabel(_("SCREENSAVER BEHAVIOR"), ctlBehavior, selectItem == 1);
 	ctlBehavior->setSelectedChangedCallback([this](const std::string& name)
 	{

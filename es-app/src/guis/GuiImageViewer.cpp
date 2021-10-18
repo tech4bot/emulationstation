@@ -114,24 +114,24 @@ public:
 	{
 		if (input.value != 0)
 		{
-                        if (config->isMappedLike("LeftShoulder", input))
-                        {
-                                mZooming = -1;
-                                return true;
-                        }
-
-                        if (config->isMappedLike("RightShoulder", input))
-                        {
-                                mZooming = 1;
-                                return true;
-                        }
-
 			if (!mLocked && (config->isMappedTo(BUTTON_BACK, input) || config->isMappedTo(BUTTON_OK, input)))
 			{
 				delete this;
 				return true;
 			}
 
+			if (config->isMappedLike("pageup", input))
+			{				
+				mZooming = -1;
+				return true;
+			}
+			
+			if (config->isMappedLike("pagedown", input))
+			{
+				mZooming = 1;
+				return true;
+			}
+						
 			if (config->isMappedLike("down", input))
 			{
 				mMoving.y() = 1;
@@ -176,7 +176,7 @@ public:
 				return true;
 			}
 			
-			if (config->isMappedLike("RightShoulder", input) || config->isMappedLike("LeftShoulder", input))
+			if (config->isMappedLike("pagedown", input) || config->isMappedLike("pageup", input))
 			{
 				mZooming = 0;
 				return true;

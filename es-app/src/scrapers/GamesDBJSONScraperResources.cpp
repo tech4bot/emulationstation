@@ -9,11 +9,11 @@
 #include "Log.h"
 
 
-#ifdef GAMESDB_APIKEY
 using namespace rapidjson;
 
 namespace
 {
+constexpr char GamesDBAPIKey[] = "b699c2e6f9f85730fc2e4aa831b24172e68701352310f4e4d301d9342ae39636"; // batocera
 constexpr int MAX_WAIT_MS = 90000;
 constexpr int POLL_TIME_MS = 500;
 constexpr int MAX_WAIT_ITER = MAX_WAIT_MS / POLL_TIME_MS;
@@ -46,7 +46,7 @@ std::string getScrapersResouceDir()
 	return Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + std::string("/") + SCRAPER_RESOURCES_DIR); // batocera
 }
 
-std::string TheGamesDBJSONRequestResources::getApiKey() const { return GAMESDB_APIKEY; }
+std::string TheGamesDBJSONRequestResources::getApiKey() const { return GamesDBAPIKey; }
 
 
 void TheGamesDBJSONRequestResources::prepare()
@@ -198,4 +198,3 @@ int TheGamesDBJSONRequestResources::loadResource(
 	}
 	return resource.empty();
 }
-#endif

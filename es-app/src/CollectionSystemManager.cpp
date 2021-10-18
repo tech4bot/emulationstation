@@ -197,8 +197,8 @@ bool systemByManufacurerSort(SystemData* sys1, SystemData* sys2)
 		return false;
 
 	// Then by name
-	std::string name1 = Utils::String::toUpper(sys1->getFullName());
-	std::string name2 = Utils::String::toUpper(sys2->getFullName());
+	std::string name1 = Utils::String::toUpper(sys1->getName());
+	std::string name2 = Utils::String::toUpper(sys2->getName());
 	return name1.compare(name2) < 0;
 }
 
@@ -215,8 +215,8 @@ bool systemByReleaseDate(SystemData* sys1, SystemData* sys2)
 		return !sys2->isCollection();
 
 	// Then by name
-	std::string name1 = Utils::String::toUpper(sys1->getFullName());
-	std::string name2 = Utils::String::toUpper(sys2->getFullName());
+	std::string name1 = Utils::String::toUpper(sys1->getName());
+	std::string name2 = Utils::String::toUpper(sys2->getName());
 	return name1.compare(name2) < 0;
 }
 
@@ -233,8 +233,8 @@ bool systemByHardwareSort(SystemData* sys1, SystemData* sys2)
 		return mf1.compare(mf2) < 0;
 
 	// Then by name
-	std::string name1 = Utils::String::toUpper(sys1->getFullName());
-	std::string name2 = Utils::String::toUpper(sys2->getFullName());
+	std::string name1 = Utils::String::toUpper(sys1->getName());
+	std::string name2 = Utils::String::toUpper(sys2->getName());
 	return name1.compare(name2) < 0;
 }
 
@@ -627,6 +627,25 @@ std::string CollectionSystemManager::getValidNewCollectionName(std::string inNam
 		return getValidNewCollectionName(name, index+1);
 	return name;
 }
+
+bool CollectionSystemManager::inInCustomCollection(FileData* file, const std::string collectionName)
+{
+	auto data = mCustomCollectionSystemsData.find(collectionName);
+	if (data == mCustomCollectionSystemsData.cend())
+		return false;
+
+	if (!data->second.isPopulated)
+		populateCustomCollection(&data->second);
+	
+	std::string key = file->getFullPath();
+	FolderData* rootFolder = data->second.system->getRootFolder();
+	FileData* collectionEntry = rootFolder->FindByPath(key);
+	return collectionEntry != nullptr;
+}
+
+// Adds or removes a game from a specific collection
+bool CollectionSystemManager::toggleGameInCollection(FileData* file, const std::string collectionName)
+{
 	if (file->getType() != GAME)
 		return false;
 

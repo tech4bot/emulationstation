@@ -123,7 +123,7 @@ int runSystemCommand(const std::string& cmd_utf8, const std::string& name, Windo
 
 	return 1;
 #elif _ENABLEEMUELEC
-	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // emuelec
+	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // 351ELEC
 #else
 	return system((cmd_utf8 + " 2> /userdata/system/logs/es_launch_stderr.log | head -300 > /userdata/system/logs/es_launch_stdout.log").c_str()); // batocera
 #endif

@@ -13,10 +13,6 @@ bool Settings::DebugText = false;
 bool Settings::DebugImage = false;
 bool Settings::DebugGrid = false;
 
-bool Settings::DebugText = false;
-bool Settings::DebugImage = false;
-bool Settings::DebugGrid = false;
-
 Settings* Settings::sInstance = NULL;
 static std::string mEmptyString = "";
 
@@ -246,7 +242,7 @@ void Settings::setDefaults()
 
 	// Audio out device for volume control
 	#if defined _RPI_ || defined _ENABLEEMUELEC
-		mStringMap["AudioDevice"] = "Playback";
+		mStringMap["AudioDevice"] = "PCM";
 	#else
 		mStringMap["AudioDevice"] = "Master";
 	#endif
@@ -309,11 +305,8 @@ void Settings::setDefaults()
 
 	mBoolMap["NetPlayCheckIndexesAtStart"] = false;
 
-	// Default notification display time
-	mIntMap["notification.display_time"] = 4;
-	mBoolMap["updates.enabled"] = true;
-
 #if WIN32
+	mBoolMap["updates.enabled"] = true;
 	mBoolMap["global.retroachievements"] = false;
 	mBoolMap["global.retroachievements.hardcore"] = false;
 	mBoolMap["global.retroachievements.leaderboards"] = false;

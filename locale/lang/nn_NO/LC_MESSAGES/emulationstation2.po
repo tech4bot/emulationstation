@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-30 09:05+0100\n"
+"POT-Creation-Date: 2021-09-29 20:52+0200\n"
 "Language: no\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,6 +79,12 @@ msgstr ""
 msgid "enter path to manual"
 msgstr ""
 
+msgid "Magazine"
+msgstr ""
+
+msgid "enter path to magazine"
+msgstr ""
+
 msgid "Map"
 msgstr ""
 
@@ -95,6 +101,12 @@ msgid "Alt BoxArt"
 msgstr ""
 
 msgid "enter path to alt boxart"
+msgstr ""
+
+msgid "Box backside"
+msgstr ""
+
+msgid "enter path to box background"
 msgstr ""
 
 msgid "Wheel"
@@ -138,6 +150,18 @@ msgstr "Sjanger"
 
 msgid "enter game genre"
 msgstr "skriv inn spill sjanger"
+
+msgid "Game family"
+msgstr ""
+
+msgid "enter game family"
+msgstr ""
+
+msgid "Genres"
+msgstr ""
+
+msgid "enter game genres"
+msgstr ""
 
 msgid "Arcade system"
 msgstr ""
@@ -242,6 +266,9 @@ msgid "arcade"
 msgstr ""
 
 msgid "vertical arcade"
+msgstr ""
+
+msgid "lightgun games"
 msgstr ""
 
 msgid "collections"
@@ -427,6 +454,9 @@ msgstr ""
 msgid "AUTOMATIC COLLECTIONS"
 msgstr ""
 
+msgid "PER GENRE"
+msgstr ""
+
 msgid "ARCADE SYSTEMS"
 msgstr ""
 
@@ -506,7 +536,7 @@ msgstr ""
 msgid "VIEW CUSTOMISATION"
 msgstr ""
 
-msgid "GAME OPTIONS"
+msgid "VIEW PAD TO KEYBOARD INFORMATION"
 msgstr ""
 
 msgid "ADVANCED SYSTEM OPTIONS"
@@ -584,40 +614,7 @@ msgstr ""
 msgid "SEARCHING WIFI NETWORKS"
 msgstr ""
 
-msgid "THE BEZEL PROJECT"
-msgstr ""
-
-msgid "SELECT BEZELS TO INSTALL / REMOVE"
-msgstr ""
-
-msgid "UPDATE"
-msgstr ""
-
-#, c-format
-msgid "'%s' ADDED TO DOWNLOAD QUEUE"
-msgstr ""
-
-msgid "REMOVE"
-msgstr ""
-
-msgid "INSTALL"
-msgstr ""
-
-#, c-format
-msgid "CURRENTLY IN DOWNLOAD QUEUE"
-msgstr ""
-
-msgid "THEMES DOWNLOADER"
-msgstr ""
-
-msgid "SELECT THEMES TO INSTALL / REMOVE"
-msgstr ""
-
-#, c-format
-msgid "CURRENT THEME"
-msgstr ""
-
-msgid "FORGET A BLUETOOTH CONTROLLER"
+msgid "FORGET A BLUETOOTH DEVICE"
 msgstr ""
 
 msgid "REMOVE ALL"
@@ -626,11 +623,23 @@ msgstr ""
 msgid "NO BLUETOOTH DEVICES FOUND"
 msgstr ""
 
-msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
-msgstr "KONTROLLER PARINGER HAR BLITT SLETTET."
+msgid "BLUETOOTH DEVICES HAVE BEEN DELETED."
+msgstr ""
+
+msgid "FILE BROWSER"
+msgstr ""
 
 msgid "RESET"
 msgstr ""
+
+msgid "PARENT FOLDER"
+msgstr ""
+
+msgid "SCREENSHOTS FOLDER"
+msgstr ""
+
+msgid "SELECT"
+msgstr "VELG"
 
 msgid "ADD COMBINATION KEY"
 msgstr ""
@@ -650,7 +659,24 @@ msgstr ""
 msgid "MISC"
 msgstr ""
 
+msgid "UPDATE"
+msgstr ""
+
+#, c-format
+msgid "'%s' ADDED TO DOWNLOAD QUEUE"
+msgstr ""
+
+msgid "REMOVE"
+msgstr ""
+
 msgid "UNINSTALL ADDED TO QUEUE"
+msgstr ""
+
+msgid "INSTALL"
+msgstr ""
+
+#, c-format
+msgid "CURRENTLY IN DOWNLOAD QUEUE"
 msgstr ""
 
 msgid "NO MISSING BIOS"
@@ -818,7 +844,8 @@ msgstr "LAGRE ENDRINGER?"
 msgid "ARE YOU SURE ?"
 msgstr ""
 
-msgid "UPDATING EMULATIONSTATION"
+#, c-format
+msgid "UPDATING %s"
 msgstr ""
 
 msgid "UPDATING BATOCERA"
@@ -833,6 +860,12 @@ msgstr ""
 msgid "REALLY UPDATE?"
 msgstr "VIL DU VIRKELIG OPPDATERE?"
 
+#, c-format
+msgid ""
+"YOU ARE CURRENTLY USING VERSION : %s\n"
+"DO YOU WANT TO UPDATE TO VERSION : %s ?"
+msgstr ""
+
 msgid "NETWORK CONNECTION NEEDED"
 msgstr "NETTVERKSTILKOBLING PÅKREVET"
 
@@ -844,9 +877,6 @@ msgstr ""
 
 msgid "TARGET DEVICE"
 msgstr ""
-
-msgid "SELECT"
-msgstr "VELG"
 
 msgid "TARGET ARCHITECTURE"
 msgstr ""
@@ -863,7 +893,16 @@ msgstr ""
 msgid "VIEW GAME MANUAL"
 msgstr ""
 
+msgid "VIEW GAME MAGAZINE"
+msgstr ""
+
 msgid "VIEW GAME MAP"
+msgstr ""
+
+msgid "VIEW FULLSCREEN VIDEO"
+msgstr ""
+
+msgid "VIEW GAME MEDIAS"
 msgstr ""
 
 msgid "CURRENT CORE IS NOT COMPATIBLE"
@@ -881,6 +920,9 @@ msgstr ""
 msgid "SAVE SNAPSHOTS"
 msgstr ""
 
+msgid "OPEN"
+msgstr ""
+
 msgid "START NETPLAY HOST"
 msgstr ""
 
@@ -893,6 +935,9 @@ msgstr ""
 msgid "YOU ARE NOT CONNECTED TO A NETWORK"
 msgstr ""
 
+msgid "PUBLICLY ANNOUNCE GAME"
+msgstr ""
+
 msgid "SET PLAYER PASSWORD"
 msgstr ""
 
@@ -900,6 +945,17 @@ msgid "SET VIEWER PASSWORD"
 msgstr ""
 
 msgid "FIND SIMILAR GAMES..."
+msgstr ""
+
+msgid "DELETE ITEM"
+msgstr ""
+
+msgid "DELETE GAME"
+msgstr ""
+
+msgid ""
+"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
+"ARE YOU SURE?"
 msgstr ""
 
 msgid "COLLECTIONS"
@@ -914,6 +970,9 @@ msgid "ADD TO %s"
 msgstr ""
 
 msgid "FAVORITES"
+msgstr ""
+
+msgid "ADD TO CUSTOM COLLECTION..."
 msgstr ""
 
 msgid "SCRAPE"
@@ -934,51 +993,15 @@ msgstr ""
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "ENDRE DETTE SPILLETS METADATA"
 
-msgid "VIEW PAD TO KEYBOARD INFORMATION"
+msgid "THEMES DOWNLOADER"
 msgstr ""
 
-msgid "SCRAPING IN PROGRESS"
-msgstr "SØKER ETTER SPILL"
-
-msgid "SYSTEM"
-msgstr "SYSTEM"
-
-msgid "subtitle text"
-msgstr "undertekst"
-
-msgid "search"
-msgstr "søk"
-
-msgid "SKIP"
-msgstr "HOPP OVER"
-
-msgid "STOP"
-msgstr "STOPP"
-
-msgid "stop (progress saved)"
-msgstr "stop (fremgang lagret)"
-
-#, c-format
-msgid "GAME %i OF %i"
-msgstr "SPILL %i AV %i "
-
-msgid ""
-"WE CAN'T FIND ANY SYSTEMS!\n"
-"CHECK THAT YOUR PATHS ARE CORRECT IN THE SYSTEMS CONFIGURATION FILE, AND "
-"YOUR GAME DIRECTORY HAS AT LEAST ONE GAME WITH THE CORRECT EXTENSION."
+msgid "SELECT THEMES TO INSTALL / REMOVE"
 msgstr ""
 
 #, c-format
-msgid "%i GAME SUCCESSFULLY SCRAPED!"
-msgid_plural "%i GAMES SUCCESSFULLY SCRAPED!"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
-msgid "%i GAME SKIPPED."
-msgid_plural "%i GAMES SKIPPED."
-msgstr[0] ""
-msgstr[1] ""
+msgid "CURRENT THEME"
+msgstr ""
 
 msgid "Unlocked on"
 msgstr ""
@@ -993,16 +1016,16 @@ msgstr ""
 msgid "%d%% complete"
 msgstr ""
 
-msgid "AUTO SAVE"
-msgstr ""
-
-msgid "SLOT"
-msgstr ""
-
 msgid "START NEW GAME"
 msgstr ""
 
 msgid "START AUTO SAVE"
+msgstr ""
+
+msgid "AUTO SAVE"
+msgstr ""
+
+msgid "SLOT"
 msgstr ""
 
 msgid "COPY TO FREE SLOT"
@@ -1044,6 +1067,12 @@ msgstr ""
 msgid "NO GAMES FIT THAT CRITERIA."
 msgstr "INGEN SPILL MATCHER DISSE KRITERIENE"
 
+msgid "THE BEZEL PROJECT"
+msgstr ""
+
+msgid "SELECT BEZELS TO INSTALL / REMOVE"
+msgstr ""
+
 msgid "fade"
 msgstr ""
 
@@ -1060,6 +1089,9 @@ msgid "System"
 msgstr ""
 
 msgid "Architecture"
+msgstr ""
+
+msgid "Disk format"
 msgstr ""
 
 msgid "Temperature"
@@ -1104,6 +1136,24 @@ msgstr ""
 msgid "RGA SCALING"
 msgstr ""
 
+msgid "VENDOR"
+msgstr ""
+
+msgid "RENDERER"
+msgstr ""
+
+msgid "VERSION"
+msgstr "VERSJON"
+
+msgid "SHADERS"
+msgstr ""
+
+msgid "CONTROLLERS SETTINGS"
+msgstr "KONTROLL INSTILLINGER"
+
+msgid "CONTROLLERS & BLUETOOTH SETTINGS"
+msgstr ""
+
 msgid "MAIN MENU"
 msgstr "HOVED MENY"
 
@@ -1112,9 +1162,6 @@ msgstr "KODI MEDIA CENTER"
 
 msgid "GAMES SETTINGS"
 msgstr "SPILL INNSTILLINGER"
-
-msgid "CONTROLLERS SETTINGS"
-msgstr "KONTROLL INSTILLINGER"
 
 msgid "UI SETTINGS"
 msgstr "UI INSTILLINGER"
@@ -1197,6 +1244,9 @@ msgstr ""
 msgid "SCRAPE FANART"
 msgstr ""
 
+msgid "SCRAPE BOX BACKSIDE"
+msgstr ""
+
 msgid "SCRAPE MAP"
 msgstr ""
 
@@ -1227,13 +1277,16 @@ msgstr ""
 msgid "INFORMATION"
 msgstr ""
 
-msgid "VERSION"
-msgstr "VERSJON"
-
 msgid "USER DISK USAGE"
 msgstr ""
 
 msgid "SYSTEM DISK USAGE"
+msgstr ""
+
+msgid "SYSTEM"
+msgstr "SYSTEM"
+
+msgid "VIDEO DRIVER"
 msgstr ""
 
 msgid "DEVELOPER"
@@ -1258,6 +1311,16 @@ msgid "USE OMX PLAYER (HW ACCELERATED)"
 msgstr ""
 
 msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE PUBLIC WEB ACCESS"
+msgstr ""
+
+#, c-format
+msgid "Allow public web access API using %s"
+msgstr ""
+
+msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr ""
 
 msgid "LOG LEVEL"
@@ -1305,6 +1368,9 @@ msgstr ""
 msgid "DATA MANAGEMENT"
 msgstr ""
 
+msgid "IGNORE MULTIFILE DISK CONTENT (CUE/GDI/CCD/M3U)"
+msgstr ""
+
 msgid "ENABLE FILTERS"
 msgstr ""
 
@@ -1335,13 +1401,25 @@ msgstr ""
 msgid "COMPLETE QUIT MENU"
 msgstr ""
 
-msgid "USE RETROARCH RGUI MENU"
+msgid "RETROARCH MENU DRIVER"
+msgstr ""
+
+msgid "AUTO"
+msgstr "AUTO"
+
+msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
 msgstr ""
 
 msgid "SWITCH A/B BUTTONS IN EMULATIONSTATION"
 msgstr ""
 
-msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
+msgid "ACCESS GAME OPTIONS WITH NORTH BUTTON"
+msgstr ""
+
+msgid "Inverts north button (savestates) & long press south (game options)"
+msgstr ""
+
+msgid "CONTROL EMULATIONSTATION ONLY WITH FIRST JOYSTICK"
 msgstr ""
 
 msgid "SHOW NETWORK INDICATOR"
@@ -1351,6 +1429,12 @@ msgid "OPTIMIZATIONS"
 msgstr ""
 
 msgid "PRELOAD UI"
+msgstr ""
+
+msgid "PRELOAD MEDIAS FILESYSTEM"
+msgstr ""
+
+msgid "REDUCE UI LAGS OVER STARTUP TIME"
 msgstr ""
 
 msgid "THREADED LOADING"
@@ -1392,7 +1476,19 @@ msgstr ""
 msgid "LANGUAGE"
 msgstr "SPRÅK"
 
+msgid "SELECT YOUR TIMEZONE"
+msgstr ""
+
+msgid "TIMEZONE"
+msgstr ""
+
+msgid "SHOW CLOCK IN 12-HOUR FORMAT"
+msgstr ""
+
 msgid "POWER SAVER MODES"
+msgstr ""
+
+msgid "TEXT TO SPEECH"
 msgstr ""
 
 msgid "UI MODE"
@@ -1425,10 +1521,31 @@ msgstr ""
 msgid "VIDEO OUTPUT"
 msgstr ""
 
-msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
+msgid "AUDIO OUTPUT"
 msgstr ""
 
-msgid "AUDIO OUTPUT"
+msgid "AUDIO PROFILE"
+msgstr ""
+
+msgid "SCREEN ROTATION"
+msgstr ""
+
+msgid "LEFT ROTATION"
+msgstr ""
+
+msgid "RIGHT ROTATION"
+msgstr ""
+
+msgid "INVERTED ROTATION"
+msgstr ""
+
+msgid "BOOT SPLASH"
+msgstr ""
+
+msgid "SILENT SPLASH"
+msgstr ""
+
+msgid "NO SPLASH"
 msgstr ""
 
 msgid "RETROACHIEVEMENTS SETTINGS"
@@ -1443,13 +1560,46 @@ msgstr ""
 msgid "MULTIMEDIA KEYS"
 msgstr ""
 
-msgid "AUTO"
-msgstr "AUTO"
-
 msgid "ON"
 msgstr ""
 
 msgid "OFF"
+msgstr ""
+
+msgid "BUTTON LED COLOR"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "red"
+msgstr ""
+
+msgid "green"
+msgstr ""
+
+msgid "blue"
+msgstr ""
+
+msgid "white"
+msgstr ""
+
+msgid "purple"
+msgstr ""
+
+msgid "yellow"
+msgstr ""
+
+msgid "cyan"
+msgstr ""
+
+msgid "POWER LED COLOR"
+msgstr ""
+
+msgid "heartbeat"
+msgstr ""
+
+msgid "on"
 msgstr ""
 
 msgid "OVERCLOCK"
@@ -1554,14 +1704,20 @@ msgstr "SPILL SOM KJØRER FINT"
 msgid "REWIND"
 msgstr "SPOL TILBAKE"
 
+msgid "INTEGER SCALE (PIXEL PERFECT)"
+msgstr ""
+
 msgid "AUTO SAVE/LOAD"
 msgstr "AUTO LAGRE/LASTE"
 
+msgid "SHOW SAVE SNAPSHOTS"
+msgstr ""
+
+msgid "SHOW SNAPSHOTS IF NOT EMPTY"
+msgstr ""
+
 msgid "SHADERS SET"
 msgstr "SKYGGELEGGER SETT"
-
-msgid "INTEGER SCALE (PIXEL PERFECT)"
-msgstr ""
 
 msgid "DECORATION"
 msgstr ""
@@ -1609,8 +1765,8 @@ msgstr ""
 "HOPP OVER ALLE KNAPPENE DU IKKE HAR VED Å HOLDE EN KNAPP. KNAPPENES NAVN ER "
 "BASERT PÅ EN SNES KONTROLLER."
 
-msgid "PAIR A BLUETOOTH CONTROLLER"
-msgstr "PAR EN BLUETOOTH KONRTOLLER"
+msgid "PAIR A BLUETOOTH DEVICE"
+msgstr ""
 
 #, c-format
 msgid "INPUT P%i"
@@ -1620,6 +1776,9 @@ msgid "default"
 msgstr ""
 
 msgid "SHOW CONTROLLER ACTIVITY"
+msgstr ""
+
+msgid "SHOW CONTROLLER BATTERY LEVEL"
 msgstr ""
 
 msgid "YOU MUST APPLY THE THEME BEFORE EDIT CONFIGURATION"
@@ -1667,13 +1826,28 @@ msgstr ""
 msgid "SHOW '..' PARENT FOLDER"
 msgstr ""
 
+msgid "BEFORE NAME"
+msgstr ""
+
+msgid "AFTER NAME"
+msgstr ""
+
+msgid "SHOW LANGUAGE FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW SAVESTATES FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW MANUAL ICON IN LISTS"
+msgstr ""
+
 msgid "SHOW FILENAMES IN LISTS"
 msgstr ""
 
 msgid "FILE EXTENSIONS"
 msgstr ""
 
-msgid "RESET GAMELIST CUSTOMISATIONS"
+msgid "RESET CUSTOMISATIONS"
 msgstr ""
 
 msgid "APPEARENCE"
@@ -1710,6 +1884,9 @@ msgid "ICON"
 msgstr ""
 
 msgid "ICON AND TEXT"
+msgstr ""
+
+msgid "IGNORE LEADING ARTICLES WHEN SORTING"
 msgstr ""
 
 msgid "VOLUME"
@@ -1783,15 +1960,6 @@ msgstr "WIFI AKTIVERT"
 
 msgid "WIFI CONFIGURATION ERROR"
 msgstr "WIFI KONFIGURASJONSFEIL"
-
-msgid "AUTOMATIC SCRAPER"
-msgstr ""
-
-msgid "REALLY SCRAPE?"
-msgstr ""
-
-msgid "MANUAL SCRAPER"
-msgstr ""
 
 msgid "QUICK ACCESS"
 msgstr ""
@@ -1880,9 +2048,12 @@ msgstr ""
 msgid "EDIT METADATA"
 msgstr "ENDRE METADATA"
 
+msgid "GENRES"
+msgstr ""
+
 msgid ""
-"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
-"ARE YOU SURE?"
+"SOME FILES YOU LINKED ARE LOCATED OUTSIDE THE GAMELIST PATH.\n"
+"DO YOU WANT TO USE A COPY OF THESE FILES RELATIVE TO THE GAMELIST ?"
 msgstr ""
 
 msgid "NO DEVICE FOUND"
@@ -1985,13 +2156,22 @@ msgstr "Utgitt"
 msgid "Times played"
 msgstr "Ganger spilt"
 
+#, c-format
+msgid "This folder contains %i game, including :%s"
+msgid_plural "This folder contains %i games, including :%s"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "No Entries Found"
 msgstr ""
 
-msgid "Favorites"
+msgid "Games similar to"
 msgstr ""
 
-msgid "Games similar to"
+msgid "GAME OPTIONS"
+msgstr ""
+
+msgid "FAVORITE"
 msgstr ""
 
 msgid ""
@@ -2005,11 +2185,11 @@ msgstr ""
 msgid "NO GAMES FOUND - SKIP"
 msgstr "INGEN SPILL FUNNET - HOPP OVER"
 
-msgid "AN ERROR HAS OCCURED"
-msgstr ""
-
 msgid "RETRY"
 msgstr "PRØV IGJEN"
+
+msgid "SKIP"
+msgstr "HOPP OVER"
 
 msgid "Downloading"
 msgstr ""
@@ -2018,9 +2198,6 @@ msgid "ACCEPT RESULT"
 msgstr "AKSEPTER RESULTAT"
 
 msgid "Loading system config..."
-msgstr ""
-
-msgid "Done."
 msgstr ""
 
 msgid "SAVING METADATAS. PLEASE WAIT..."
@@ -2101,6 +2278,21 @@ msgstr ""
 msgid "GAME TIME, DESCENDING"
 msgstr ""
 
+msgid "SYSTEM, RELEASE YEAR, ASCENDING"
+msgstr ""
+
+msgid "SYSTEM, RELEASE YEAR, DESCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, ASCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, DESCENDING"
+msgstr ""
+
+msgid "A,AN,THE"
+msgstr ""
+
 msgid "Extracting"
 msgstr ""
 
@@ -2118,6 +2310,9 @@ msgstr ""
 
 msgid "GENRE"
 msgstr "SJANGER"
+
+msgid "FAMILY"
+msgstr ""
 
 msgid "PLAYERS"
 msgstr ""
@@ -2302,6 +2497,12 @@ msgstr "FLYTT MUSEPEKER"
 msgid "EDIT"
 msgstr "ENDRE"
 
+msgid "ENABLED"
+msgstr ""
+
+msgid "DISABLED"
+msgstr ""
+
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -2340,6 +2541,36 @@ msgstr ""
 #, c-format
 msgid "%d s"
 msgstr ""
+
+msgid "TEXT TO SPEECH ENABLED"
+msgstr ""
+
+msgid "TEXT TO SPEECH DISABLED"
+msgstr ""
+
+#~ msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
+#~ msgstr "KONTROLLER PARINGER HAR BLITT SLETTET."
+
+#~ msgid "PAIR A BLUETOOTH CONTROLLER"
+#~ msgstr "PAR EN BLUETOOTH KONRTOLLER"
+
+#~ msgid "SCRAPING IN PROGRESS"
+#~ msgstr "SØKER ETTER SPILL"
+
+#~ msgid "subtitle text"
+#~ msgstr "undertekst"
+
+#~ msgid "search"
+#~ msgstr "søk"
+
+#~ msgid "STOP"
+#~ msgstr "STOPP"
+
+#~ msgid "stop (progress saved)"
+#~ msgstr "stop (fremgang lagret)"
+
+#~ msgid "GAME %i OF %i"
+#~ msgstr "SPILL %i AV %i "
 
 #~ msgid "USER DECIDES ON CONFLICTS"
 #~ msgstr "BRUKER VELGER UNDER KONFLIKTER"

@@ -10,6 +10,9 @@
 #include "GlExtensions.h"
 #include "Shader.h"
 
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
 namespace Renderer
 {
 //////////////////////////////////////////////////////////////////////////
@@ -298,8 +301,13 @@ namespace Renderer
 			info.push_back(std::pair<std::string, std::string>("RENDERER", renderer));
 
 		const std::string version = glGetString(GL_VERSION) ? (const char*)glGetString(GL_VERSION) : "";
+		std::vector<std::string> results;
+		std::string xversion;
 		if (!version.empty())
-			info.push_back(std::pair<std::string, std::string>("VERSION", version));
+			boost::algorithm::split(results, version, boost::is_any_of("v"));
+			xversion = results[0];
+			boost::algorithm::trim(xversion);
+			info.push_back(std::pair<std::string, std::string>("VERSION", xversion));
 
 		const std::string shaders = glGetString(GL_SHADING_LANGUAGE_VERSION) ? (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION) : "";
 		if (!shaders.empty())

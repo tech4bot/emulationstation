@@ -511,9 +511,6 @@ std::string FileData::getlaunchCommand(LaunchGameOptions options, bool includeCo
 	int monitorId = Settings::getInstance()->getInt("MonitorID");
 	if (monitorId >= 0 && command.find(" -system ") != std::string::npos)
 		command = command + " -monitor " + std::to_string(monitorId);
-	
-	if (SaveStateRepository::isEnabled(this))
-		command = options.saveStateInfo.setupSaveState(this, command);
 
 	if (SaveStateRepository::isEnabled(this))
 		command = options.saveStateInfo.setupSaveState(this, command);

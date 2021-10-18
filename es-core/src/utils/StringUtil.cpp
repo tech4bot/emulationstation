@@ -875,7 +875,6 @@ namespace Utils
 			return hex;
 		}
 
-
 #if defined(_WIN32)
 		const std::string convertFromWideString(const std::wstring wstring)
 		{

@@ -168,13 +168,6 @@ void SystemScreenSaver::startScreenSaver()
 			return;
 		}	
 	}
-	else if (screensaver_behavior == "sleep")
-        {
-                runSystemCommand("systemctl suspend &", "", nullptr);
-		mCurrentGame = NULL;
-                mTimer = 0;
-                return;
-        }
 
 	// No videos. Just use a standard screensaver
 	mState = STATE_SCREENSAVER_ACTIVE;

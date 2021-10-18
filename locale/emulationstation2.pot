@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-30 09:13+0100\n"
+"POT-Creation-Date: 2021-09-29 20:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,6 +87,12 @@ msgstr ""
 msgid "enter path to manual"
 msgstr ""
 
+msgid "Magazine"
+msgstr ""
+
+msgid "enter path to magazine"
+msgstr ""
+
 msgid "Map"
 msgstr ""
 
@@ -103,6 +109,12 @@ msgid "Alt BoxArt"
 msgstr ""
 
 msgid "enter path to alt boxart"
+msgstr ""
+
+msgid "Box backside"
+msgstr ""
+
+msgid "enter path to box background"
 msgstr ""
 
 msgid "Wheel"
@@ -145,6 +157,18 @@ msgid "Genre"
 msgstr ""
 
 msgid "enter game genre"
+msgstr ""
+
+msgid "Game family"
+msgstr ""
+
+msgid "enter game family"
+msgstr ""
+
+msgid "Genres"
+msgstr ""
+
+msgid "enter game genres"
 msgstr ""
 
 msgid "Arcade system"
@@ -250,6 +274,9 @@ msgid "arcade"
 msgstr ""
 
 msgid "vertical arcade"
+msgstr ""
+
+msgid "lightgun games"
 msgstr ""
 
 msgid "collections"
@@ -435,6 +462,9 @@ msgstr ""
 msgid "AUTOMATIC COLLECTIONS"
 msgstr ""
 
+msgid "PER GENRE"
+msgstr ""
+
 msgid "ARCADE SYSTEMS"
 msgstr ""
 
@@ -514,7 +544,7 @@ msgstr ""
 msgid "VIEW CUSTOMISATION"
 msgstr ""
 
-msgid "GAME OPTIONS"
+msgid "VIEW PAD TO KEYBOARD INFORMATION"
 msgstr ""
 
 msgid "ADVANCED SYSTEM OPTIONS"
@@ -592,40 +622,7 @@ msgstr ""
 msgid "SEARCHING WIFI NETWORKS"
 msgstr ""
 
-msgid "THE BEZEL PROJECT"
-msgstr ""
-
-msgid "SELECT BEZELS TO INSTALL / REMOVE"
-msgstr ""
-
-msgid "UPDATE"
-msgstr ""
-
-#, c-format
-msgid "'%s' ADDED TO DOWNLOAD QUEUE"
-msgstr ""
-
-msgid "REMOVE"
-msgstr ""
-
-msgid "INSTALL"
-msgstr ""
-
-#, c-format
-msgid "CURRENTLY IN DOWNLOAD QUEUE"
-msgstr ""
-
-msgid "THEMES DOWNLOADER"
-msgstr ""
-
-msgid "SELECT THEMES TO INSTALL / REMOVE"
-msgstr ""
-
-#, c-format
-msgid "CURRENT THEME"
-msgstr ""
-
-msgid "FORGET A BLUETOOTH CONTROLLER"
+msgid "FORGET A BLUETOOTH DEVICE"
 msgstr ""
 
 msgid "REMOVE ALL"
@@ -634,10 +631,22 @@ msgstr ""
 msgid "NO BLUETOOTH DEVICES FOUND"
 msgstr ""
 
-msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
+msgid "BLUETOOTH DEVICES HAVE BEEN DELETED."
+msgstr ""
+
+msgid "FILE BROWSER"
 msgstr ""
 
 msgid "RESET"
+msgstr ""
+
+msgid "PARENT FOLDER"
+msgstr ""
+
+msgid "SCREENSHOTS FOLDER"
+msgstr ""
+
+msgid "SELECT"
 msgstr ""
 
 msgid "ADD COMBINATION KEY"
@@ -658,7 +667,24 @@ msgstr ""
 msgid "MISC"
 msgstr ""
 
+msgid "UPDATE"
+msgstr ""
+
+#, c-format
+msgid "'%s' ADDED TO DOWNLOAD QUEUE"
+msgstr ""
+
+msgid "REMOVE"
+msgstr ""
+
 msgid "UNINSTALL ADDED TO QUEUE"
+msgstr ""
+
+msgid "INSTALL"
+msgstr ""
+
+#, c-format
+msgid "CURRENTLY IN DOWNLOAD QUEUE"
 msgstr ""
 
 msgid "NO MISSING BIOS"
@@ -826,7 +852,8 @@ msgstr ""
 msgid "ARE YOU SURE ?"
 msgstr ""
 
-msgid "UPDATING EMULATIONSTATION"
+#, c-format
+msgid "UPDATING %s"
 msgstr ""
 
 msgid "UPDATING BATOCERA"
@@ -841,6 +868,12 @@ msgstr ""
 msgid "REALLY UPDATE?"
 msgstr ""
 
+#, c-format
+msgid ""
+"YOU ARE CURRENTLY USING VERSION : %s\n"
+"DO YOU WANT TO UPDATE TO VERSION : %s ?"
+msgstr ""
+
 msgid "NETWORK CONNECTION NEEDED"
 msgstr ""
 
@@ -851,9 +884,6 @@ msgid "INSTALL BATOCERA"
 msgstr ""
 
 msgid "TARGET DEVICE"
-msgstr ""
-
-msgid "SELECT"
 msgstr ""
 
 msgid "TARGET ARCHITECTURE"
@@ -871,7 +901,16 @@ msgstr ""
 msgid "VIEW GAME MANUAL"
 msgstr ""
 
+msgid "VIEW GAME MAGAZINE"
+msgstr ""
+
 msgid "VIEW GAME MAP"
+msgstr ""
+
+msgid "VIEW FULLSCREEN VIDEO"
+msgstr ""
+
+msgid "VIEW GAME MEDIAS"
 msgstr ""
 
 msgid "CURRENT CORE IS NOT COMPATIBLE"
@@ -889,6 +928,9 @@ msgstr ""
 msgid "SAVE SNAPSHOTS"
 msgstr ""
 
+msgid "OPEN"
+msgstr ""
+
 msgid "START NETPLAY HOST"
 msgstr ""
 
@@ -901,6 +943,9 @@ msgstr ""
 msgid "YOU ARE NOT CONNECTED TO A NETWORK"
 msgstr ""
 
+msgid "PUBLICLY ANNOUNCE GAME"
+msgstr ""
+
 msgid "SET PLAYER PASSWORD"
 msgstr ""
 
@@ -908,6 +953,17 @@ msgid "SET VIEWER PASSWORD"
 msgstr ""
 
 msgid "FIND SIMILAR GAMES..."
+msgstr ""
+
+msgid "DELETE ITEM"
+msgstr ""
+
+msgid "DELETE GAME"
+msgstr ""
+
+msgid ""
+"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
+"ARE YOU SURE?"
 msgstr ""
 
 msgid "COLLECTIONS"
@@ -922,6 +978,9 @@ msgid "ADD TO %s"
 msgstr ""
 
 msgid "FAVORITES"
+msgstr ""
+
+msgid "ADD TO CUSTOM COLLECTION..."
 msgstr ""
 
 msgid "SCRAPE"
@@ -942,51 +1001,15 @@ msgstr ""
 msgid "EDIT THIS GAME'S METADATA"
 msgstr ""
 
-msgid "VIEW PAD TO KEYBOARD INFORMATION"
+msgid "THEMES DOWNLOADER"
 msgstr ""
 
-msgid "SCRAPING IN PROGRESS"
-msgstr ""
-
-msgid "SYSTEM"
-msgstr ""
-
-msgid "subtitle text"
-msgstr ""
-
-msgid "search"
-msgstr ""
-
-msgid "SKIP"
-msgstr ""
-
-msgid "STOP"
-msgstr ""
-
-msgid "stop (progress saved)"
+msgid "SELECT THEMES TO INSTALL / REMOVE"
 msgstr ""
 
 #, c-format
-msgid "GAME %i OF %i"
+msgid "CURRENT THEME"
 msgstr ""
-
-msgid ""
-"WE CAN'T FIND ANY SYSTEMS!\n"
-"CHECK THAT YOUR PATHS ARE CORRECT IN THE SYSTEMS CONFIGURATION FILE, AND "
-"YOUR GAME DIRECTORY HAS AT LEAST ONE GAME WITH THE CORRECT EXTENSION."
-msgstr ""
-
-#, c-format
-msgid "%i GAME SUCCESSFULLY SCRAPED!"
-msgid_plural "%i GAMES SUCCESSFULLY SCRAPED!"
-msgstr[0] ""
-msgstr[1] ""
-
-#, c-format
-msgid "%i GAME SKIPPED."
-msgid_plural "%i GAMES SKIPPED."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Unlocked on"
 msgstr ""
@@ -1001,16 +1024,16 @@ msgstr ""
 msgid "%d%% complete"
 msgstr ""
 
-msgid "AUTO SAVE"
-msgstr ""
-
-msgid "SLOT"
-msgstr ""
-
 msgid "START NEW GAME"
 msgstr ""
 
 msgid "START AUTO SAVE"
+msgstr ""
+
+msgid "AUTO SAVE"
+msgstr ""
+
+msgid "SLOT"
 msgstr ""
 
 msgid "COPY TO FREE SLOT"
@@ -1049,6 +1072,12 @@ msgstr ""
 msgid "NO GAMES FIT THAT CRITERIA."
 msgstr ""
 
+msgid "THE BEZEL PROJECT"
+msgstr ""
+
+msgid "SELECT BEZELS TO INSTALL / REMOVE"
+msgstr ""
+
 msgid "fade"
 msgstr ""
 
@@ -1065,6 +1094,9 @@ msgid "System"
 msgstr ""
 
 msgid "Architecture"
+msgstr ""
+
+msgid "Disk format"
 msgstr ""
 
 msgid "Temperature"
@@ -1109,6 +1141,24 @@ msgstr ""
 msgid "RGA SCALING"
 msgstr ""
 
+msgid "VENDOR"
+msgstr ""
+
+msgid "RENDERER"
+msgstr ""
+
+msgid "VERSION"
+msgstr ""
+
+msgid "SHADERS"
+msgstr ""
+
+msgid "CONTROLLERS SETTINGS"
+msgstr ""
+
+msgid "CONTROLLERS & BLUETOOTH SETTINGS"
+msgstr ""
+
 msgid "MAIN MENU"
 msgstr ""
 
@@ -1116,9 +1166,6 @@ msgid "KODI MEDIA CENTER"
 msgstr ""
 
 msgid "GAMES SETTINGS"
-msgstr ""
-
-msgid "CONTROLLERS SETTINGS"
 msgstr ""
 
 msgid "UI SETTINGS"
@@ -1202,6 +1249,9 @@ msgstr ""
 msgid "SCRAPE FANART"
 msgstr ""
 
+msgid "SCRAPE BOX BACKSIDE"
+msgstr ""
+
 msgid "SCRAPE MAP"
 msgstr ""
 
@@ -1232,13 +1282,16 @@ msgstr ""
 msgid "INFORMATION"
 msgstr ""
 
-msgid "VERSION"
-msgstr ""
-
 msgid "USER DISK USAGE"
 msgstr ""
 
 msgid "SYSTEM DISK USAGE"
+msgstr ""
+
+msgid "SYSTEM"
+msgstr ""
+
+msgid "VIDEO DRIVER"
 msgstr ""
 
 msgid "DEVELOPER"
@@ -1263,6 +1316,16 @@ msgid "USE OMX PLAYER (HW ACCELERATED)"
 msgstr ""
 
 msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE PUBLIC WEB ACCESS"
+msgstr ""
+
+#, c-format
+msgid "Allow public web access API using %s"
+msgstr ""
+
+msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr ""
 
 msgid "LOG LEVEL"
@@ -1310,6 +1373,9 @@ msgstr ""
 msgid "DATA MANAGEMENT"
 msgstr ""
 
+msgid "IGNORE MULTIFILE DISK CONTENT (CUE/GDI/CCD/M3U)"
+msgstr ""
+
 msgid "ENABLE FILTERS"
 msgstr ""
 
@@ -1340,13 +1406,25 @@ msgstr ""
 msgid "COMPLETE QUIT MENU"
 msgstr ""
 
-msgid "USE RETROARCH RGUI MENU"
+msgid "RETROARCH MENU DRIVER"
+msgstr ""
+
+msgid "AUTO"
+msgstr ""
+
+msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
 msgstr ""
 
 msgid "SWITCH A/B BUTTONS IN EMULATIONSTATION"
 msgstr ""
 
-msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
+msgid "ACCESS GAME OPTIONS WITH NORTH BUTTON"
+msgstr ""
+
+msgid "Inverts north button (savestates) & long press south (game options)"
+msgstr ""
+
+msgid "CONTROL EMULATIONSTATION ONLY WITH FIRST JOYSTICK"
 msgstr ""
 
 msgid "SHOW NETWORK INDICATOR"
@@ -1356,6 +1434,12 @@ msgid "OPTIMIZATIONS"
 msgstr ""
 
 msgid "PRELOAD UI"
+msgstr ""
+
+msgid "PRELOAD MEDIAS FILESYSTEM"
+msgstr ""
+
+msgid "REDUCE UI LAGS OVER STARTUP TIME"
 msgstr ""
 
 msgid "THREADED LOADING"
@@ -1397,7 +1481,19 @@ msgstr ""
 msgid "LANGUAGE"
 msgstr ""
 
+msgid "SELECT YOUR TIMEZONE"
+msgstr ""
+
+msgid "TIMEZONE"
+msgstr ""
+
+msgid "SHOW CLOCK IN 12-HOUR FORMAT"
+msgstr ""
+
 msgid "POWER SAVER MODES"
+msgstr ""
+
+msgid "TEXT TO SPEECH"
 msgstr ""
 
 msgid "UI MODE"
@@ -1430,10 +1526,31 @@ msgstr ""
 msgid "VIDEO OUTPUT"
 msgstr ""
 
-msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
+msgid "AUDIO OUTPUT"
 msgstr ""
 
-msgid "AUDIO OUTPUT"
+msgid "AUDIO PROFILE"
+msgstr ""
+
+msgid "SCREEN ROTATION"
+msgstr ""
+
+msgid "LEFT ROTATION"
+msgstr ""
+
+msgid "RIGHT ROTATION"
+msgstr ""
+
+msgid "INVERTED ROTATION"
+msgstr ""
+
+msgid "BOOT SPLASH"
+msgstr ""
+
+msgid "SILENT SPLASH"
+msgstr ""
+
+msgid "NO SPLASH"
 msgstr ""
 
 msgid "RETROACHIEVEMENTS SETTINGS"
@@ -1448,13 +1565,46 @@ msgstr ""
 msgid "MULTIMEDIA KEYS"
 msgstr ""
 
-msgid "AUTO"
-msgstr ""
-
 msgid "ON"
 msgstr ""
 
 msgid "OFF"
+msgstr ""
+
+msgid "BUTTON LED COLOR"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "red"
+msgstr ""
+
+msgid "green"
+msgstr ""
+
+msgid "blue"
+msgstr ""
+
+msgid "white"
+msgstr ""
+
+msgid "purple"
+msgstr ""
+
+msgid "yellow"
+msgstr ""
+
+msgid "cyan"
+msgstr ""
+
+msgid "POWER LED COLOR"
+msgstr ""
+
+msgid "heartbeat"
+msgstr ""
+
+msgid "on"
 msgstr ""
 
 msgid "OVERCLOCK"
@@ -1559,13 +1709,19 @@ msgstr ""
 msgid "REWIND"
 msgstr ""
 
+msgid "INTEGER SCALE (PIXEL PERFECT)"
+msgstr ""
+
 msgid "AUTO SAVE/LOAD"
 msgstr ""
 
-msgid "SHADERS SET"
+msgid "SHOW SAVE SNAPSHOTS"
 msgstr ""
 
-msgid "INTEGER SCALE (PIXEL PERFECT)"
+msgid "SHOW SNAPSHOTS IF NOT EMPTY"
+msgstr ""
+
+msgid "SHADERS SET"
 msgstr ""
 
 msgid "DECORATION"
@@ -1609,7 +1765,7 @@ msgid ""
 "SNES CONTROLLER."
 msgstr ""
 
-msgid "PAIR A BLUETOOTH CONTROLLER"
+msgid "PAIR A BLUETOOTH DEVICE"
 msgstr ""
 
 #, c-format
@@ -1620,6 +1776,9 @@ msgid "default"
 msgstr ""
 
 msgid "SHOW CONTROLLER ACTIVITY"
+msgstr ""
+
+msgid "SHOW CONTROLLER BATTERY LEVEL"
 msgstr ""
 
 msgid "YOU MUST APPLY THE THEME BEFORE EDIT CONFIGURATION"
@@ -1667,13 +1826,28 @@ msgstr ""
 msgid "SHOW '..' PARENT FOLDER"
 msgstr ""
 
+msgid "BEFORE NAME"
+msgstr ""
+
+msgid "AFTER NAME"
+msgstr ""
+
+msgid "SHOW LANGUAGE FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW SAVESTATES FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW MANUAL ICON IN LISTS"
+msgstr ""
+
 msgid "SHOW FILENAMES IN LISTS"
 msgstr ""
 
 msgid "FILE EXTENSIONS"
 msgstr ""
 
-msgid "RESET GAMELIST CUSTOMISATIONS"
+msgid "RESET CUSTOMISATIONS"
 msgstr ""
 
 msgid "APPEARENCE"
@@ -1710,6 +1884,9 @@ msgid "ICON"
 msgstr ""
 
 msgid "ICON AND TEXT"
+msgstr ""
+
+msgid "IGNORE LEADING ARTICLES WHEN SORTING"
 msgstr ""
 
 msgid "VOLUME"
@@ -1782,15 +1959,6 @@ msgid "WIFI ENABLED"
 msgstr ""
 
 msgid "WIFI CONFIGURATION ERROR"
-msgstr ""
-
-msgid "AUTOMATIC SCRAPER"
-msgstr ""
-
-msgid "REALLY SCRAPE?"
-msgstr ""
-
-msgid "MANUAL SCRAPER"
 msgstr ""
 
 msgid "QUICK ACCESS"
@@ -1880,9 +2048,12 @@ msgstr ""
 msgid "EDIT METADATA"
 msgstr ""
 
+msgid "GENRES"
+msgstr ""
+
 msgid ""
-"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
-"ARE YOU SURE?"
+"SOME FILES YOU LINKED ARE LOCATED OUTSIDE THE GAMELIST PATH.\n"
+"DO YOU WANT TO USE A COPY OF THESE FILES RELATIVE TO THE GAMELIST ?"
 msgstr ""
 
 msgid "NO DEVICE FOUND"
@@ -1985,13 +2156,22 @@ msgstr ""
 msgid "Times played"
 msgstr ""
 
+#, c-format
+msgid "This folder contains %i game, including :%s"
+msgid_plural "This folder contains %i games, including :%s"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "No Entries Found"
 msgstr ""
 
-msgid "Favorites"
+msgid "Games similar to"
 msgstr ""
 
-msgid "Games similar to"
+msgid "GAME OPTIONS"
+msgstr ""
+
+msgid "FAVORITE"
 msgstr ""
 
 msgid ""
@@ -2005,10 +2185,10 @@ msgstr ""
 msgid "NO GAMES FOUND - SKIP"
 msgstr ""
 
-msgid "AN ERROR HAS OCCURED"
+msgid "RETRY"
 msgstr ""
 
-msgid "RETRY"
+msgid "SKIP"
 msgstr ""
 
 msgid "Downloading"
@@ -2018,9 +2198,6 @@ msgid "ACCEPT RESULT"
 msgstr ""
 
 msgid "Loading system config..."
-msgstr ""
-
-msgid "Done."
 msgstr ""
 
 msgid "SAVING METADATAS. PLEASE WAIT..."
@@ -2101,6 +2278,21 @@ msgstr ""
 msgid "GAME TIME, DESCENDING"
 msgstr ""
 
+msgid "SYSTEM, RELEASE YEAR, ASCENDING"
+msgstr ""
+
+msgid "SYSTEM, RELEASE YEAR, DESCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, ASCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, DESCENDING"
+msgstr ""
+
+msgid "A,AN,THE"
+msgstr ""
+
 msgid "Extracting"
 msgstr ""
 
@@ -2117,6 +2309,9 @@ msgid "UPDATE GAMES LISTS TO APPLY CHANGES."
 msgstr ""
 
 msgid "GENRE"
+msgstr ""
+
+msgid "FAMILY"
 msgstr ""
 
 msgid "PLAYERS"
@@ -2280,7 +2475,7 @@ msgstr ""
 
 msgid ""
 "WARNING THIS WILL RESTART EMULATIONSTATION!\n\n"
-"AFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/351ELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\n"
+"AFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/downloads/ee_backup_config.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\n"
 "BACKUP CURRENT CONFIG AND RESTART?"
 msgstr ""
 
@@ -2308,6 +2503,18 @@ msgstr ""
 msgid "You are about to set EmuELEC Language to:"
 msgstr ""
 
+msgid "ENABLED"
+msgstr ""
+
+msgid "DISABLED"
+msgstr ""
+
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "RESTART EMULATIONSTATION"
 msgstr ""
 
@@ -2321,6 +2528,12 @@ msgid "START RETROARCH"
 msgstr ""
 
 msgid "REALLY REBOOT FROM NAND?"
+msgstr ""
+
+msgid "TEXT TO SPEECH ENABLED"
+msgstr ""
+
+msgid "TEXT TO SPEECH DISABLED"
 msgstr ""
 
 msgid "REBOOT FROM NAND"

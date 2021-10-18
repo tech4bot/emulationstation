@@ -307,18 +307,6 @@ std::string FileFilterIndex::getIndexableKey(FileData* game, FilterIndexType typ
 
 		return game->isVerticalArcadeGame() ? "TRUE" : "FALSE";		
 	}
-
-	case VERTICAL_FILTER:
-	{
-		if (getSecondary)
-			break;
-
-		if (game->getType() != GAME)
-			return "FALSE";
-
-		key = game->isVerticalArcadeGame() ? "TRUE" : "FALSE";
-		break;
-	}
 	}
 
 	if (key.empty() || (type == RATINGS_FILTER && key == "0 STARS"))

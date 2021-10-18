@@ -113,9 +113,6 @@ SystemData::~SystemData()
 	if (mSaveRepository != nullptr)
 		delete mSaveRepository;
 
-	if (mSaveRepository != nullptr)
-		delete mSaveRepository;
-
 	if (mGameCountInfo != nullptr)
 		delete mGameCountInfo;
 

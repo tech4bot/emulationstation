@@ -55,9 +55,9 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInstall.h # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInstall.cpp # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiLoading.h # batocera
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiThemeInstaller.h # batocera
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiPackageInstallStart.h # batocera
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBezelInstaller.h # batocera    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiPackageInstaller.h # 351ELEC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiThemeInstaller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBezelInstaller.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiNetPlay.h # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiRetroAchievements.h # batocera
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBluetooth.h # batocera	
@@ -150,9 +150,9 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiUpdate.cpp # batocera    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBackup.cpp # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInstall.cpp # batocera    
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiThemeInstaller.cpp # batocera
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiPackageInstallStart.cpp # batocera
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBezelInstaller.cpp # batocera	    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiPackageInstaller.cpp # 351ELEC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiThemeInstaller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBezelInstaller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiNetPlay.cpp # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiRetroAchievements.cpp # batocera
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiBluetooth.cpp # batocera	
