@@ -25,6 +25,7 @@
 #include "guis/GuiGameScraper.h"
 #include "SaveStateRepository.h"
 #include "guis/GuiSaveState.h"
+#include "SystemConf.h"
 
 GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(window),
 	mMenu(window, game->getName()), mReloadAll(false)
@@ -46,11 +47,15 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 	addChild(&mMenu);
 
+	bool isImageViewer = game->getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER);
 	bool hasManual = ApiSystem::getInstance()->isScriptingSupported(ApiSystem::ScriptId::PDFEXTRACTION) && Utils::FileSystem::exists(game->getMetadata(MetaDataId::Manual));
+	bool hasMagazine = ApiSystem::getInstance()->isScriptingSupported(ApiSystem::ScriptId::PDFEXTRACTION) && Utils::FileSystem::exists(game->getMetadata(MetaDataId::Magazine));
 	bool hasMap = Utils::FileSystem::exists(game->getMetadata(MetaDataId::Map));
+	bool hasVideo = Utils::FileSystem::exists(game->getMetadata(MetaDataId::Video));
+	bool hasAlternateMedias = game->getSourceFileData()->getFileMedias().size() > 0;
 	bool hasCheevos = game->hasCheevos();
 
-	if (hasManual || hasMap || hasCheevos)
+	if (hasManual || hasMap || hasCheevos || hasMagazine || hasVideo || hasAlternateMedias)
 	{
 		mMenu.addGroup(_("GAME MEDIAS"));
 
@@ -63,6 +68,15 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			});
 		}
 
+		if (hasMagazine)
+		{
+			mMenu.addEntry(_("VIEW GAME MAGAZINE"), false, [window, game, this]
+			{
+				GuiImageViewer::showPdf(window, game->getMetadata(MetaDataId::Magazine));
+				close();
+			});
+		}		
+
 		if (hasMap)
 		{
 			mMenu.addEntry(_("VIEW GAME MAP"), false, [window, game, this]
@@ -73,14 +87,33 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			});
 		}
 
+		if (hasVideo)
+		{
+			mMenu.addEntry(_("VIEW FULLSCREEN VIDEO"), false, [window, game, this]
+			{
+				auto imagePath = game->getMetadata(MetaDataId::Video);
+				GuiVideoViewer::playVideo(mWindow, imagePath);
+				close();
+			});
+		}
+		
+		if (hasAlternateMedias)
+		{
+			mMenu.addEntry(_("VIEW GAME MEDIAS"), false, [window, game, this]
+			{
+				auto imageList = game->getSourceFileData()->getFileMedias();
+				GuiImageViewer::showImages(mWindow, imageList);
+				close();
+			});
+		}
+
 		if (hasCheevos)
 		{
 			if (!game->isFeatureSupported(EmulatorFeatures::cheevos))
 			{
 				std::string coreList = game->getSourceFileData()->getSystem()->getCompatibleCoreNames(EmulatorFeatures::cheevos);
-				std::string msg;
-				//std::string msg = _U("\uF06A  ");
-				//msg += _("CURRENT CORE IS NOT COMPATIBLE") + " : " + Utils::String::toUpper(game->getCore(true));
+				std::string msg = _U("\uF06A  ");
+				msg += _("CURRENT CORE IS NOT COMPATIBLE") + " : " + Utils::String::toUpper(game->getCore(true));
 				if (!coreList.empty())
 				{
 					msg += _U("\r\n\uF05A  ");
@@ -91,7 +124,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				{
 					GuiGameAchievements::show(window, Utils::String::toInteger(game->getMetadata(MetaDataId::CheevosId)));
 					close();
-				});
+				}, "", false, true, true);
 			}
 			else
 			{
@@ -125,7 +158,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 		}
 		else
 		{
-			mMenu.addEntry(_("LAUNCH"), false, [window, game, this]
+			mMenu.addEntry(isImageViewer ? _("OPEN") : _("LAUNCH"), false, [window, game, this]
 			{
 				ViewController::get()->launch(game);
 				this->close();
@@ -155,6 +188,14 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				});
 
 				msgBox->addGroup(_("OPTIONS"));
+
+				// pubic announce
+				auto public_announce = std::make_shared<SwitchComponent>(mWindow);
+				public_announce->setState(SystemConf::getInstance()->getBool("global.netplay_public_announce"));
+				msgBox->addWithLabel(_("PUBLICLY ANNOUNCE GAME"), public_announce);
+				msgBox->addSaveFunc([public_announce] { SystemConf::getInstance()->setBool("global.netplay_public_announce", public_announce->getState()); });
+						
+				// passwords
 				msgBox->addInputTextRow(_("SET PLAYER PASSWORD"), "global.netplay.password", false);
 				msgBox->addInputTextRow(_("SET VIEWER PASSWORD"), "global.netplay.spectatepassword", false);
 
@@ -164,7 +205,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 		}
 
 		SystemData* all = SystemData::getSystem("all");
-		if (all != nullptr && game != nullptr && game->getType() != FOLDER && !game->getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER))
+		if (all != nullptr && game != nullptr && game->getType() != FOLDER && !isImageViewer)
 		{
 			mMenu.addEntry(_("FIND SIMILAR GAMES..."), false, [this, game, all]
 			{
@@ -187,54 +228,115 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				close();
 			});
 		}
+
+		if (UIModeController::getInstance()->isUIModeFull())
+		{
+			mMenu.addEntry(isImageViewer ? _("DELETE ITEM") : _("DELETE GAME"), false, [this, game]
+			{
+				mWindow->pushGui(new GuiMsgBox(mWindow, _("THIS WILL DELETE THE ACTUAL GAME FILE(S)!\nARE YOU SURE?"), _("YES"),
+					[this, game]
+				{
+					deleteGame(game);
+					close();
+				},
+					_("NO"), nullptr));
+
+
+			});
+		}
 	}
 
 	bool isCustomCollection = (mSystem->isCollection() && game->getType() == FOLDER && CollectionSystemManager::get()->isCustomCollection(mSystem->getName()));
 	bool isAppendableToCollection = (game->getType() == GAME) && (mSystem->isGameSystem() || mSystem->isGroupSystem());
 
-	if (isCustomCollection || isAppendableToCollection)
-		mMenu.addGroup(_("COLLECTIONS"));
-
-	if (isAppendableToCollection)
+	if (UIModeController::getInstance()->isUIModeFull())
 	{
-		char trstring[1024];
+		if (isCustomCollection || isAppendableToCollection)
+			mMenu.addGroup(_("COLLECTIONS"));
 
-		snprintf(trstring, 1024, std::string(game->getFavorite() ? _("REMOVE FROM %s") : _("ADD TO %s")).c_str(), _("FAVORITES").c_str());
-		mMenu.addEntry(trstring, false, [this, game]
+		if (isAppendableToCollection)
 		{
-			CollectionSystemManager::get()->toggleGameInCollection(game, "Favorites");
-			close();
-		});
+			char trstring[1024];
 
-		for (auto customCollection : CollectionSystemManager::get()->getCustomCollectionSystems())
-		{
-			if (customCollection.second.filteredIndex != nullptr)
-				continue;
-
-			std::string collectionName = customCollection.first;
-			bool exists = CollectionSystemManager::get()->inInCustomCollection(game, collectionName);
-
-			snprintf(trstring, 1024, std::string(exists ? _("REMOVE FROM %s") : _("ADD TO %s")).c_str(), Utils::String::toUpper(collectionName).c_str());
-			mMenu.addEntry(trstring, false, [this, game, collectionName]
+			snprintf(trstring, 1024, std::string(game->getFavorite() ? _("REMOVE FROM %s") : _("ADD TO %s")).c_str(), _("FAVORITES").c_str());
+			mMenu.addEntry(trstring, false, [this, game]
 			{
-				CollectionSystemManager::get()->toggleGameInCollection(game, collectionName);
+				CollectionSystemManager::get()->toggleGameInCollection(game, "Favorites");
 				close();
 			});
+
+			int addToCollectionCount = 0;
+			for (auto customCollection : CollectionSystemManager::get()->getCustomCollectionSystems())
+				if (customCollection.second.filteredIndex == nullptr && customCollection.second.isEnabled && !CollectionSystemManager::get()->inInCustomCollection(game, customCollection.first))
+					addToCollectionCount++;
+
+			if (addToCollectionCount > 1)
+			{
+				mMenu.addEntry(_("ADD TO CUSTOM COLLECTION..."), false, [this, game]
+				{
+					auto pThis = this;
+					Window* window = mWindow;
+
+					GuiSettings* msgBox = new GuiSettings(mWindow, _("ADD TO CUSTOM COLLECTION..."));
+					msgBox->setTag("popup");
+					
+					for (auto customCollection : CollectionSystemManager::get()->getCustomCollectionSystems())
+					{
+						if (customCollection.second.filteredIndex != nullptr || !customCollection.second.isEnabled)
+							continue;
+
+						std::string collectionName = customCollection.first;
+						if (CollectionSystemManager::get()->inInCustomCollection(game, collectionName))
+							continue;
+						
+						msgBox->addEntry(Utils::String::toUpper(collectionName), false, [pThis, window, msgBox, collectionName, game]
+						{
+							auto parent = pThis;
+							CollectionSystemManager::get()->toggleGameInCollection(game, collectionName);
+							msgBox->close();
+							parent->close();
+						});
+					}
+
+					mWindow->pushGui(msgBox);
+				//	close();
+				});
+			}
+
+			for (auto customCollection : CollectionSystemManager::get()->getCustomCollectionSystems())
+			{
+				if (customCollection.second.filteredIndex != nullptr || !customCollection.second.isEnabled)
+					continue;
+
+				std::string collectionName = customCollection.first;
+				bool exists = CollectionSystemManager::get()->inInCustomCollection(game, collectionName);
+				if (!exists && addToCollectionCount > 1)
+					continue;
+
+				snprintf(trstring, 1024, std::string(exists ? _("REMOVE FROM %s") : _("ADD TO %s")).c_str(), Utils::String::toUpper(collectionName).c_str());
+				mMenu.addEntry(trstring, false, [this, game, collectionName]
+				{
+					CollectionSystemManager::get()->toggleGameInCollection(game, collectionName);
+					close();
+				});
+			}
+
+
 		}
+
+		if (isCustomCollection)
+			mMenu.addEntry(_("DELETE COLLECTION"), false, std::bind(&GuiGameOptions::deleteCollection, this));
 	}
-	
-	if (isCustomCollection)
-		mMenu.addEntry(_("DELETE COLLECTION"), false, std::bind(&GuiGameOptions::deleteCollection, this));
 
 	bool fromPlaceholder = game->isPlaceHolder();
-	if (game->getSourceFileData()->getSystem()->hasPlatformId(PlatformIds::IMAGEVIEWER))
+	if (isImageViewer)
 		fromPlaceholder = true; 
 	else if (game->getType() == FOLDER && ((FolderData*)game)->isVirtualStorage())
 		fromPlaceholder = true;
-	else if (game->getType() == FOLDER && mSystem->getName() == CollectionSystemManager::get()->getCustomCollectionsBundle()->getName())
+	else if (game->getType() == FOLDER && mSystem->isCollection()) // >getName() == CollectionSystemManager::get()->getCustomCollectionsBundle()->getName())
 		fromPlaceholder = true;
 
-	if (!fromPlaceholder && !isCustomCollection)
+	if (!fromPlaceholder && !isCustomCollection && UIModeController::getInstance()->isUIModeFull())
 	{
 		mMenu.addGroup(_("OPTIONS"));
 		
@@ -247,8 +349,8 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			GuiGameScraper* scr = new GuiGameScraper(mWindow, scraperParams, [game, scraperParams](const ScraperSearchResult& result)
 			{
 				game->importP2k(result.p2k);
-				game->getMetadata().importScrappedMetadata(result.mdl);
-				ViewController::get()->getGameListView(scraperParams.system)->onFileChanged(game, FILE_METADATA_CHANGED);
+				game->getMetadata().importScrappedMetadata(result.mdl);	
+				ViewController::get()->onFileChanged(game, FILE_METADATA_CHANGED);
 			});
 
 			mWindow->pushGui(scr);
@@ -262,7 +364,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			{
 				mMenu.addEntry(_("EDIT PAD TO KEYBOARD CONFIGURATION"), false, [this, game]
 				{ 
-					GuiMenu::editKeyboardMappings(mWindow, game); 
+					GuiMenu::editKeyboardMappings(mWindow, game, true); 
 					close();
 				});
 			}
@@ -270,7 +372,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			{
 				mMenu.addEntry(_("CREATE PAD TO KEYBOARD CONFIGURATION"), false, [this, game]
 				{ 
-					GuiMenu::editKeyboardMappings(mWindow, game); 
+					GuiMenu::editKeyboardMappings(mWindow, game, true);
 					close();
 				});
 			}
@@ -279,7 +381,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 		{
 			auto srcSystem = game->getSourceFileData()->getSystem();
-			auto sysOptions = mSystem->isGroupSystem() ? srcSystem : mSystem;
+			auto sysOptions = !mSystem->isGameSystem() ? srcSystem : mSystem;
 
 			if (game->getType() != FOLDER)
 			{
@@ -304,7 +406,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 	{
 		mMenu.addEntry(_("VIEW PAD TO KEYBOARD INFORMATION"), false, [this, game]
 		{ 
-			GuiMenu::editKeyboardMappings(mWindow, game);
+			GuiMenu::editKeyboardMappings(mWindow, game, false);
 			close();
 		});
 	}
@@ -360,6 +462,30 @@ std::string GuiGameOptions::getCustomCollectionName()
 	return editingSystem;
 }
 
+void GuiGameOptions::deleteGame(FileData* file)
+{
+	if (file->getType() != GAME)
+		return;
+
+	auto sourceFile = file->getSourceFileData();
+
+	auto sys = sourceFile->getSystem();
+	if (sys->isGroupChildSystem())
+		sys = sys->getParentGroupSystem();
+
+	CollectionSystemManager::get()->deleteCollectionFiles(sourceFile);
+	sourceFile->deleteGameFiles();
+
+	auto view = ViewController::get()->getGameListView(sys, false);
+	if (view != nullptr)
+		view.get()->remove(sourceFile);
+	else
+	{
+		sys->getRootFolder()->removeFromVirtualFolders(sourceFile);
+		delete sourceFile;
+	}
+}
+
 void GuiGameOptions::openMetaDataEd()
 {
 	if (ThreadedScraper::isRunning() || ThreadedHasher::isRunning())
@@ -370,37 +496,25 @@ void GuiGameOptions::openMetaDataEd()
 
 	// open metadata editor
 	// get the FileData that hosts the original metadata
-	FileData* file = getGamelist()->getCursor()->getSourceFileData();
+	FileData* file = mGame;
 	ScraperSearchParams p;
 	p.game = file;
 	p.system = file->getSystem();
 
 	std::function<void()> deleteBtnFunc = nullptr;
 
+	if (file->getType() == GAME)
+	{
+		auto sourceFile = file->getSourceFileData();
+		deleteBtnFunc = [sourceFile] { GuiGameOptions::deleteGame(sourceFile); };
+	}
+
 	SystemData* system = file->getSystem();
 	if (system->isGroupChildSystem())
 		system = system->getParentGroupSystem();
 
-	if (file->getType() == GAME)
-	{
-		deleteBtnFunc = [file, system]
-		{
-			CollectionSystemManager::get()->deleteCollectionFiles(file);
-			file->deleteGameFiles();
-
-			auto view = ViewController::get()->getGameListView(system, false);
-			if (view != nullptr)
-				view.get()->remove(file);
-			else
-			{
-				system->getRootFolder()->removeFromVirtualFolders(file);
-				delete file;
-			}
-		};
-	}
-
 	mWindow->pushGui(new GuiMetaDataEd(mWindow, &file->getMetadata(), file->getMetadata().getMDD(), p, Utils::FileSystem::getFileName(file->getPath()),
-		std::bind(&IGameListView::onFileChanged, ViewController::get()->getGameListView(system).get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
+		std::bind(&ViewController::onFileChanged, ViewController::get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
 
 	close();
 }
@@ -453,26 +567,31 @@ void GuiGameOptions::deleteCollection()
 
 	mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THIS ITEM ?"), _("YES"),
 		[this]
-	{
-		std::map<std::string, CollectionSystemData> customCollections = CollectionSystemManager::get()->getCustomCollectionSystems();
-		auto customCollection = customCollections.find(getCustomCollectionName());
-		if (customCollection == customCollections.cend())
-			return;
-
-		if (CollectionSystemManager::get()->deleteCustomCollection(&customCollection->second))
 		{
-			mWindow->renderSplashScreen();
+			std::map<std::string, CollectionSystemData> customCollections = CollectionSystemManager::get()->getCustomCollectionSystems();
+			auto customCollection = customCollections.find(getCustomCollectionName());
+			if (customCollection == customCollections.cend())
+				return;
 
-			CollectionSystemManager::get()->loadEnabledListFromSettings();
-			CollectionSystemManager::get()->updateSystemsList();
-			ViewController::get()->goToStart();
-			ViewController::get()->reloadAll();
+			if (CollectionSystemManager::get()->deleteCustomCollection(&customCollection->second))
+			{
+				mWindow->renderSplashScreen("");
 
-			mWindow->closeSplashScreen();			
-		}
-	}, _("NO"), nullptr));
+				CollectionSystemManager::get()->loadEnabledListFromSettings();
+				CollectionSystemManager::get()->updateSystemsList();
+				ViewController::get()->goToStart();
+				ViewController::get()->reloadAll(mWindow);
 
-	delete this;
+				mWindow->closeSplashScreen();			
+			}
+			delete this;
+		}, 
+		_("NO"), [this] 
+		{
+			delete this;
+		}));
+
+	
 }
 
 void GuiGameOptions::close()

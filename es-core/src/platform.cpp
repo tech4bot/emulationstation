@@ -27,6 +27,9 @@ int runShutdownCommand()
 {
 #ifdef WIN32 // windows
 	return system("shutdown -s -t 0");
+#elif defined (_ENABLEEMUELEC)
+    system("/usr/bin/emuelec-utils small-cores enable");
+    return system("systemctl poweroff");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -h now");
 #endif
@@ -36,6 +39,9 @@ int runRestartCommand()
 {
 #ifdef WIN32 // windows	
 	return system("shutdown -r -t 0");
+#elif defined (_ENABLEEMUELEC)
+    system("/usr/bin/emuelec-utils small-cores enable");
+    return system("systemctl reboot");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -r now");
 #endif
@@ -248,7 +254,7 @@ std::string queryIPAdress()
 			inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
 			
 			std::string ifName = ifa->ifa_name;
-			if (ifName.find("eth") != std::string::npos || ifName.find("wlan") != std::string::npos || ifName.find("en") != std::string::npos || ifName.find("wl") != std::string::npos)
+			if (ifName.find("eth") != std::string::npos || ifName.find("wlan") != std::string::npos || ifName.find("mlan") != std::string::npos || ifName.find("en") != std::string::npos || ifName.find("wl") != std::string::npos || ifName.find("p2p") != std::string::npos)
 			{
 				result = std::string(addressBuffer);
 				break;
@@ -271,7 +277,7 @@ std::string queryIPAdress()
 				inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
 
 				std::string ifName = ifa->ifa_name;
-				if (ifName.find("eth") != std::string::npos || ifName.find("wlan") != std::string::npos || ifName.find("en") != std::string::npos || ifName.find("wl") != std::string::npos)
+				if (ifName.find("eth") != std::string::npos || ifName.find("wlan") != std::string::npos || ifName.find("mlan") != std::string::npos || ifName.find("en") != std::string::npos || ifName.find("wl") != std::string::npos || ifName.find("p2p") != std::string::npos)
 				{
 					result = std::string(addressBuffer);
 					break;
@@ -389,3 +395,109 @@ std::string getShOutput(const std::string& mStr)
 }
 /* emuelec >*/
 #endif
+
+
+std::string getArchString()
+{
+#if WIN32
+	return "windows";
+#endif
+
+#if X86
+	return "x86";
+#endif
+
+#if X86_64
+	return "x86_64";
+#endif
+
+#if RPI1
+	return "rpi1";
+#endif
+
+#if RPI2
+	return "rpi2";
+#endif
+
+#if RPI3
+	return "rpi3";
+#endif
+
+#if RPI4
+	return "rpi4";
+#endif
+
+#if ODROIDGOA
+	return "odroidgoa";
+#endif
+
+#if GAMEFORCE
+	return "gameforce";
+#endif
+
+#if ODROIDXU4
+	return "odroidxu4";
+#endif
+
+#if ODROIDC2
+	return "odroidc2";
+#endif
+
+#if ODROIDC4
+	return "odroidc4";
+#endif
+
+#if TINKERBOARD
+	return "tinkerboard";
+#endif
+
+#if RK3288
+	return "rk3288";
+#endif
+
+#if RK3399
+	return "rk3399";
+#endif
+
+#if MIQI
+	return "miqi";
+#endif
+
+#if TRITIUM_H5
+	return "tritium_h5";
+#endif
+
+#if ORANGEPI_ZERO2
+	return "orangepi_zero2";
+#endif
+
+#if ORANGEPI_PC
+	return "orangepi_pc";
+#endif
+
+#if CHA
+	return "cha";
+#endif
+
+#if S812
+	return "s812";
+#endif
+
+#if S922X
+	return "s922x";
+#endif
+
+#if S905
+	return "s905";
+#endif
+
+#if S905GEN3
+	return "s905gen3";
+#endif
+
+#if S912
+	return "s912";
+#endif
+
+	return "";
+}

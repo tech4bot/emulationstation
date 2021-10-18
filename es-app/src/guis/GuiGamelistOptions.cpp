@@ -4,7 +4,6 @@
 #include "views/gamelist/IGameListView.h"
 #include "views/UIModeController.h"
 #include "views/ViewController.h"
-#include "components/SwitchComponent.h"
 #include "CollectionSystemManager.h"
 #include "FileFilterIndex.h"
 #include "FileSorts.h"
@@ -79,7 +78,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			{
 				mJumpToLetterList = std::make_shared<LetterList>(mWindow, _("JUMP TO LETTER"), false); // batocera
 
-				char curChar = (char)toupper(getGamelist()->getCursor()->getName()[0]);
+				char curChar = (char)toupper(getGamelist()->getCursor()->getSortName()[0]);
 
 				if (std::find(letters.begin(), letters.end(), std::string(1, curChar)) == letters.end())
 					curChar = letters.at(0)[0];
@@ -298,9 +297,10 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 		if (!fromPlaceholder)
 		{
 			auto srcSystem = file->getSourceFileData()->getSystem();
-			auto sysOptions = mSystem->isGroupSystem() ? srcSystem : mSystem;
+			auto sysOptions = !mSystem->isGameSystem() ? srcSystem : mSystem;
 
 			bool showSystemOptions = ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS) && (sysOptions->hasFeatures() || sysOptions->hasEmulatorSelection());
+			/*
 			bool showGameOptions = (file != nullptr && file->getType() != FOLDER);
 
 			if (showGameOptions || showSystemOptions)
@@ -315,9 +315,28 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 					delete this;
 				});
 			}
-
+			*/
 			if (showSystemOptions)
+			{
+				mMenu.addGroup(_("OPTIONS"));
+
+				if (file && file->hasKeyboardMapping())
+				{
+					mMenu.addEntry(_("VIEW PAD TO KEYBOARD INFORMATION"), true, [this, file]
+					{
+						GuiMenu::editKeyboardMappings(mWindow, file, false);
+					});
+				}
+				else if (srcSystem->getKeyboardMapping().isValid())
+				{
+					mMenu.addEntry(_("VIEW PAD TO KEYBOARD INFORMATION"), true, [this, srcSystem]
+					{
+						GuiMenu::editKeyboardMappings(mWindow, srcSystem, false);
+					});
+				}
+
 				mMenu.addEntry(_("ADVANCED SYSTEM OPTIONS"), true, [this, sysOptions] { GuiMenu::popSystemConfigurationGui(mWindow, sysOptions); });
+			}
 		}
 	}
 
@@ -544,7 +563,7 @@ void GuiGamelistOptions::openMetaDataEd()
 	}
 
 	mWindow->pushGui(new GuiMetaDataEd(mWindow, &file->getMetadata(), file->getMetadata().getMDD(), p, Utils::FileSystem::getFileName(file->getPath()),
-		std::bind(&IGameListView::onFileChanged, ViewController::get()->getGameListView(system).get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
+		std::bind(&ViewController::onFileChanged, ViewController::get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
 }
 
 void GuiGamelistOptions::jumpToLetter()
@@ -580,11 +599,11 @@ void GuiGamelistOptions::jumpToLetter()
 		if(files.at(mid)->getName().empty())
 			continue;
 
-		char checkLetter = (char)toupper(files.at(mid)->getName()[0]);
+		char checkLetter = (char)toupper(files.at(mid)->getSortName()[0]);
 
 		if(checkLetter < letter)
 			min = mid + 1;
-		else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getName()[0]))))
+		else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortName()[0]))))
 			max = mid - 1;
 		else
 			break; //exact match found

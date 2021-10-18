@@ -9,11 +9,15 @@
 #include "SystemConf.h"
 #include "FileData.h"
 #include "LocaleES.h"
+#include "GameNameFormatter.h"
 
 CarouselGameListView::CarouselGameListView(Window* window, FolderData* root)
 	: ISimpleGameListView(window, root),
 	mList(window), mDetails(this, &mList, mWindow, DetailedContainer::DetailedView)
 {
+	// Let DetailedContainer handle extras with activation scripts
+	mExtraMode = ThemeData::ExtraImportType::WITHOUT_ACTIVATESTORYBOARD;
+
 	mList.setSize(mSize.x(), mSize.y() * 0.8f);
 	mList.setPosition(0, mSize.y() * 0.2f);
 	mList.setDefaultZIndex(20);	
@@ -41,10 +45,10 @@ void CarouselGameListView::updateInfoPanel()
 {
 	if (mRoot->getSystem()->isCollection())
 		updateHelpPrompts();
-
+	
 	FileData* file = (mList.size() == 0 || mList.isScrolling()) ? NULL : mList.getSelected();
 	bool isClearing = mList.getObjects().size() == 0 && mList.getCursorIndex() == 0 && mList.getScrollingVelocity() == 0;
-	mDetails.updateControls(file, isClearing);
+	mDetails.updateControls(file, isClearing, mList.getCursorIndex() - mList.getLastCursor());
 }
 
 void CarouselGameListView::onFileChanged(FileData* file, FileChangeType change)
@@ -61,7 +65,7 @@ void CarouselGameListView::onFileChanged(FileData* file, FileChangeType change)
 
 void CarouselGameListView::populateList(const std::vector<FileData*>& files)
 {
-	SystemData* system = mCursorStack.size() && mRoot->getSystem()->isGroupSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
+	SystemData* system = mCursorStack.size() && !mRoot->getSystem()->isGameSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
 
 	auto groupTheme = system->getTheme();
 	if (groupTheme && mHeaderImage.hasImage())
@@ -77,29 +81,16 @@ void CarouselGameListView::populateList(const std::vector<FileData*>& files)
 
 	if (files.size() > 0)
 	{
-		bool showParentFolder = Settings::getInstance()->getBool("ShowParentFolder");
-		auto spf = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".ShowParentFolder");
-		if (spf == "1") showParentFolder = true;
-		else if (spf == "0") showParentFolder = false;
-
+		bool showParentFolder = mRoot->getSystem()->getShowParentFolder();
 		if (showParentFolder && mCursorStack.size())
 		{
 			FileData* placeholder = new FileData(PLACEHOLDER, "..", this->mRoot->getSystem());
 			mList.add(". .", placeholder);
 		}
 
-		std::string systemName = mRoot->getSystem()->getName();
+		GameNameFormatter formatter(mRoot->getSystem());
 
-		bool favoritesFirst = Settings::getInstance()->getBool("FavoritesFirst");
-		
-		auto fav = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".FavoritesFirst");
-		if (fav == "1") favoritesFirst = true;
-		else if (fav == "0") favoritesFirst = false;
-		
-		bool showFavoriteIcon = (systemName != "favorites" && systemName != "recent");
-		if (!showFavoriteIcon)
-			favoritesFirst = false;
-
+		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();		
 		if (favoritesFirst)
 		{
 			for (auto file : files)
@@ -107,33 +98,16 @@ void CarouselGameListView::populateList(const std::vector<FileData*>& files)
 				if (!file->getFavorite())
 					continue;
 				
-				if (showFavoriteIcon)
-					mList.add(_U("\uF006 ") + file->getName(), file);
-				else if (file->getType() == FOLDER)
-					mList.add(_U("\uF07C ") + file->getName(), file);
-				else
-					mList.add(file->getName(), file);
+				mList.add(formatter.getDisplayName(file), file);
 			}
 		}
 
 		for (auto file : files)		
 		{
-			if (file->getFavorite())
-			{
-				if (favoritesFirst)
-					continue;
+			if (file->getFavorite() && favoritesFirst)
+				continue;
 
-				if (showFavoriteIcon)
-				{
-					mList.add(_U("\uF006 ") + file->getName(), file);
-					continue;
-				}
-			}
-
-			if (file->getType() == FOLDER)
-				mList.add(_U("\uF07C ") + file->getName(), file);
-			else
-				mList.add(file->getName(), file); //  + _U(" \uF05A")
+			mList.add(formatter.getDisplayName(file), file);
 		}
 
 		// if we have the ".." PLACEHOLDER, then select the first game instead of the placeholder
@@ -159,41 +133,23 @@ FileData* CarouselGameListView::getCursor()
 	return mList.getSelected();
 }
 
+void CarouselGameListView::resetLastCursor()
+{
+	mList.resetLastCursor();
+}
+
 void CarouselGameListView::setCursor(FileData* cursor)
 {
-	if(!mList.setCursor(cursor) && (!cursor->isPlaceHolder()))
+	if (cursor && !mList.setCursor(cursor) && !cursor->isPlaceHolder())
 	{
-		auto children = mRoot->getChildrenListToDisplay();
-
-		auto gameIter = std::find(children.cbegin(), children.cend(), cursor);
-		if (gameIter == children.cend())
+		std::stack<FileData*> stack;
+		auto childrenToDisplay = mRoot->findChildrenListToDisplayAtCursor(cursor, stack);
+		if (childrenToDisplay != nullptr)
 		{
-			if (cursor->getParent() != nullptr)
-				children = cursor->getParent()->getChildrenListToDisplay();
-
-			// update our cursor stack in case our cursor just got set to some folder we weren't in before
-			if (mCursorStack.empty() || mCursorStack.top() != cursor->getParent())
-			{
-				std::stack<FileData*> tmp;
-				FileData* ptr = cursor->getParent();
-				while (ptr && ptr != mRoot)
-				{
-					tmp.push(ptr);
-					ptr = ptr->getParent();
-				}
-
-				// flip the stack and put it in mCursorStack
-				mCursorStack = std::stack<FileData*>();
-				while (!tmp.empty())
-				{
-					mCursorStack.push(tmp.top());
-					tmp.pop();
-				}
-			}
+			mCursorStack = stack;
+			populateList(*childrenToDisplay.get());
+			mList.setCursor(cursor);
 		}
-	
-		populateList(children);
-		mList.setCursor(cursor);
 	}
 }
 
@@ -206,11 +162,17 @@ void CarouselGameListView::addPlaceholder()
 
 std::string CarouselGameListView::getQuickSystemSelectRightButton()
 {
+	if (mList.isHorizontalCarousel())
+		return "r2";
+
 	return "right";
 }
 
 std::string CarouselGameListView::getQuickSystemSelectLeftButton()
 {
+	if (mList.isHorizontalCarousel())
+		return "l2";
+
 	return "left";
 }
 
@@ -242,37 +204,6 @@ void CarouselGameListView::remove(FileData *game)
 	onFileChanged(parent, FILE_REMOVED);           // update the view, with game removed
 }
 
-std::vector<HelpPrompt> CarouselGameListView::getHelpPrompts()
-{
-	std::vector<HelpPrompt> prompts;
-
-	if (mPopupSelfReference == nullptr && Settings::getInstance()->getBool("QuickSystemSelect"))
-		prompts.push_back(HelpPrompt("left/right", _("SYSTEM"))); // batocera
-
-	prompts.push_back(HelpPrompt("up/down", _("CHOOSE"))); // batocera
-	prompts.push_back(HelpPrompt(BUTTON_OK, _("LAUNCH")));
-	prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
-	if(!UIModeController::getInstance()->isUIModeKid())
-	  prompts.push_back(HelpPrompt("select", _("OPTIONS"))); // batocera
-
-	FileData* cursor = getCursor();
-	if (cursor != nullptr && cursor->isNetplaySupported())
-		prompts.push_back(HelpPrompt("x", _("NETPLAY"))); // batocera
-	else
-		prompts.push_back(HelpPrompt("x", _("RANDOM"))); // batocera
-
-	if(mRoot->getSystem()->isGameSystem() && !UIModeController::getInstance()->isUIModeKid())
-	{
-		std::string prompt = CollectionSystemManager::get()->getEditingCollection();
-		
-		if (Utils::String::toLower(prompt) == "favorites")
-			prompts.push_back(HelpPrompt("y", _("Favorites")));
-		else
-			prompts.push_back(HelpPrompt("y", _(prompt.c_str())));
-	}
-	return prompts;
-}
-
 // batocera
 void CarouselGameListView::setCursorIndex(int cursor){
 	mList.setCursorIndex(cursor);
@@ -286,4 +217,10 @@ int CarouselGameListView::getCursorIndex(){
 std::vector<FileData*> CarouselGameListView::getFileDataEntries()
 {
 	return mList.getObjects();	
+}
+
+void CarouselGameListView::update(int deltaTime)
+{
+	mDetails.update(deltaTime);
+	ISimpleGameListView::update(deltaTime);
 }

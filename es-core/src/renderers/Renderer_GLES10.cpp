@@ -76,6 +76,27 @@ namespace Renderer
 
 	} // setupWindow
 
+	std::vector<std::pair<std::string, std::string>> getDriverInformation()
+	{
+		std::vector<std::pair<std::string, std::string>> info;
+
+		info.push_back(std::pair<std::string, std::string>("GRAPHICS API", "OPENGL ES 1.0"));
+
+		const std::string vendor = glGetString(GL_VENDOR) ? (const char*)glGetString(GL_VENDOR) : "";
+		if (!vendor.empty())
+			info.push_back(std::pair<std::string, std::string>("VENDOR", vendor));
+
+		const std::string renderer = glGetString(GL_RENDERER) ? (const char*)glGetString(GL_RENDERER) : "";
+		if (!renderer.empty())
+			info.push_back(std::pair<std::string, std::string>("RENDERER", renderer));
+
+		const std::string version = glGetString(GL_VERSION) ? (const char*)glGetString(GL_VERSION) : "";
+		if (!version.empty())
+			info.push_back(std::pair<std::string, std::string>("VERSION", version));
+
+		return info;
+	}
+
 	void createContext()
 	{
 		sdlContext = SDL_GL_CreateContext(getSDLWindow());

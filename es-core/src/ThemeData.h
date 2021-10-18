@@ -312,7 +312,14 @@ public:
 	const ThemeElement* getElement(const std::string& view, const std::string& element, const std::string& expectedType) const;
 	const std::vector<std::string> getElementNames(const std::string& view, const std::string& expectedType) const;
 
-	static std::vector<GuiComponent*> makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad = false);
+	enum ExtraImportType
+	{
+		WITH_ACTIVATESTORYBOARD = 1,
+		WITHOUT_ACTIVATESTORYBOARD = 2,
+		ALL_EXTRAS = 1 + 2
+	};
+
+	static std::vector<GuiComponent*> makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad = false, ExtraImportType type = ExtraImportType::ALL_EXTRAS);
 
 	static const std::shared_ptr<ThemeData>& getDefault();
 
@@ -321,6 +328,7 @@ public:
 	
 	bool hasSubsets() { return mSubsets.size() > 0; }
 	static const std::shared_ptr<ThemeData::ThemeMenu>& getMenuTheme();
+	static unsigned int parseColor(const std::string& str);
 
 	std::vector<Subset>		    getSubSets() { return mSubsets; }
 	std::vector<std::string>	getSubSetNames(const std::string ofView = "");
@@ -436,7 +444,5 @@ private:
 	static std::shared_ptr<ThemeData::ThemeMenu> mMenuTheme;
 	static ThemeData* mDefaultTheme;	
 };
-
-extern unsigned int getHexColor(const char* str);
 
 #endif // ES_CORE_THEME_DATA_H

@@ -10,6 +10,7 @@
 #include "SystemData.h"
 #include "utils/TimeUtil.h"
 #include "utils/StringUtil.h"
+#include "Genres.h"
 
 // Current version is release 4 let's test for this value in JSON result
 #ifndef ARCADE_DB_RELEASE_VERSION
@@ -143,7 +144,10 @@ void processGame(const Value& game, std::vector<ScraperSearchResult>& results)
     }
 
 	if (game.HasMember("genre") && game["genre"].IsString())
-	    result.mdl.set(MetaDataId::Genre, getStringOrThrow(game, "genre"));
+	{
+		result.mdl.set(MetaDataId::Genre, getStringOrThrow(game, "genre"));
+		Genres::convertGenreToGenreIds(&result.mdl);
+	}
 
 	if (game.HasMember("players") && game["players"].IsInt())
 		result.mdl.set(MetaDataId::Players, std::to_string(game["players"].GetInt()));
@@ -153,27 +157,27 @@ void processGame(const Value& game, std::vector<ScraperSearchResult>& results)
 	// Process medias
 	auto art = findMedia(game, Settings::getInstance()->getString("ScrapperImageSrc"));
 	if (!art.empty())
-		result.urls[MetaDataId::Image] = ScraperSearchItem(art);
+		result.urls[MetaDataId::Image] = ScraperSearchItem(art, ".png");
 
 	if (!Settings::getInstance()->getString("ScrapperThumbSrc").empty() && Settings::getInstance()->getString("ScrapperThumbSrc") != Settings::getInstance()->getString("ScrapperImageSrc"))
 	{
 		auto art = findMedia(game, Settings::getInstance()->getString("ScrapperThumbSrc"));
 		if (!art.empty())
-			result.urls[MetaDataId::Thumbnail] = ScraperSearchItem(art);
+			result.urls[MetaDataId::Thumbnail] = ScraperSearchItem(art, ".png");
 	}
 
 	if (!Settings::getInstance()->getString("ScrapperLogoSrc").empty())
 	{
 		auto art = findMedia(game, Settings::getInstance()->getString("ScrapperLogoSrc"));
 		if (!art.empty())
-			result.urls[MetaDataId::Marquee] = ScraperSearchItem(art);
+			result.urls[MetaDataId::Marquee] = ScraperSearchItem(art, ".png");
 	}
 
 	if (Settings::getInstance()->getBool("ScrapeTitleShot"))
 	{
 		auto art = findMedia(game, "sstitle");
 		if (!art.empty())
-			result.urls[MetaDataId::TitleShot] = ScraperSearchItem(art);
+			result.urls[MetaDataId::TitleShot] = ScraperSearchItem(art, ".png");
 	}
 
 	if (Settings::getInstance()->getBool("ScrapeVideos"))
@@ -203,7 +207,7 @@ bool ArcadeDBJSONRequest::process(HttpReq* request, std::vector<ScraperSearchRes
 		return true;
 	}
 
-    if (!doc.HasMember("release") || !doc["release"].IsInt() || doc["release"] != ARCADE_DB_RELEASE_VERSION)
+    if (!doc.HasMember("release") || !doc["release"].IsInt() || doc["release"].GetInt() < ARCADE_DB_RELEASE_VERSION)
     {
         std::string warn = "ArcadeDBJSONRequest - Response had wrong format.\n";
         LOG(LogWarning) << warn;

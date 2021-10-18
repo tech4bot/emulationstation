@@ -51,7 +51,7 @@ public:
 	static void openThemeConfiguration(Window* mWindow, GuiComponent* s, std::shared_ptr<OptionListComponent<std::string>> theme_set, const std::string systemTheme = "");
 
 	static void updateGameLists(Window* window, bool confirm = true);
-	static void editKeyboardMappings(Window *window, IKeyboardMapContainer* mapping);
+	static void editKeyboardMappings(Window *window, IKeyboardMapContainer* mapping, bool editable);
 
 private:
 	void addEntry(std::string name, bool add_arrow, const std::function<void()>& func, const std::string iconName = "");
@@ -66,13 +66,13 @@ private:
 
 #ifdef _ENABLEEMUELEC
 	void openEmuELECSettings(); /* < emuelec */
+    static void openDangerZone(Window* mWindow, std::string configName);
 #endif
 	// batocera	
 	void openSystemSettings_batocera();
 	void openGamesSettings_batocera();
-	void openControllersSettings_batocera();		
-	void openNetworkSettings_batocera(bool selectWifiEnable = false);
-	void openScraperSettings_batocera();
+	void openControllersSettings_batocera(int autoSel = 0);
+	void openNetworkSettings_batocera(bool selectWifiEnable = false);	
 	void openQuitMenu_batocera();
 	void openSystemInformations_batocera();
 	void openDeveloperSettings();
@@ -94,6 +94,9 @@ private:
 	TextComponent mVersion;
 
 	static std::shared_ptr<OptionListComponent<std::string>> createRatioOptionList(Window *window, std::string configname);
+#ifdef _ENABLEEMUELEC
+  static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);
+#endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
 	static void popSpecificConfigurationGui(Window* mWindow, std::string title, std::string configName, SystemData *systemData, FileData* fileData, bool selectCoreLine = false);
 

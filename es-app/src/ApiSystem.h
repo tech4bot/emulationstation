@@ -68,7 +68,18 @@ struct PacmanPackage
 	std::string group;
 	std::vector<std::string> licenses;	
 
+	std::string arch;
+
 	bool isInstalled() { return status == "installed"; }
+};
+
+struct PadInfo
+{
+	int id;
+	std::string name;
+	std::string device;
+	std::string status;
+	int battery;
 };
 
 class ApiSystem 
@@ -92,12 +103,15 @@ public:
 		BATOCERASTORE = 13,
 		EVMAPY = 14,
 		THEMESDOWNLOADER = 15,
-		THEBEZELPROJECT = 16
+		THEBEZELPROJECT = 16,
+		PADSINFO = 17,
+		BATOCERAPREGAMELISTSHOOK = 18
 	};
 
 	virtual bool isScriptingSupported(ScriptId script);
 
     static ApiSystem* getInstance();
+	virtual void deinit() { };
 
     virtual unsigned long getFreeSpaceGB(std::string mountpoint);
 
@@ -108,6 +122,8 @@ public:
     bool isFreeSpaceLimit();
 
     virtual std::string getVersion();
+	virtual std::string getApplicationName();
+
     std::string getRootPassword();
 
     bool setOverscan(bool enable);
@@ -154,12 +170,19 @@ public:
 
     bool setStorage(std::string basic_string);
 
+	bool setButtonColorGameForce(std::string basic_string);
+
+	bool setPowerLedGameForce(std::string basic_string);
+
     bool forgetBluetoothControllers();
 
     /* audio card */
     bool setAudioOutputDevice(std::string device);
     std::vector<std::string> getAvailableAudioOutputDevices();
     std::string getCurrentAudioOutputDevice();
+    bool setAudioOutputProfile(std::string profile);
+    std::vector<std::string> getAvailableAudioOutputProfiles();
+    std::string getCurrentAudioOutputProfile();
 
     /* video output */
     std::vector<std::string> getAvailableVideoOutputDevices();
@@ -181,10 +204,12 @@ public:
 	virtual std::string getCRC32(const std::string fileName, bool fromZipContents = true);
 	virtual std::string getMD5(const std::string fileName, bool fromZipContents = true);
 
-	virtual bool unzipFile(const std::string fileName, const std::string destFolder = "");
+	virtual bool unzipFile(const std::string fileName, const std::string destFolder = "", const std::function<bool(const std::string)>& shouldExtract = nullptr);
 
 	virtual int getPdfPageCount(const std::string fileName);
 	virtual std::vector<std::string> extractPdfImages(const std::string fileName, int pageIndex = -1, int pageCount = 1, bool bestQuality = false);
+
+	virtual std::string getRunningArchitecture();
 
 	std::vector<PacmanPackage> getBatoceraStorePackages();
 	std::pair<std::string, int> installBatoceraStorePackage(std::string name, const std::function<void(const std::string)>& func = nullptr);
@@ -192,8 +217,10 @@ public:
 	void updateBatoceraStorePackageList();
 	void refreshBatoceraStorePackageList();
 
-	bool	getBrightness(int& value);
-	void	setBrightness(int value);
+	void callBatoceraPreGameListsHook();
+
+	bool	getBrighness(int& value);
+	void	setBrighness(int value);
 
 	std::vector<std::string> getWifiNetworks(bool scan = false);
 
@@ -207,13 +234,20 @@ public:
 
 	virtual std::vector<std::string> getRetroachievementsSoundsList();
 	virtual std::vector<std::string> getShaderList(const std::string systemName = "");
-	virtual std::string getSevenZipCommand() { return "/usr/bin/7z"; }
+	virtual std::string getSevenZipCommand() { return "7zr"; }
 
+	virtual std::vector<std::string> getTimezones();
+	virtual std::string getCurrentTimezone();
+	virtual bool setTimezone(std::string tz);
+
+	virtual std::vector<PadInfo> getPadsInfo();
+	virtual std::string getHostsName();
+	virtual bool emuKill();
 
 protected:
 	ApiSystem();
 
-	virtual bool executeScript(const std::string command);	
+	virtual bool executeScript(const std::string command);  
 	virtual std::pair<std::string, int> executeScript(const std::string command, const std::function<void(const std::string)>& func);
 	virtual std::vector<std::string> executeEnumerationScript(const std::string command);
 	

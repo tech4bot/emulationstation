@@ -91,19 +91,22 @@ namespace Utils
 				}
 			}
 #else
-			FileCache(const std::string& name, dirent* entry)
-			{
-				exists = true;
-				hidden = (getFileName(name)[0] == '.');
-				directory = (entry->d_type == 4); // DT_DIR;
-				isSymLink = (entry->d_type == 10); // DT_LNK;
-			}
-
-			FileCache(dirent* entry, bool _hidden)
+			FileCache(const std::string& name, dirent* entry, bool _hidden)
 			{
 				exists = true;
 				hidden = _hidden;
-				directory = (entry->d_type == 4); // DT_DIR;
+
+				if (entry->d_type == 10)
+				{
+					struct stat64 info;
+					if (stat64(resolveSymlink(name).c_str(), &info) == 0)
+						directory = S_ISDIR(info.st_mode);
+					else 
+						directory = false;
+				}
+				else
+					directory = (entry->d_type == 4);
+
 				isSymLink = (entry->d_type == 10); // DT_LNK;
 			}
 #endif
@@ -121,7 +124,7 @@ namespace Utils
 				int ret = stat64(key.c_str(), info);
 #endif
 
-				std::unique_lock<std::mutex> lock(mFileCacheMutex);
+				mFileCacheMutex.lock();
 
 				FileCache cache(ret == 0, false);
 				if (cache.exists)
@@ -129,10 +132,18 @@ namespace Utils
 					cache.directory = S_ISDIR(info->st_mode);
 #ifndef WIN32
 					cache.isSymLink = S_ISLNK(info->st_mode);
+					if (cache.isSymLink)
+					{
+						struct stat64 si;
+						if (stat64(resolveSymlink(key).c_str(), &si) == 0)
+							cache.directory = S_ISDIR(si.st_mode);
+					}
 #endif
 				}
 
 				mFileCache[key] = cache;
+
+				mFileCacheMutex.unlock();
 
 				return ret;
 			}
@@ -142,8 +153,9 @@ namespace Utils
 				if (!mEnabled)
 					return;
 
-				std::unique_lock<std::mutex> lock(mFileCacheMutex);
+				mFileCacheMutex.lock();
 				mFileCache[key] = cache;
+				mFileCacheMutex.unlock();
 			}
 
 			static FileCache* get(const std::string& key)
@@ -169,8 +181,9 @@ namespace Utils
 
 			static void resetCache()
 			{
-				std::unique_lock<std::mutex> lock(mFileCacheMutex);
+				mFileCacheMutex.lock();
 				mFileCache.clear();
+				mFileCacheMutex.unlock();
 			}
 
 			static void setEnabled(bool value) { mEnabled = value; }
@@ -279,15 +292,19 @@ namespace Utils
 						{
 							std::string fullName(getGenericPath(path + "/" + name));
 
-							FileCache::add(fullName, FileCache(fullName, entry));
+							FileCache cache(fullName, entry, getFileName(fullName)[0] == '.');
+							FileCache::add(fullName, cache);
 
-							if (!includeHidden && Utils::FileSystem::isHidden(fullName))
+							if (!includeHidden && cache.hidden)
 								continue;
 
 							contentList.push_back(fullName);
 
-							if(_recursive && isDirectory(fullName))
-								contentList.merge(getDirContent(fullName, true));
+							if (_recursive && cache.directory)
+							{
+								for (auto item : getDirContent(fullName, true, includeHidden))
+									contentList.push_back(item);
+							}
 						}
 					}
 
@@ -317,6 +334,33 @@ namespace Utils
 			// if (isDirectory(path))
 			{			
 #if defined(_WIN32)
+
+				if (_path.empty() || _path == "\\" || _path == "/")
+				{
+					char drive = 'A';
+
+					DWORD uDriveMask = ::GetLogicalDrives();
+					while (uDriveMask)
+					{
+						if (uDriveMask & 1)
+						{
+							FileInfo fi;
+							fi.path = std::string(1, drive) + ":";
+							fi.hidden = false;
+							fi.directory = true;
+							contentList.push_back(fi);
+						}
+
+						drive++;
+						uDriveMask >>= 1;
+					}
+
+					return contentList;
+				}
+
+
+
+
 				WIN32_FIND_DATAW findData;
 				std::string      wildcard = path + "/*";
 				
@@ -366,9 +410,19 @@ namespace Utils
 							FileInfo fi;
 							fi.path = fullName;
 							fi.hidden = Utils::FileSystem::isHidden(fullName);
-							fi.directory = (entry->d_type == 4); // DT_DIR;
 
-							FileCache::add(fullName, FileCache(entry, fi.hidden));
+							if (entry->d_type == 10) // DT_LNK
+							{
+								struct stat64 si;
+								if (stat64(resolveSymlink(fullName).c_str(), &si) == 0)
+									fi.directory = S_ISDIR(si.st_mode);
+								else
+									fi.directory = false;
+							}
+							else
+								fi.directory = (entry->d_type == 4); // DT_DIR;
+
+							FileCache::add(fullName, FileCache(fullName, entry, fi.hidden));
 
 							//DT_LNK
 							contentList.push_back(fi);
@@ -418,7 +472,7 @@ namespace Utils
 			homePath = Utils::FileSystem::getGenericPath(_path);
 		}
 
-		std::string getHomePath()
+		std::string& getHomePath()
 		{
 			if (homePath.length())
 				return homePath;
@@ -463,14 +517,13 @@ namespace Utils
 
 		} // getHomePath
 
+		
 		std::string getCWDPath()
 		{
-			char temp[2048];
-
 			// return current working directory path
+			char temp[2048];
 			return (getcwd(temp, 2048) ? getGenericPath(temp) : "");
-
-		} // getCWDPath
+		}
 
 		std::string exePath;
 
@@ -481,24 +534,28 @@ namespace Utils
 				path = getParent(path);
 
 			exePath = Utils::FileSystem::getGenericPath(path);
-		} // setExePath
+		}
 
 		std::string getExePath()
 		{
 			return exePath;
-
-		} // getExePath
+		}
 
 		std::string getPreferredPath(const std::string& _path)
 		{
+#if _WIN32
 			std::string path   = _path;
-			size_t      offset = std::string::npos;
-#if defined(_WIN32)
+
 			// convert '/' to '\\'
+
+			size_t      offset = std::string::npos;
 			while((offset = path.find('/')) != std::string::npos)
 				path.replace(offset, 1, "\\");
-#endif // _WIN32
+
 			return path;
+#else
+			return _path;
+#endif
 		}
 
 		std::string getGenericPath(const std::string& _path)
@@ -527,8 +584,7 @@ namespace Utils
 
 			// return generic path
 			return path;
-
-		} // getGenericPath
+		}
 
 		std::string getEscapedPath(const std::string& _path)
 		{
@@ -565,83 +621,82 @@ namespace Utils
 			return path;
 #endif // _WIN32
 
-		} // getEscapedPath
+		}
 
 		std::string getCanonicalPath(const std::string& _path)
 		{
 			// temporary hack for builtin resources
-			if(_path.size() >= 2 && _path[0] == ':' && _path[1] == '/')
+			if (_path.size() >= 2 && _path[0] == ':' && _path[1] == '/')
 				return _path;
 
 #if WIN32
-			std::string path = _path[0] == '.' ? getAbsolutePath(_path) : getGenericPath(_path);
-			if (path.find("./") == std::string::npos)
+			std::string path = _path[0] == '.' ? getAbsolutePath(_path) : _path;
+			if (path.find("./") == std::string::npos && path.find(".\\") == std::string::npos)
 				return path;
 #else
-			std::string path = exists(_path) ? getAbsolutePath(_path) : getGenericPath(_path);
+			std::string path = exists(_path) ? getAbsolutePath(_path) : _path;
 #endif
+			
+			int indexes[32];
+			int index = -1;
+			char fp[4096];
 
-			// cleanup path
-			bool scan = true;
-			while(scan)
+			int pos = 0;
+			int ofs = 0;
+
+			bool pointset = false;
+			bool twopointset = false;
+
+			for (int i = 0; i < path.size(); i++)
 			{
-				auto pathList = getPathList(path);
+				char c = path[i];
 
-				path.clear();
-				scan = false;
-
-				for(auto it = pathList.cbegin(); it != pathList.cend(); ++it)
+				if (c == '/' || c == '\\')
 				{
-					// ignore empty
-					if((*it).empty())
-						continue;
-
-					// remove "/./"
-					if((*it) == ".")
-						continue;
-
-					// resolve "/../"
-					if((*it) == "..")
+					if (twopointset)
 					{
-						path = getParent(path);
+						if (index > 0)
+							pos = indexes[--index] + 1;
+
+						twopointset = false;
+						pointset = false;
 						continue;
 					}
-
-#if defined(_WIN32)
-					// append folder to path
-					path += (path.size() == 0) ? (*it) : ("/" + (*it));
-#else // _WIN32
-					// append folder to path
-					path += ("/" + (*it));
-
-					/* 
-					// resolve symlink - Disabled : slow & useless
-					if(isSymlink(path))
+					else if (pointset)
 					{
-						std::string resolved = resolveSymlink(path);
+						pos = indexes[index] + 1;
+						pointset = false;
+						continue;
+					}
+					else
+						indexes[++index] = pos;
 
-						if(resolved.empty())
-							return "";
-
-						if(isAbsolute(resolved))
-							path = resolved;
-						else
-							path = getParent(path) + "/" + resolved;
-
-						for(++it; it != pathList.cend(); ++it)
-							path += (path.size() == 0) ? (*it) : ("/" + (*it));
-
-						scan = true;
-						break;
-					}*/
-#endif // _WIN32
+					fp[pos++] = '/';
+					continue;
 				}
+				else if (c == '.')
+				{
+					if (pointset)
+					{
+						twopointset = true;
+						pointset = false;
+					}
+					else if (index >= 0 && i > 0 && (path[i-1] == '/' || path[i - 1] == '\\'))
+						pointset = true;
+				}
+				else
+				{
+					twopointset = false;
+					pointset = false;
+				}
+
+				fp[pos++] = c;
 			}
 
-			// return canonical path
-			return path;
+			fp[pos] = 0;
+			return fp;			
 
-		} // getCanonicalPath
+		}
 
 		std::string getAbsolutePath(const std::string& _path, const std::string& _base)
 		{
@@ -649,53 +704,54 @@ namespace Utils
 				return getGenericPath(_path);
 
 			return getCanonicalPath(_base + "/" + _path);
-		} // getAbsolutePath
+		}
 
 		std::string getParent(const std::string& _path)
-		{
-			std::string path   = getGenericPath(_path);
-			size_t      offset = std::string::npos;
-
-			// find last '/' and erase it
-			if((offset = path.find_last_of('/')) != std::string::npos)
-				return path.erase(offset);
-
-			// no parent found
-			return path;
-
-		} // getParent
+		{			
+			for (int i = _path.size() - 1; i > 0; i--)
+				if (_path[i] == '/' || _path[i] == '\\')
+					return _path.substr(0, i);
+			
+			return "";
+		}
 
 		std::string getFileName(const std::string& _path)
 		{
-			std::string path   = getGenericPath(_path);
-			size_t      offset = std::string::npos;
+			for (int i = _path.size() - 1; i > 0; i--)
+				if (_path[i] == '/' || _path[i] == '\\')
+					return _path.substr(i + 1);
 
-			// find last '/' and return the filename
-			if((offset = path.find_last_of('/')) != std::string::npos)
-				return ((path[offset + 1] == 0) ? "." : std::string(path, offset + 1));
-
-			// no '/' found, entire path is a filename
-			return path;
-
-		} // getFileName
+			return _path;
+		}
 
 		std::string getStem(const std::string& _path)
 		{
-			std::string fileName = getFileName(_path);
-			size_t      offset   = std::string::npos;
+			int lastPathSplit = 0;
+			int extPos = -1;
 
-			// empty fileName
-			if(fileName == ".")
-				return fileName;
+			auto* p = _path.c_str();
+			for (int i = _path.size() - 1 ; i >= 0 ; i--)
+			{
+				if (extPos < 0 && p[i] == '.')
+					extPos = i;
 
-			// find last '.' and erase the extension
-			if((offset = fileName.find_last_of('.')) != std::string::npos)
-				return fileName.erase(offset);
+				if (p[i] == '/' || p[i] == '\\')
+				{
+					lastPathSplit = i + 1;
+					break;
+				}
+			}
 
-			// no '.' found, filename has no extension
-			return fileName;
+			if (extPos < 0)
+			{
+				if (lastPathSplit == 0)
+					return _path;
 
-		} // getStem
+				return _path.substr(lastPathSplit);
+			}
+
+			return _path.substr(lastPathSplit, extPos - lastPathSplit);
+		}
 
 		std::string getExtension(const std::string& _path)
 		{
@@ -706,22 +762,38 @@ namespace Utils
 				return ext;
 
 			return std::string();
-			/*
-			std::string fileName = getFileName(_path);
-			size_t      offset   = std::string::npos;
+		}
 
-			// empty fileName
-			if(fileName == ".")
-				return fileName;
+		std::string changeExtension(const std::string& _path, const std::string& extension)
+		{
+			if (_path.empty())
+				return _path;
 
-			// find last '.' and return the extension
-			if((offset = fileName.find_last_of('.')) != std::string::npos)
-				return std::string(fileName, offset);
+			std::string str = _path;
+			int length = _path.length();
+			while (--length >= 0)
+			{
+				char ch = _path[length];
+				if (ch == '.')
+				{
+					str = _path.substr(0, length);
+					break;
+				}
 
-			// no '.' found, filename has no extension
-			return ".";*/
+				if (((ch == '/') || (ch == '\\')) || (ch == ':'))
+					break;
+			}
 
-		} // getExtension
+			if (extension.empty())
+				return str;
+
+			if (extension.length() == 0 || extension[0] != '.')
+				str = str + ".";
+
+			return str + extension;
+		}
+
+
 
 		std::string resolveRelativePath(const std::string& _path, const std::string& _relativeTo, const bool _allowHome)
 		{
@@ -733,8 +805,13 @@ namespace Utils
 				return getGenericPath(_relativeTo);
 
 			// replace '.' with relativeTo
-			if((_path[0] == '.') && (_path[1] == '/' || _path[1] == '\\'))
+			if ((_path[0] == '.') && (_path[1] == '/' || _path[1] == '\\'))
+			{
+				if (_path[2] == '.' && (_path[3] == '.' || _path[3] == '/' || _path[3] == '\\')) // ./.. or ././ ?
+					return getCanonicalPath(_relativeTo + &(_path[1]));
+
 				return getGenericPath(_relativeTo + &(_path[1]));
+			}
 
 			// replace '~' with homePath
 			if(_allowHome && (_path[0] == '~') && (_path[1] == '/' || _path[1] == '\\'))
@@ -880,7 +957,7 @@ namespace Utils
 				return true;
 
 #if WIN32			
-			return RemoveDirectoryW(Utils::String::convertToWideString(_path).c_str());
+			return RemoveDirectoryW(Utils::String::convertToWideString(getPreferredPath(_path)).c_str());
 #else
 			return (rmdir(path.c_str()) == 0);
 #endif
@@ -896,7 +973,7 @@ namespace Utils
 
 #if WIN32			
 			if (isDirectory(_path))
-				return RemoveDirectoryW(Utils::String::convertToWideString(_path).c_str());
+				return RemoveDirectoryW(Utils::String::convertToWideString(getPreferredPath(_path)).c_str());
 
 			return DeleteFileW(Utils::String::convertToWideString(_path).c_str());
 #else
@@ -932,8 +1009,7 @@ namespace Utils
 			// only try to create parent if it's not identical to path
 			if(parent != path)
 				createDirectory(parent);
-
-			
+						
 			// try to create directory again now that the parent should exist
 			return (mkdir(path.c_str(), 0755) == 0);
 
@@ -1017,6 +1093,12 @@ namespace Utils
 			// check if stat succeeded
 			if (FileCache::fromStat64(path, &info) != 0) //if(stat64(path.c_str(), &info) != 0)
 				return false;
+
+			if (S_ISLNK(info.st_mode))
+			{
+				if (FileCache::fromStat64(resolveSymlink(path), &info) != 0) //if(stat64(path.c_str(), &info) != 0)
+					return false;
+			}
 
 			// check for S_IFDIR attribute
 			return (S_ISDIR(info.st_mode));
@@ -1123,6 +1205,12 @@ namespace Utils
 				}
 			}
 
+			if (gp.empty())
+				return filename;
+			else if (Utils::String::endsWith(gp, ":/"))
+				return gp + filename;
+			else if (Utils::String::endsWith(gp, ":"))
+				return gp + "/" + filename;
 
 			if (!Utils::String::endsWith(gp, "/") && !Utils::String::endsWith(gp, "\\"))
 				if (!Utils::String::startsWith(filename, "/") && !Utils::String::startsWith(filename, "\\"))
@@ -1182,38 +1270,41 @@ namespace Utils
 
 		std::string	readAllText(const std::string fileName)
 		{
-#if defined(_WIN32)
-			std::ifstream t(Utils::String::convertToWideString(fileName));
-#else
-			std::ifstream t(fileName);
-#endif
+			std::ifstream t(WINSTRINGW(fileName));
 
 			std::stringstream buffer;
 			buffer << t.rdbuf();
 			return buffer.str();
 		}
 
-		void writeAllText(const std::string fileName, const std::string text)
+		void writeAllText(const std::string& fileName, const std::string& text)
 		{
-			std::fstream fs;
-
 #if defined(_WIN32)
-			fs.open(Utils::String::convertToWideString(fileName), std::fstream::out);
+			FILE* file = _wfopen(Utils::String::convertToWideString(fileName).c_str(), L"wb");
 #else
-			fs.open(fileName.c_str(), std::fstream::out);
+			FILE* file = fopen(fileName.c_str(), "wb");
 #endif
+			if (file == nullptr)
+				return;		
 
-			fs << text;
-			fs.close();
+			void* buffer = (void*) text.data();
+			size_t size = text.size();
+
+			fwrite(buffer, 1, size, file);
+			fclose(file);
 		}
 
-		bool renameFile(const std::string src, const std::string dst)
+		bool renameFile(const std::string src, const std::string dst, bool overWrite)
 		{
 			std::string path = getGenericPath(src);
 			if (!exists(path))
 				return true;
 
-#if WIN32
+			if (overWrite && Utils::FileSystem::exists(dst))
+				Utils::FileSystem::removeFile(dst);
+
+
+#if WIN32			
 			return MoveFileW(Utils::String::convertToWideString(path).c_str(), Utils::String::convertToWideString(dst).c_str());
 #else
 			return std::rename(src.c_str(), dst.c_str()) == 0;
@@ -1228,6 +1319,8 @@ namespace Utils
 			// don't remove if it doesn't exists
 			if (!exists(path))
 				return true;
+
+			Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(pathD));
 
 			char buf[512];
 			size_t size;
@@ -1260,7 +1353,7 @@ namespace Utils
 			return true;
 		} // removeFile
 
-		void deleteDirectoryFiles(const std::string path)
+		void deleteDirectoryFiles(const std::string path, bool deleteDirectory)
 		{
 			std::vector<std::string> directories;
 
@@ -1275,7 +1368,10 @@ namespace Utils
 			}
 
 			for (auto file : directories)
-				removeDirectory(Utils::FileSystem::getPreferredPath(file).c_str());
+				removeDirectory(file);
+
+			if (deleteDirectory)
+				removeDirectory(path);
 		}
 
 		std::string megaBytesToString(unsigned long size)
@@ -1301,23 +1397,50 @@ namespace Utils
 
 		std::string getTempPath()
 		{
-			return Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp/");
+			static std::string path;
+
+			if (path.empty())
+			{
+#ifdef WIN32
+				// Set tmp files to local drive : usually faster since it's generally a SSD Drive
+				WCHAR lpTempPathBuffer[MAX_PATH];
+				lpTempPathBuffer[0] = 0;
+				DWORD dwRetVal = ::GetTempPathW(MAX_PATH, lpTempPathBuffer);
+				if (dwRetVal > 0 && dwRetVal <= MAX_PATH)
+					path = Utils::FileSystem::getGenericPath(Utils::String::convertFromWideString(lpTempPathBuffer)) + "/emulationstation.tmp";
+				else
+#endif
+					path = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp");
+			}
+
+			if (!Utils::FileSystem::isDirectory(path))
+				Utils::FileSystem::createDirectory(path);
+
+			return path;
 		}
 
 		std::string getPdfTempPath()
 		{
-#ifdef WIN32
-			// Extract PDFs to local drive : usually faster since it's generally a SSD Drive
-			WCHAR lpTempPathBuffer[MAX_PATH];
-			lpTempPathBuffer[0] = 0;
-			DWORD dwRetVal = ::GetTempPathW(MAX_PATH, lpTempPathBuffer);
-			if (dwRetVal > MAX_PATH || (dwRetVal == 0))
-				return Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/pdftmp/");
+			static std::string pdfpath;
 
-			return Utils::FileSystem::getGenericPath(Utils::String::convertFromWideString(lpTempPathBuffer)) + "/pdftmp/";
-#else
-			return Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/pdftmp/");
-#endif
+			if (pdfpath.empty())
+			{
+#ifdef WIN32
+				// Extract PDFs to local drive : usually faster since it's generally a SSD Drive
+				WCHAR lpTempPathBuffer[MAX_PATH];
+				lpTempPathBuffer[0] = 0;
+				DWORD dwRetVal = ::GetTempPathW(MAX_PATH, lpTempPathBuffer);
+				if (dwRetVal > 0 && dwRetVal <= MAX_PATH)
+					pdfpath = Utils::FileSystem::getGenericPath(Utils::String::convertFromWideString(lpTempPathBuffer)) + "/pdftmp";
+				else
+#endif						
+					pdfpath = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/pdftmp");
+			}
+
+			if (!Utils::FileSystem::isDirectory(pdfpath))
+				Utils::FileSystem::createDirectory(pdfpath);
+
+			return pdfpath;
 		}
 		
 		std::string getFileCrc32(const std::string& filename)
@@ -1352,6 +1475,73 @@ namespace Utils
 
 			return hex;
 		}
+		
+		std::string getFileCrc32(const std::string& filename)
+		{
+			std::string hex;
+
+#if defined(_WIN32)
+			FILE* file = _wfopen(Utils::String::convertToWideString(filename).c_str(), L"rb");
+#else			
+			FILE* file = fopen(filename.c_str(), "rb");
+#endif
+			if (file)
+			{
+				#define CRCBUFFERSIZE 64 * 1024
+				char* buffer = new char[CRCBUFFERSIZE];
+				if (buffer)
+				{
+					size_t size;
+
+					unsigned int file_crc32 = 0;
+
+					while (size = fread(buffer, 1, CRCBUFFERSIZE, file))
+						file_crc32 = Utils::Zip::ZipFile::computeCRC(file_crc32, buffer, size);
+
+					hex = Utils::String::toHexString(file_crc32);
+
+					delete buffer;
+				}
+
+				fclose(file);
+			}
+
+			return hex;
+		}
+
+		std::string getFileMd5(const std::string& filename)
+		{
+			std::string hex;
+
+#if defined(_WIN32)
+			FILE* file = _wfopen(Utils::String::convertToWideString(filename).c_str(), L"rb");
+#else			
+			FILE* file = fopen(filename.c_str(), "rb");
+#endif
+			if (file)
+			{
+				#define CRCBUFFERSIZE 64 * 1024
+				char* buffer = new char[CRCBUFFERSIZE];
+
+				if (buffer)
+				{
+					MD5 md5;
+
+					size_t size;
+					while (size = fread(buffer, 1, CRCBUFFERSIZE, file))
+						md5.update(buffer, size);
+
+					md5.finalize();
+					hex = md5.hexdigest();
+
+					delete buffer;
+				}
+
+				fclose(file);
+			}
+
+			return hex;
+		}		
 
 		std::string getFileMd5(const std::string& filename)
 		{

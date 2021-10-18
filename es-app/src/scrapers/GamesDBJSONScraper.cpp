@@ -4,6 +4,8 @@
 #include "scrapers/GamesDBJSONScraper.h"
 #include "scrapers/GamesDBJSONScraperResources.h"
 
+#ifdef GAMESDB_APIKEY
+
 #include "FileData.h"
 #include "Log.h"
 #include "PlatformId.h"
@@ -12,6 +14,7 @@
 #include "utils/TimeUtil.h"
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
+#include "Genres.h"
 
 using namespace PlatformIds;
 using namespace rapidjson;
@@ -26,7 +29,6 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ AMIGA, "4911" },
 	{ AMSTRAD_CPC, "4914" },
 	{ APPLE_II, "4942" },
-	{ ARCADE, "23" },
 	{ ATARI_800, "4943" },
 	{ ATARI_2600, "22" },
 	{ ATARI_5200, "26" },
@@ -36,7 +38,7 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ ATARI_LYNX, "4924" },
 	{ ATARI_ST, "4937" },
 	{ ATARI_XE, "30" },
-	{ COLECOVISION, "31" },
+	{ COLECOVISION, "31" },	
 	{ COMMODORE_64, "40" },
 	{ COMMODORE_VIC20, "4945" },
 	{ INTELLIVISION, "32" },
@@ -60,7 +62,6 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ NINTENDO_WII_U, "38" },
 	{ NINTENDO_VIRTUAL_BOY, "4918" },
 	{ NINTENDO_GAME_AND_WATCH, "4950" },
-	{ PC, "1" },
 	{ SEGA_32X, "33" },
 	{ SEGA_CD, "21" },
 	{ SEGA_DREAMCAST, "16" },
@@ -88,50 +89,63 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ TRS80_COLOR_COMPUTER, "4941" },
 	{ TANDY, "4941" },
 	{ SUPERGRAFX, "34" }, // The code is TurboGrafx 16, but they manage SUPERGRAFX into this one....
-	{ WATARA_SUPERVISION, "4959" },
 	{ MEGADUCK, "4948" },
-
-	{ AMIGACD32, "130" },
-	{ AMIGACDTV, "129" },
-	{ ATOMISWAVE, "53" },
-	{ CAVESTORY, "135" },
-	{ GX4000, "87" },
-	{ LUTRO, "206" },
-	{ NAOMI, "56" },
-	{ NEOGEO_CD, "70" },
+	{ AMIGACD32, "4947" },	
+	{ NEOGEO_CD, "4956" },
 	{ PCFX, "4930" },
-	{ POKEMINI, "4957" },
-	{ PRBOOM, "1" },
+	{ POKEMINI, "4957" },	
 	{ SATELLAVIEW, "6" },
 	{ SUFAMITURBO, "6" },
-	{ ZX81, "77" },
-	{ MOONLIGHT, "1" }, // "PC" // 138
-
-	// Windows
-	{ VISUALPINBALL, "198" },
-	{ FUTUREPINBALL, "199" },
-
 	{ PC_88, "4933" },
 	{ PC_98, "4934" },
-
 	{ SHARP_X1, "4977" },
 	{ SHARP_X6800, "4931" },
-
 	{ NINTENDO_SWITCH, "4971" },
-
-	// Misc
+	{ TI99, "4953" },
 	{ VIC20, "4945" },
-	{ ORICATMOS, "131" },
-	{ CHANNELF, "80" },
-	{ THOMSON_TO_MO, "141" },
+	{ CHANNELF, "4928" },
 	{ SAMCOUPE, "4979" },
+	{ SUPER_CASSETTE_VISION , "4966" },
+	{ ARCHIMEDES, "4944" },
+	{ ACORN_ELECTRON , "4954" },
+	{ ASTROCADE , "4968" },
+	{ FMTOWNS, "4932" },
+	{ PHILIPS_CDI, "4917" },
+	{ WATARA_SUPERVISION, "4959" },
+	{ SONIC, "36,21" }, // Sega Mega Drive & Sega CD
+
+	// 1 = PC
+	{ PC, "1" },
+	{ MOONLIGHT, "1" },
+	{ PRBOOM, "1" },
+	{ QUAKE, "1" },
+
+	// 23 = Arcade
+	{ ARCADE, "23" },
+	{ NAOMI, "23" },
+	{ ATOMISWAVE, "23" },
+	{ DAPHNE, "23" },
+
+	{ SUPER_NINTENDO_MSU1, "6" },
+
+	/* Non existing systems
+	{ AMIGACDTV, "129" },
+	{ CAVESTORY, "135" },
+	{ ATOMISWAVE, "53" },
+	{ LUTRO, "206" },
+	{ GX4000, "87" },
+	{ ZX81, "77" },
+	{ VISUALPINBALL, "198" },
+	{ FUTUREPINBALL, "199" },
+	{ ORICATMOS, "131" },
+	{ SOLARUS, "223" },
+	{ THOMSON_TO_MO, "141" },
 	{ OPENBOR, "214" },
 	{ UZEBOX, "216" },
 	{ APPLE2GS, "217" },
 	{ SPECTRAVIDEO, "218" },
 	{ PALMOS, "219" },
-	{ DAPHNE, "49" },
-	{ SOLARUS, "223" }
+	*/
 };
 
 bool TheGamesDBScraper::isSupportedPlatform(SystemData* system)
@@ -184,7 +198,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 				"include=boxart&id=" +
 				HttpReq::urlEncode(gameID);
 		usingGameID = true;
-	}
+	} 
 	else
 	{
 		if (cleanName.empty())
@@ -201,7 +215,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 	{
 		// if we have the ID already, we don't need the GetGameList request
 		requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBJSONRequest(results, path)));
-	}
+	} 
 	else
 	{
 		std::string platformQueryParam;
@@ -220,7 +234,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 
 					platformQueryParam += HttpReq::urlEncode(mapIt->second);
 					first = false;
-				}
+				} 
 				else
 				{
 					LOG(LogWarning) << "TheGamesDB scraper warning - no support for platform "
@@ -406,7 +420,10 @@ namespace
 			result.mdl.set(MetaDataId::Publisher, getPublisherString(game["publishers"]));
 
 		if (game.HasMember("genres") && game["genres"].IsArray())
+		{
 			result.mdl.set(MetaDataId::Genre, getGenreString(game["genres"]));
+			Genres::convertGenreToGenreIds(&result.mdl);
+		}
 
 		if (game.HasMember("players") && game["players"].IsInt())
 			result.mdl.set(MetaDataId::Players, std::to_string(game["players"].GetInt()));
@@ -455,12 +472,19 @@ namespace
 
 						std::string type;
 						std::string fileName;
+						std::string side;
 
 						if (v.HasMember("type"))
 							type = v["type"].GetString();
 
 						if (v.HasMember("filename"))
 							fileName = v["filename"].GetString();
+
+						if (v.HasMember("side") && v["side"].IsString())
+							side = v["side"].GetString();
+
+						if (type == "boxart" && side == "back")
+							type = "box-2D-back";
 
 						if (medias.find(type) == medias.cend())
 							medias[type] = (type == "fanart" ? pathLarge : pathMedium) + fileName;
@@ -500,6 +524,13 @@ namespace
 			auto art = findMedia(medias, "fanart");
 			if (!art.empty())
 				result.urls[MetaDataId::FanArt] = ScraperSearchItem(art);
+		}
+		
+		if (Settings::getInstance()->getBool("ScrapeBoxBack"))
+		{
+			auto art = findMedia(medias, "box-2D-back");
+			if (!art.empty())
+				result.urls[MetaDataId::BoxBack] = ScraperSearchItem(art);
 		}
 
 		results.push_back(result);
@@ -566,3 +597,5 @@ bool TheGamesDBJSONRequest::process(HttpReq* request, std::vector<ScraperSearchR
 
 	return true;
 }
+
+#endif

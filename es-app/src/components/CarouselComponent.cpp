@@ -32,6 +32,11 @@ CarouselComponent::CarouselComponent(Window* window) :
 	mMaxLogoCount = 3;	
 	mScrollSound = "";
 	mDefaultTransition = "";
+	mTransitionSpeed = 500;
+	mMinLogoOpacity = 0.5f;
+
+	mAnyLogoHasScaleStoryboard = false;
+	mAnyLogoHasOpacityStoryboard = false;
 }
 
 CarouselComponent::~CarouselComponent()
@@ -197,21 +202,25 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 		Sound::get(mScrollSound)->play();
 
 	int oldCursor = mLastCursor;
-	mLastCursor = mCursor;
-
-	// TODO
+	
+	bool oldCursorHasStoryboard = false;
 
 	if (oldCursor >= 0 && oldCursor < mEntries.size())
 	{
-		auto logo = mEntries.at(oldCursor).data.logo;				
+		auto logo = mEntries.at(oldCursor).data.logo;
 		if (logo)
 		{
 			if (logo->selectStoryboard("deactivate"))
+			{
 				logo->startStoryboard();
-			else if (!logo->selectStoryboard())
+				oldCursorHasStoryboard = true;
+			}
+			else
 				logo->deselectStoryboard();
 		}
 	}
+
+	bool cursorHasStoryboard = false;
 
 	if (mCursor >= 0 && mCursor < mEntries.size())
 	{
@@ -219,10 +228,23 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 		if (logo)
 		{
 			if (logo->selectStoryboard("activate"))
+			{
 				logo->startStoryboard();
-			else if (!logo->selectStoryboard())
+				cursorHasStoryboard = true;
+			}
+			else
 				logo->deselectStoryboard();
 		}
+	}
+
+	for (int i = 0; i < mEntries.size(); i++)
+	{
+		if ((cursorHasStoryboard && i == mCursor) || (oldCursorHasStoryboard && i == oldCursor))
+			continue;
+
+		auto logo = mEntries.at(i).data.logo;
+		if (logo && logo->selectStoryboard("scroll"))
+			logo->startStoryboard();
 	}
 
 	Animation* anim;
@@ -240,7 +262,7 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 			if (f >= posMax) f -= posMax;
 
 			this->mCamOffset = move_carousel ? f : endPos;
-		}, 500);
+		}, mTransitionSpeed);
 	} 
 	else if (transition_style == "slide") 
 	{
@@ -252,7 +274,7 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 
 			this->mCamOffset = move_carousel ? f : endPos;			
 
-		}, 500);
+		}, mTransitionSpeed);
 	} 
 	else // instant
 	{		
@@ -264,16 +286,19 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 
 			this->mCamOffset = move_carousel ? f : endPos;			
 
-		}, move_carousel ? 500 : 1);
+		}, move_carousel ? mTransitionSpeed : 1);
 	}
 
 	if (mCursorChangedCallback)
 		mCursorChangedCallback(state);
 
-	setAnimation(anim, 0, [this, state]
+	mLastCursor = mCursor;
+
+	auto curState = state;
+	setAnimation(anim, 0, [this, curState]
 	{
-		if (mCursorChangedCallback)
-			mCursorChangedCallback(state);
+		if (curState == CURSOR_SCROLLING && mCursorChangedCallback)
+			mCursorChangedCallback(curState);
 	}, false, 0);
 }
 
@@ -396,8 +421,10 @@ void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 		scale = Math::min(mLogoScale, Math::max(1.0f, scale));
 		scale /= mLogoScale;
 
-		int opacity = (int)Math::round(0x80 + ((0xFF - 0x80) * (1.0f - fabs(distance))));
-		opacity = Math::max((int)0x80, opacity);
+		int opref = (Math::clamp(mMinLogoOpacity, 0, 1) * 255);
+		
+		int opacity = (int)Math::round(opref + ((0xFF - opref) * (1.0f - fabs(distance))));
+		opacity = Math::max((int)opref, opacity);
 
 		ensureLogo(mEntries.at(index));
 
@@ -408,11 +435,11 @@ void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 			comp->setRotationOrigin(mLogoRotationOrigin);
 		}
 		
-		if (!comp->hasStoryBoard())
-		{
-			comp->setScale(scale);
+		if (!mAnyLogoHasOpacityStoryboard)
 			comp->setOpacity((unsigned char)opacity);
-		}
+
+		if (!mAnyLogoHasScaleStoryboard)
+			comp->setScale(scale);
 		
 		comp->render(logoTrans);
 	};
@@ -480,6 +507,12 @@ void CarouselComponent::getCarouselFromTheme(const ThemeData::ThemeElement* elem
 	if (elem->has("defaultTransition"))
 		mDefaultTransition = elem->get<std::string>("defaultTransition");
 
+	if (elem->has("transitionSpeed"))
+		mTransitionSpeed = elem->get<float>("transitionSpeed");
+
+	if (elem->has("minLogoOpacity"))
+		mMinLogoOpacity = elem->get<float>("minLogoOpacity");
+	
 	if (elem->has("imageSource"))
 	{
 		auto direction = elem->get<std::string>("imageSource");
@@ -489,6 +522,18 @@ void CarouselComponent::getCarouselFromTheme(const ThemeData::ThemeElement* elem
 			mImageSource = IMAGE;
 		else if (direction == "marquee")
 			mImageSource = MARQUEE;
+		else if (direction == "fanart")
+			mImageSource = FANART;
+		else if (direction == "titleshot")
+			mImageSource = TITLESHOT;
+		else if (direction == "boxart")
+			mImageSource = BOXART;
+		else if (direction == "cartridge")
+			mImageSource = CARTRIDGE;
+		else if (direction == "boxback")
+			mImageSource = BOXBACK;
+		else if (direction == "mix")
+			mImageSource = MIX;
 		else
 			mImageSource = THUMBNAIL;
 	}
@@ -501,16 +546,36 @@ void CarouselComponent::onShow()
 {
 	GuiComponent::onShow();		
 
+	bool cursorStoryboardSet = false;
+
 	if (mCursor >= 0 && mCursor < mEntries.size())
 	{
 		auto logo = mEntries.at(mCursor).data.logo;
 		if (logo)
 		{
 			if (logo->selectStoryboard("activate"))
+			{
 				logo->startStoryboard();
-			else if (!logo->selectStoryboard())
+				cursorStoryboardSet = true;
+			}
+			else if (logo->selectStoryboard())
+			{
+				logo->startStoryboard();
+				cursorStoryboardSet = true;
+			}
+			else
 				logo->deselectStoryboard();
 		}
+	}
+
+	for (int i = 0; i < mEntries.size(); i++)
+	{
+		if (cursorStoryboardSet && mCursor == i)
+			continue;
+
+		auto logo = mEntries.at(i).data.logo;
+		if (logo && (logo->selectStoryboard("scroll") || logo->selectStoryboard()))
+			logo->startStoryboard();
 	}
 }
 
@@ -549,10 +614,22 @@ void CarouselComponent::ensureLogo(IList<CarouselComponentData, FileData*>::Entr
 
 	std::string marqueePath;
 
-	if (mImageSource == IMAGE)
-		marqueePath = entry.object->getImagePath();
-	else if (mImageSource == THUMBNAIL)
+	if (mImageSource == TITLESHOT && !entry.object->getMetadata(MetaDataId::TitleShot).empty())
+		marqueePath = entry.object->getMetadata(MetaDataId::TitleShot);
+	else if (mImageSource == BOXART && !entry.object->getMetadata(MetaDataId::BoxArt).empty())
+		marqueePath = entry.object->getMetadata(MetaDataId::BoxArt);
+	else if (mImageSource == MARQUEE && !entry.object->getMarqueePath().empty())
+		marqueePath = entry.object->getMarqueePath();
+	else if ((mImageSource == THUMBNAIL || mImageSource == BOXART) && !entry.object->getThumbnailPath().empty())
 		marqueePath = entry.object->getThumbnailPath();
+	else if ((mImageSource == IMAGE || mImageSource == TITLESHOT) && !entry.object->getImagePath().empty())
+		marqueePath = entry.object->getImagePath();
+	else if (mImageSource == FANART && !entry.object->getMetadata(MetaDataId::FanArt).empty())
+		marqueePath = entry.object->getMetadata(MetaDataId::FanArt);
+	else if (mImageSource == CARTRIDGE && !entry.object->getMetadata(MetaDataId::Cartridge).empty())
+		marqueePath = entry.object->getMetadata(MetaDataId::Cartridge);
+	else if (mImageSource == MIX && !entry.object->getMetadata(MetaDataId::Mix).empty())
+		marqueePath = entry.object->getMetadata(MetaDataId::Mix);
 	else
 		marqueePath = entry.object->getMarqueePath();
 
@@ -608,6 +685,20 @@ void CarouselComponent::ensureLogo(IList<CarouselComponentData, FileData*>::Entr
 
 	Vector2f denormalized = mLogoSize * entry.data.logo->getOrigin();
 	entry.data.logo->setPosition(denormalized.x(), denormalized.y(), 0.0);
+
+	mAnyLogoHasScaleStoryboard = entry.data.logo->storyBoardExists("deactivate", "scale") ||
+		entry.data.logo->storyBoardExists("activate", "scale") ||
+		entry.data.logo->storyBoardExists("scroll", "scale") ||
+		entry.data.logo->storyBoardExists("", "scale");
+
+	mAnyLogoHasOpacityStoryboard =
+		entry.data.logo->storyBoardExists("deactivate", "opacity") ||
+		entry.data.logo->storyBoardExists("activate", "opacity") ||
+		entry.data.logo->storyBoardExists("scroll", "opacity") ||
+		entry.data.logo->storyBoardExists("", "opacity");
+
+	if (!entry.data.logo->selectStoryboard("deactivate") && !entry.data.logo->selectStoryboard())
+		entry.data.logo->deselectStoryboard();
 }
 
 void CarouselComponent::add(const std::string& name, FileData* obj)

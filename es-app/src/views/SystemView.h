@@ -8,6 +8,7 @@
 #include "GuiComponent.h"
 #include <memory>
 #include <functional>
+#include "MultiStateInput.h"
 
 class AnimatedImageComponent;
 class SystemData;
@@ -47,8 +48,13 @@ struct SystemViewCarousel
 	float systemInfoDelay;
 	bool  systemInfoCountOnly;
 
+	float			minLogoOpacity;
+	float			transitionSpeed;
 	std::string		defaultTransition;
 	std::string		scrollSound;
+
+	bool anyLogoHasOpacityStoryboard;
+	bool anyLogoHasScaleStoryboard;
 };
 
 class SystemView : public IList<SystemViewData, SystemData*>
@@ -79,8 +85,10 @@ protected:
 	void onCursorChanged(const CursorState& state) override;
 
 private:
+	void	 ensureLogo(IList<SystemViewData, SystemData*>::Entry& entry);
 	void	 loadExtras(SystemData* system, IList<SystemViewData, SystemData*>::Entry& e);
 	void	 updateExtraTextBinding();
+	void	 showQuickSearch();
 
 	void	 preloadExtraNeighbours(int cursor);
 	void	 setExtraRequired(int cursor, bool required);
@@ -123,6 +131,8 @@ private:
 	bool mScreensaverActive;
 
 	int mLastCursor;	
+
+	MultiStateInput mYButton;
 };
 
 #endif // ES_APP_VIEWS_SYSTEM_VIEW_H

@@ -58,7 +58,7 @@ namespace Renderer
 				SDL_FreeSurface(logoSurface);
 			}
 
-			delete rawData;
+			delete[] rawData;
 		}
 
 	} // setIcon
@@ -73,10 +73,14 @@ namespace Renderer
 			return false;
 		}
 
-		initialCursorState = (SDL_ShowCursor(0) != 0);
+		static SDL_DisplayMode dispMode;
 
-		SDL_DisplayMode dispMode;
-		SDL_GetDesktopDisplayMode(0, &dispMode);
+		initialCursorState = (SDL_ShowCursor(0) != 0);
+		if (windowWidth == 0)
+		{
+			SDL_GetDesktopDisplayMode(0, &dispMode);
+		}
+
 		windowWidth   = Settings::getInstance()->getInt("WindowWidth")   ? Settings::getInstance()->getInt("WindowWidth")   : dispMode.w;
 		windowHeight  = Settings::getInstance()->getInt("WindowHeight")  ? Settings::getInstance()->getInt("WindowHeight")  : dispMode.h;
 		screenWidth   = Settings::getInstance()->getInt("ScreenWidth")   ? Settings::getInstance()->getInt("ScreenWidth")   : windowWidth;
@@ -92,7 +96,7 @@ namespace Renderer
 			screenWidth = screenHeight;
 			screenHeight = tmp;
 		}
-		else */if ((screenRotate == 1 || screenRotate == 3) && Settings::getInstance()->getBool("Windowed"))
+		else */if (screenRotate == 1 || screenRotate == 3)
 		{
 			int tmp = screenWidth;
 			screenWidth = screenHeight;
@@ -291,10 +295,20 @@ namespace Renderer
 		if(clipStack.size())
 		{
 			const Rect& top = clipStack.top();
-			if( top.x          >  box.x)          box.x = top.x;
-			if( top.y          >  box.y)          box.y = top.y;
-			if((top.x + top.w) < (box.x + box.w)) box.w = (top.x + top.w) - box.x;
-			if((top.y + top.h) < (box.y + box.h)) box.h = (top.y + top.h) - box.y;
+			if (top.x > box.x)
+			{
+				box.w += (box.x - top.x);
+				box.x = top.x;
+			}
+			if (top.y > box.y)
+			{
+				box.h += (box.y - top.y);
+				box.y = top.y;				
+			}
+			if((top.x + top.w) < (box.x + box.w)) 
+				box.w = (top.x + top.w) - box.x;
+			if((top.y + top.h) < (box.y + box.h)) 
+				box.h = (top.y + top.h) - box.y;
 		}
 
 		if(box.w < 0) box.w = 0;
@@ -362,7 +376,7 @@ namespace Renderer
 		if (screenHeight == 0)
 			return 1.0;
 
-		return screenWidth / screenHeight;
+		return (float) screenWidth / (float) screenHeight;
 	}
 
 	bool        isSmallScreen()    

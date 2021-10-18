@@ -47,7 +47,7 @@ public:
 	}
 
 	// Loads the video at the given filepath
-	bool setVideo(std::string path);
+	bool setVideo(std::string path, bool checkFileExists = true);
 	// Loads a static image that is displayed if the video cannot be played
 	void setImage(std::string path, bool tile = false, MaxSizeInfo maxSize = MaxSizeInfo());
 
@@ -149,6 +149,14 @@ public:
 
 	bool getPlayAudio() { return mPlayAudio; }
 	void setPlayAudio(bool value) { mPlayAudio = value; }
+
+	void setProperty(const std::string name, const ThemeData::ThemeElement::Property& value) override;
+
+	virtual void setClipRect(const Vector4f& vec);
+
+	Vector2f& getTargetSize() { return mTargetSize; }
+
+	bool showSnapshots();
 
 protected:
 	std::shared_ptr<IPlaylist> mPlaylist;

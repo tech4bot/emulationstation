@@ -1,4 +1,4 @@
-#include "rc_internal.h"
+#include "internal.h"
 
 enum {
   RC_LBOARD_START    = 1 << 0,
@@ -29,6 +29,10 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->start, &memaddr, parse);
       self->start.memrefs = 0;
+
+      if (parse->offset < 0) {
+        return;
+      }
     }
     else if ((memaddr[0] == 'c' || memaddr[0] == 'C') &&
              (memaddr[1] == 'a' || memaddr[1] == 'A') &&
@@ -42,6 +46,10 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->cancel, &memaddr, parse);
       self->cancel.memrefs = 0;
+
+      if (parse->offset < 0) {
+        return;
+      }
     }
     else if ((memaddr[0] == 's' || memaddr[0] == 'S') &&
              (memaddr[1] == 'u' || memaddr[1] == 'U') &&
@@ -55,6 +63,10 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_trigger_internal(&self->submit, &memaddr, parse);
       self->submit.memrefs = 0;
+
+      if (parse->offset < 0) {
+        return;
+      }
     }
     else if ((memaddr[0] == 'v' || memaddr[0] == 'V') &&
              (memaddr[1] == 'a' || memaddr[1] == 'A') &&
@@ -68,6 +80,10 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       memaddr += 4;
       rc_parse_value_internal(&self->value, &memaddr, parse);
       self->value.memrefs = 0;
+
+      if (parse->offset < 0) {
+        return;
+      }
     }
     else if ((memaddr[0] == 'p' || memaddr[0] == 'P') &&
              (memaddr[1] == 'r' || memaddr[1] == 'R') &&
@@ -83,20 +99,18 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
       self->progress = RC_ALLOC(rc_value_t, parse);
       rc_parse_value_internal(self->progress, &memaddr, parse);
       self->progress->memrefs = 0;
+
+      if (parse->offset < 0) {
+        return;
+      }
     }
-
-    /* encountered an error parsing one of the parts */
-    if (parse->offset < 0)
-      return;
-
-    /* end of string, or end of quoted string - stop processing */
-    if (memaddr[0] == '\0' || memaddr[0] == '\"')
-      break;
-
-    /* expect two colons between fields */
-    if (memaddr[0] != ':' || memaddr[1] != ':') {
+    else {
       parse->offset = RC_INVALID_LBOARD_FIELD;
       return;
+    }
+
+    if (memaddr[0] != ':' || memaddr[1] != ':') {
+      break;
     }
 
     memaddr += 2;
@@ -125,9 +139,7 @@ void rc_parse_lboard_internal(rc_lboard_t* self, const char* memaddr, rc_parse_s
 int rc_lboard_size(const char* memaddr) {
   rc_lboard_t* self;
   rc_parse_state_t parse;
-  rc_memref_t* first_memref;
   rc_init_parse_state(&parse, 0, 0, 0);
-  rc_init_parse_state_memrefs(&parse, &first_memref);
 
   self = RC_ALLOC(rc_lboard_t, &parse);
   rc_parse_lboard_internal(self, memaddr, &parse);
@@ -144,7 +156,7 @@ rc_lboard_t* rc_parse_lboard(void* buffer, const char* memaddr, lua_State* L, in
     return 0;
 
   rc_init_parse_state(&parse, buffer, L, funcs_ndx);
-
+  
   self = RC_ALLOC(rc_lboard_t, &parse);
   rc_init_parse_state_memrefs(&parse, &self->memrefs);
 
@@ -159,7 +171,7 @@ int rc_evaluate_lboard(rc_lboard_t* self, int* value, rc_peek_t peek, void* peek
 
   rc_update_memref_values(self->memrefs, peek, peek_ud);
 
-  if (self->state == RC_LBOARD_STATE_INACTIVE || self->state == RC_LBOARD_STATE_DISABLED)
+  if (self->state == RC_LBOARD_STATE_INACTIVE)
     return RC_LBOARD_STATE_INACTIVE;
 
   /* these are always tested once every frame, to ensure hit counts work properly */
@@ -191,16 +203,14 @@ int rc_evaluate_lboard(rc_lboard_t* self, int* value, rc_peek_t peek, void* peek
         }
         else if (self->start.requirement == 0 && self->start.alternative == 0) {
           /* start condition is empty - this leaderboard is submit-only with no measured progress */
-        }
+        } 
         else {
           /* start the leaderboard attempt */
           self->state = RC_LBOARD_STATE_STARTED;
 
           /* reset any hit counts in the value */
-          if (self->progress)
-            rc_reset_value(self->progress);
-
-          rc_reset_value(&self->value);
+          if (self->value.conditions)
+            rc_reset_condset(self->value.conditions);
         }
       }
       break;
@@ -245,9 +255,4 @@ void rc_reset_lboard(rc_lboard_t* self) {
   rc_reset_trigger(&self->start);
   rc_reset_trigger(&self->submit);
   rc_reset_trigger(&self->cancel);
-
-  if (self->progress)
-    rc_reset_value(self->progress);
-
-  rc_reset_value(&self->value);
 }

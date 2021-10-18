@@ -229,6 +229,9 @@ void GuiCollectionSystemsOptions::initializeMenu()
 				systemfocus_list->add(system->getName(), system->getName(), startupSystem == system->getName());
 	}
 
+	if (!systemfocus_list->hasSelection())
+		systemfocus_list->selectFirstItem();
+
 	addWithLabel(_("START ON SYSTEM"), systemfocus_list);
 	addSaveFunc([systemfocus_list] 
 	{ 
@@ -272,10 +275,6 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	{
 		if (Settings::getInstance()->setBool("CollectionShowSystemInfo", toggleSystemNameInCollections->getState()))
 		{
-			for (auto sys : SystemData::sSystemVector)
-				for (auto file : sys->getRootFolder()->getFilesRecursive(GAME, false))
-					file->refreshMetadata();
-
 			SystemData::resetSettings();
 			FileData::resetSettings();
 			setVariable("reloadAll", true);
@@ -283,7 +282,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	});
 
 	std::shared_ptr<SwitchComponent> alsoHideGames = std::make_shared<SwitchComponent>(mWindow);
-	alsoHideGames->setState(Settings::getInstance()->getBool("HiddenSystemsShowGames"));
+	alsoHideGames->setState(Settings::HiddenSystemsShowGames());
 	addWithLabel(_("SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"), alsoHideGames);
 	addSaveFunc([this, alsoHideGames]
 	{
@@ -434,6 +433,7 @@ void GuiCollectionSystemsOptions::addSystemsToMenu()
 	autoOptionList->addGroup(_("AUTOMATIC COLLECTIONS"));
 
 	bool hasGroup = false;
+	bool hasGenreGroup = false;
 
 	auto arcadeGames = CollectionSystemManager::get()->getArcadeCollection()->getRootFolder()->getFilesRecursive(GAME);
 
@@ -446,7 +446,17 @@ void GuiCollectionSystemsOptions::addSystemsToMenu()
 
         if (it->second.decl.displayIfEmpty)
             autoOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
-        else
+		else if (it->second.decl.isGenreCollection()) // Genre collections
+		{
+			if (!hasGenreGroup)
+			{
+				autoOptionList->addGroup(_("PER GENRE"));
+				hasGenreGroup = true;
+			}
+
+			autoOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
+		}
+        else if (it->second.decl.isArcadeSubSystem()) // Arcade collections
         {
 			bool hasGames = false;
 

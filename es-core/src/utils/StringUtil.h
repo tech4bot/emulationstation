@@ -22,9 +22,9 @@ namespace Utils
 		std::string  replace            (const std::string& _string, const std::string& _replace, const std::string& _with);
 		bool         startsWith         (const std::string& _string, const std::string& _start);
 		bool         endsWith           (const std::string& _string, const std::string& _end);
-		std::string  removeParenthesis  (const std::string& _string);
-		stringVector commaStringToVector(const std::string& _string);
+		std::string  removeParenthesis  (const std::string& _string);		
 		std::string  vectorToCommaString(stringVector _vector);
+		stringVector commaStringToVector(const std::string& _string);
 		std::string  format             (const char* _string, ...);      
 		std::string  scramble           (const std::string& _input, const std::string& key);
 
@@ -44,6 +44,7 @@ namespace Utils
 
 		std::string decodeXmlString(const std::string& string);
 		std::string toHexString(unsigned int color);
+		unsigned int fromHexString(const std::string& string);
 
 #if defined(_WIN32)
 		const std::string convertFromWideString(const std::wstring wstring);
@@ -52,5 +53,11 @@ namespace Utils
 	} // String::
 
 } // Utils::
+
+#if defined(_WIN32)
+#define WINSTRINGW(x) Utils::String::convertToWideString(x)
+#else
+#define WINSTRINGW(x) x
+#endif
 
 #endif // ES_CORE_UTILS_STRING_UTIL_H

@@ -73,9 +73,17 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	{
 		mSourceWidth = svgImage->width;
 		mSourceHeight = svgImage->height;
+
+		if (!mMaxSize.empty() && mSourceWidth < mMaxSize.x() && mSourceHeight < mMaxSize.y())
+		{
+			auto sz = ImageIO::adjustPictureSize(Vector2i(mSourceWidth, mSourceHeight), Vector2i(mMaxSize.x(), mMaxSize.y()));
+			mSourceWidth = sz.x();
+			mSourceHeight = sz.y();
+		}
 	}
 	else
 		mSourceWidth = (mSourceHeight * svgImage->width) / svgImage->height; // FCA : Always compute width using source aspect ratio
+
 
 	mWidth = (size_t)Math::round(mSourceWidth);
 	mHeight = (size_t)Math::round(mSourceHeight);
@@ -116,6 +124,12 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	else
 		mPackedSize = Vector2i(0, 0);
 
+	if (mWidth * mHeight <= 0)
+	{
+		LOG(LogError) << "Error parsing SVG image size.";
+		return false;
+	}
+
 	unsigned char* dataRGBA = new unsigned char[mWidth * mHeight * 4];
 
 	double scale = ((float)((int)mHeight)) / svgImage->height;
@@ -126,6 +140,7 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	NSVGrasterizer* rast = nsvgCreateRasterizer();
 	nsvgRasterize(rast, svgImage, 0, 0, scale, dataRGBA, (int)mWidth, (int)mHeight, (int)mWidth * 4);
 	nsvgDeleteRasterizer(rast);
+	nsvgDelete(svgImage);
 
 	ImageIO::flipPixelsVert(dataRGBA, mWidth, mHeight);
 
@@ -320,13 +335,13 @@ bool TextureData::uploadAndBind()
 
 		// Upload texture
 		mTextureID = Renderer::createTexture(Renderer::Texture::RGBA, mLinear, mTile, mWidth, mHeight, mDataRGBA);
-		if (mTextureID)
-		{
-			if (mDataRGBA != nullptr && !mIsExternalDataRGBA)
-				delete[] mDataRGBA;
+		if (mTextureID == 0)
+			return false;
 
-			mDataRGBA = nullptr;
-		}
+		if (mDataRGBA != nullptr && !mIsExternalDataRGBA)
+			delete[] mDataRGBA;
+
+		mDataRGBA = nullptr;
 	}
 
 	return true;
@@ -392,8 +407,10 @@ void TextureData::setSourceSize(float width, float height)
 {
 	if (mScalable)
 	{
-		if (mSourceHeight < height)
+		if ((int) mSourceHeight < (int) height && (int) mSourceWidth != (int) width)
 		{
+			LOG(LogDebug) << "Requested scalable image size too small. Reloading image from (" << mSourceWidth << ", " << mSourceHeight << ") to (" << width << ", " << height << ")";
+
 			mSourceWidth = width;
 			mSourceHeight = height;
 			releaseVRAM();
@@ -413,6 +430,9 @@ size_t TextureData::getVRAMUsage()
 
 void TextureData::setMaxSize(MaxSizeInfo maxSize)
 {
+	if (!Settings::getInstance()->getBool("OptimizeVRAM"))
+		return;
+
 	if (mSourceWidth == 0 || mSourceHeight == 0)
 		mMaxSize = maxSize;
 	else

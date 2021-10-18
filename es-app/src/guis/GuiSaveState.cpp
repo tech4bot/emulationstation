@@ -105,6 +105,17 @@ void GuiSaveState::loadGrid()
 	auto states = mRepository->getSaveStates(mGame);
 	std::sort(states.begin(), states.end(), [](const SaveState* file1, const SaveState* file2) { return file1->creationDate >= file2->creationDate; });
 
+	int slot = SaveStateRepository::getNextFreeSlot(mGame);
+	mGrid->add(_("START NEW GAME"), ":/freeslot.svg", "", "", false, false, false, false, SaveState(-2));
+
+	std::string autoSaveMode = mGame->getCurrentGameSetting("autosave");
+	if (autoSaveMode.empty() || autoSaveMode == "auto" || autoSaveMode == "2")
+	{
+		auto autoSave = std::find_if(states.cbegin(), states.cend(), [](SaveState* x) { return x->slot == -1; });
+		if (autoSave == states.cend())
+			mGrid->add(_("START AUTO SAVE"), ":/freeslot.svg", "", "", false, false, false, false, SaveState(-1));
+	}
+
 	for (auto item : states)
 	{
 		if (item->slot == -1)
@@ -113,21 +124,6 @@ void GuiSaveState::loadGrid()
 			mGrid->add(item->creationDate.toLocalTimeString() + std::string("\r\n") + _("SLOT") + std::string(" ") + std::to_string(item->slot), item->getScreenShot(), "", "", false, false, false, false, *item);
 	}
 
-	int slot = SaveStateRepository::getNextFreeSlot(mGame);
-	mGrid->add(_("START NEW GAME"), ":/freeslot.svg", "", "", false, false, false, false, SaveState(-2));
-
-	std::string autoSaveMode = SystemConf::getInstance()->get(mGame->getConfigurationName() + ".autosave");
-	if (autoSaveMode.empty() || autoSaveMode == "auto")
-		autoSaveMode = SystemConf::getInstance()->get(mGame->getSourceFileData()->getSystem()->getName() + ".autosave");
-	if (autoSaveMode.empty() || autoSaveMode == "auto")
-		autoSaveMode = SystemConf::getInstance()->get("global.autosave");
-
-	if (autoSaveMode.empty() || autoSaveMode == "auto")
-	{
-		auto autoSave = std::find_if(states.cbegin(), states.cend(), [](SaveState* x) { return x->slot == -1; });
-		if (autoSave == states.cend())
-			mGrid->add(_("START AUTO SAVE"), ":/freeslot.svg", "", "", false, false, false, false, SaveState(-1));
-	}
 }
 
 void GuiSaveState::onSizeChanged()

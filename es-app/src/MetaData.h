@@ -67,7 +67,11 @@ enum MetaDataId
 	Mix = 33,
 	CheevosHash = 34,
 	CheevosId = 35,
-	ScraperId = 36
+	ScraperId = 36,
+	BoxBack = 37,
+	Magazine = 38,
+	GenreIds = 39,
+	Family = 40
 };
 
 namespace MetaDataImportType
@@ -83,8 +87,9 @@ namespace MetaDataImportType
 		MAP = 64,
 		CARTRIDGE = 128,
 		TITLESHOT = 256,
+		BOXBACK = 512,
 
-		ALL = IMAGE | THUMB | VIDEO | MARQUEE | FANART | MANUAL | MAP | CARTRIDGE | TITLESHOT
+		ALL = IMAGE | THUMB | VIDEO | MARQUEE | FANART | MANUAL | MAP | CARTRIDGE | TITLESHOT | BOXBACK
 	};
 }
 
@@ -143,6 +148,9 @@ public:
 	float getFloat(MetaDataId id) const;
 
 	MetaDataType getType(MetaDataId id) const;
+	MetaDataType getType(const std::string name) const;
+
+	MetaDataId getId(const std::string& key) const;
 
 	bool wasChanged() const;
 	void resetChangedFlag();
@@ -153,10 +161,11 @@ public:
 
 	inline MetaDataListType getType() const { return mType; }
 	static const std::vector<MetaDataDecl>& getMDD() { return mMetaDataDecls; }
-
-	const std::string& getName() const;
+	inline const std::string& getName() const { return mName; }
 	
 	void importScrappedMetadata(const MetaDataList& source);
+
+	std::string getRelativeRootPath();
 
 private:
 	std::string		mName;
@@ -164,9 +173,6 @@ private:
 	std::map<MetaDataId, std::string> mMap;
 	bool mWasChanged;
 	SystemData*		mRelativeTo;
-
-
-	inline MetaDataId getId(const std::string& key) const;
 
 	static std::vector<MetaDataDecl> mMetaDataDecls;
 

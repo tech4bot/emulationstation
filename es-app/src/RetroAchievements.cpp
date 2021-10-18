@@ -21,73 +21,76 @@ const std::map<PlatformId, unsigned short> cheevosConsoleID
 {
 	{ ARCADE, RC_CONSOLE_ARCADE },
 	{ NEOGEO, RC_CONSOLE_ARCADE },
-
-	{ SEGA_MEGA_DRIVE, 1 },
-	{ NINTENDO_64, 2 },
-	{ SUPER_NINTENDO, 3 },
-	{ SNESMSU1, 3 },
-	{ GAME_BOY, 4 },
-	{ GAME_BOY_ADVANCE, 5 },
-	{ GAME_BOY_COLOR, 6 },
-	{ NINTENDO_ENTERTAINMENT_SYSTEM, 7 },
-	{ TURBOGRAFX_16, 8 },
-	{ TURBOGRAFX_CD, 8 },
-	{ SEGA_CD, 9 },
-	{ SEGA_32X, 10 },
-	{ SEGA_MASTER_SYSTEM, 11 },
-	{ PLAYSTATION, 12 },
-	{ ATARI_LYNX, 13 },
-	{ NEOGEO_POCKET, 14 },
-	{ SEGA_GAME_GEAR, 15 },
-	{ NINTENDO_GAMECUBE, 16 },
-	{ ATARI_JAGUAR, 17 },
-	{ NINTENDO_DS, 18 },
-	{ NINTENDO_WII, 19 },
-	{ NINTENDO_WII_U, 20 },
-	{ PLAYSTATION_2, 21 },
-	{ XBOX, 22 },
-	{ VIDEOPAC_ODYSSEY2, 23 },
-	{ POKEMINI, 24 },
-	{ ATARI_2600, 25 },
-	{ PC, 26 },
-	{ NINTENDO_VIRTUAL_BOY, 28 },
-	{ MSX, 29 },
-	{ COMMODORE_64, 30 },
-	{ ZX81, 31 },
-	{ ORICATMOS, 32 },
-	{ SEGA_SG1000, 33 },
-	{ AMIGA, 35 },
-	{ ATARI_ST, 36 },
-	{ AMSTRAD_CPC, 37 },
-	{ APPLE_II, 38 },
-	{ SEGA_SATURN, 39 },
-	{ SEGA_DREAMCAST, 40 },
-	{ PLAYSTATION_PORTABLE, 41 },
-	{ THREEDO, 43 },
-	{ COLECOVISION, 44 },
-	{ INTELLIVISION, 45 },
-	{ VECTREX, 46 },
-	{ PC_88, 47 },
-	{ PC_98, 48 },
-	{ PCFX, 49 },
-	{ ATARI_5200, 50 },
-	{ ATARI_7800, 51 },
-	{ SHARP_X6800, 52 },
-	{ WONDERSWAN, 53 },
-	{ NEOGEO_CD, 56 },
-	{ CHANNELF, 57 },
-	{ ZX_SPECTRUM, 59 },
-	{ NINTENDO_GAME_AND_WATCH, 60 },
-	{ NINTENDO_3DS, 62 },
+	{ SEGA_MEGA_DRIVE, RC_CONSOLE_MEGA_DRIVE },
+	{ NINTENDO_64, RC_CONSOLE_NINTENDO_64 },
+	{ SUPER_NINTENDO, RC_CONSOLE_SUPER_NINTENDO },
+	{ GAME_BOY, RC_CONSOLE_GAMEBOY },
+	{ GAME_BOY_ADVANCE, RC_CONSOLE_GAMEBOY_ADVANCE },
+	{ GAME_BOY_COLOR, RC_CONSOLE_GAMEBOY_COLOR },
+	{ NINTENDO_ENTERTAINMENT_SYSTEM, RC_CONSOLE_NINTENDO },
+	{ TURBOGRAFX_16, RC_CONSOLE_PC_ENGINE }, 
+	{ TURBOGRAFX_CD, RC_CONSOLE_PC_ENGINE }, 
+	{ SUPERGRAFX, RC_CONSOLE_PC_ENGINE },
+	{ SEGA_CD, RC_CONSOLE_SEGA_CD },
+	{ SEGA_32X, RC_CONSOLE_SEGA_32X },
+	{ SEGA_MASTER_SYSTEM, RC_CONSOLE_MASTER_SYSTEM },
+	{ PLAYSTATION, RC_CONSOLE_PLAYSTATION },
+	{ ATARI_LYNX, RC_CONSOLE_ATARI_LYNX },
+	{ NEOGEO_POCKET, RC_CONSOLE_NEOGEO_POCKET },
+	{ SEGA_GAME_GEAR, RC_CONSOLE_GAME_GEAR },
+	{ NINTENDO_GAMECUBE, RC_CONSOLE_GAMECUBE },
+	{ ATARI_JAGUAR, RC_CONSOLE_ATARI_JAGUAR },
+	{ NINTENDO_DS, RC_CONSOLE_NINTENDO_DS },
+	{ NINTENDO_WII, RC_CONSOLE_WII },
+	{ NINTENDO_WII_U, RC_CONSOLE_WII_U },
+	{ PLAYSTATION_2, RC_CONSOLE_PLAYSTATION_2 },
+	{ XBOX, RC_CONSOLE_XBOX },
+	{ VIDEOPAC_ODYSSEY2, RC_CONSOLE_MAGNAVOX_ODYSSEY2 },
+	{ POKEMINI, RC_CONSOLE_POKEMON_MINI },
+	{ ATARI_2600, RC_CONSOLE_ATARI_2600 },
+	{ PC, RC_CONSOLE_MS_DOS },
+	{ NINTENDO_VIRTUAL_BOY, RC_CONSOLE_VIRTUAL_BOY },
+	{ MSX, RC_CONSOLE_MSX },
+	{ COMMODORE_64, RC_CONSOLE_COMMODORE_64 },
+	{ ZX81, RC_CONSOLE_ZX81 },
+	{ ORICATMOS, RC_CONSOLE_ORIC },
+	{ SEGA_SG1000, RC_CONSOLE_SG1000 },
+	{ AMIGA, RC_CONSOLE_AMIGA },
+	{ ATARI_ST, RC_CONSOLE_ATARI_ST },
+	{ AMSTRAD_CPC, RC_CONSOLE_AMSTRAD_PC },
+	{ APPLE_II, RC_CONSOLE_APPLE_II },
+	{ SEGA_SATURN, RC_CONSOLE_SATURN },
+	{ SEGA_DREAMCAST, RC_CONSOLE_DREAMCAST },
+	{ PLAYSTATION_PORTABLE, RC_CONSOLE_PSP },
+	{ THREEDO, RC_CONSOLE_3DO },
+	{ COLECOVISION, RC_CONSOLE_COLECOVISION },
+	{ INTELLIVISION, RC_CONSOLE_INTELLIVISION },
+	{ VECTREX, RC_CONSOLE_VECTREX },
+	{ PC_88, RC_CONSOLE_PC8800 },
+	{ PC_98, RC_CONSOLE_PC9800 },
+	{ PCFX, RC_CONSOLE_PCFX },
+	{ ATARI_5200, RC_CONSOLE_ATARI_5200 },
+	{ ATARI_7800, RC_CONSOLE_ATARI_7800 },
+	{ SHARP_X6800, RC_CONSOLE_X68K },
+	{ WONDERSWAN, RC_CONSOLE_WONDERSWAN },
+	{ NEOGEO_CD, RC_CONSOLE_NEO_GEO_CD },
+	{ CHANNELF, RC_CONSOLE_FAIRCHILD_CHANNEL_F },
+	{ ZX_SPECTRUM, RC_CONSOLE_ZX_SPECTRUM },
+	{ NINTENDO_GAME_AND_WATCH, RC_CONSOLE_GAME_AND_WATCH },
+	{ NINTENDO_3DS, RC_CONSOLE_NINTENDO_3DS },
+	{ VIC20, RC_CONSOLE_VIC20 },
+	{ SUPER_CASSETTE_VISION, RC_CONSOLE_SUPER_CASSETTEVISION },
+	{ FMTOWNS, RC_CONSOLE_FM_TOWNS },
+	{ NOKIA_NGAGE, RC_CONSOLE_NOKIA_NGAGE },
+	{ PHILIPS_CDI, RC_CONSOLE_CDI },
 	{ WATARA_SUPERVISION, RC_CONSOLE_SUPERVISION },
+	{ SHARP_X1, RC_CONSOLE_SHARPX1 },
+	{ TIC80, RC_CONSOLE_TIC80 },
+	{ THOMSON_TO_MO, RC_CONSOLE_THOMSONTO8 },
 
-	// { VIC20, 34 },
-	//	{ CDI, 42 },
-	//{ CASSETTEVISION, 54 },
-	//{ SUPER_CASSETTEVISION, 55 },
-	//	{ FM_TOWNS, 58 },
-	// { NOKIA_NGAGE, 61 },
+	{ SUPER_NINTENDO_MSU1, RC_CONSOLE_SUPER_NINTENDO },
 
+	//{ CASSETTE_VISION, RC_CONSOLE_CASSETTEVISION },	
 };
 
 const std::set<unsigned short> consolesWithmd5hashes
@@ -119,13 +122,14 @@ const std::set<unsigned short> consolesWithmd5hashes
 	RC_CONSOLE_SUPERVISION
 };
 
-const std::string API_DEV_L = { 42, 88, 35, 2, 36, 10, 2, 6, 23, 65, 45, 7, 10, 85, 26, 67, 89, 74, 28, 90, 41, 113, 41, 47, 16, 76, 82, 86, 22, 71, 12, 22, 54, 61, 45, 51, 16, 99, 3, 55, 54, 122, 4, 46, 69, 33, 2, 59, 5, 115 };
-const std::string API_DEV_KEY = { 80, 101, 97, 99, 80, 101, 97, 99, 101, 32, 97, 110, 100, 32, 98, 101, 32, 119, 105, 108, 101, 32, 97, 110, 100, 32, 98, 101, 32, 119, 105, 108, 80, 101, 97, 99, 101, 32, 97, 110, 100, 32, 98, 101, 32, 119, 105, 108, 100 };
-
 std::string RetroAchievements::getApiUrl(const std::string method, const std::string parameters)
 {
-	auto options = Utils::String::scramble(API_DEV_L, API_DEV_KEY);
+#ifdef CHEEVOS_DEV_LOGIN
+	auto options = std::string(CHEEVOS_DEV_LOGIN);
 	return "https://retroachievements.org/API/"+ method +".php?"+ options +"&" + parameters;
+#else 
+	return "https://retroachievements.org/API/" + method + ".php?" + parameters;
+#endif
 }
 
 std::string GameInfoAndUserProgress::getImageUrl(const std::string image)
@@ -194,7 +198,11 @@ GameInfoAndUserProgress RetroAchievements::getGameInfoAndUserProgress(int gameId
 	GameInfoAndUserProgress ret;
 	ret.ID = 0;
 
-	HttpReq httpreq(getApiUrl("API_GetGameInfoAndUserProgress", "u=" + usrName + "&g=" + std::to_string(gameId)));
+#ifndef CHEEVOS_DEV_LOGIN
+	return ret;
+#endif
+
+	HttpReq httpreq(getApiUrl("API_GetGameInfoAndUserProgress", "u=" + HttpReq::urlEncode(usrName) + "&g=" + std::to_string(gameId)));
 	httpreq.wait();
 
 	rapidjson::Document doc;
@@ -264,7 +272,7 @@ UserSummary RetroAchievements::getUserSummary(const std::string userName, int ga
 
 	std::string count = std::to_string(gameCount);
 
-	HttpReq httpreq(getApiUrl("API_GetUserSummary", "u="+ usrName +"&g="+ count +"&a="+ count));
+	HttpReq httpreq(getApiUrl("API_GetUserSummary", "u="+ HttpReq::urlEncode(usrName) +"&g="+ count +"&a="+ count));
 	httpreq.wait();
 
 	rapidjson::Document doc;
@@ -365,6 +373,10 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 
 	info.userpic = "https://retroachievements.org" + ret.UserPic;
 	info.rank = ret.Rank;
+
+	if (!ret.TotalRanked.empty())
+		info.rank = ret.Rank + " / " + ret.TotalRanked;
+
 	info.points = ret.TotalPoints;
 	info.totalpoints = ret.TotalTruePoints;
 	info.username = ret.Username;
@@ -391,7 +403,7 @@ RetroAchievementInfo RetroAchievements::toRetroAchivementInfo(UserSummary& ret)
 			rg.totalAchievements = aw->second.NumPossibleAchievements;
 
 			rg.achievements = std::to_string(aw->second.NumAchieved) + " of " + std::to_string(aw->second.NumPossibleAchievements);
-			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);
+			rg.points = std::to_string(aw->second.ScoreAchieved) + "/" + std::to_string(aw->second.PossibleScore);						
 		}
 
 		info.games.push_back(rg);
@@ -484,7 +496,7 @@ std::string RetroAchievements::getCheevosHashFromFile(int consoleId, const std::
 	}
 
 	LOG(LogWarning) << "cheevos -> Unable to extract hash from file :" << fileName;
-	return "00000000000000000000000000000000";
+	return "00000000000000000000000000000000";	
 }
 
 std::string RetroAchievements::getCheevosHash( SystemData* system, const std::string fileName)
@@ -519,8 +531,8 @@ std::string RetroAchievements::getCheevosHash( SystemData* system, const std::st
 
 	if (fromZipContents)
 	{
-		tmpZipDirectory = Utils::FileSystem::getTempPath() + "/" + Utils::FileSystem::getStem(fileName);
-		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory);
+		tmpZipDirectory = Utils::FileSystem::combine(Utils::FileSystem::getTempPath(), Utils::FileSystem::getStem(fileName));
+		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory);		
 
 		if (ApiSystem::getInstance()->unzipFile(fileName, tmpZipDirectory))
 		{
@@ -540,10 +552,7 @@ std::string RetroAchievements::getCheevosHash( SystemData* system, const std::st
 		ret = ApiSystem::getInstance()->getMD5(contentFile, false);
 
 	if (!tmpZipDirectory.empty())
-	{
-		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory);
-		Utils::FileSystem::removeFile(tmpZipDirectory);
-	}
+		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory, true);
 
 	return ret;
 }
@@ -560,7 +569,7 @@ bool RetroAchievements::testAccount(const std::string& username, const std::stri
 
 	try
 	{
-		HttpReq request("https://retroachievements.org/dorequest.php?r=login&u=" + username + "&p=" + password);
+		HttpReq request("https://retroachievements.org/dorequest.php?r=login&u=" + HttpReq::urlEncode(username) + "&p=" + HttpReq::urlEncode(password));
 		if (!request.wait())
 		{
 			error = request.getErrorMsg();

@@ -8,6 +8,7 @@
 #include "Settings.h"
 #include "SystemData.h"
 #include <pugixml/src/pugixml.hpp>
+#include "Genres.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -92,7 +93,7 @@ FileData* findOrCreateFile(SystemData* system, const std::string& path, FileType
 			}
 
 			// create missing folder
-			FolderData* folder = new FolderData(Utils::FileSystem::getStem(treeNode->getPath()) + "/" + *path_it, system);
+			FolderData* folder = new FolderData(treeNode->getPath() + "/" + *path_it, system);
 			fileMap[key] = folder;
 			treeNode->addChild(folder);
 			treeNode = folder;
@@ -175,8 +176,10 @@ std::vector<FileData*> loadGamelistFile(const std::string xmlpath, SystemData* s
 			if (file->getMetadata(MetaDataId::Name).empty())
 				file->setMetadata(MetaDataId::Name, defaultName);
 
-			if (!file->getHidden() && Utils::FileSystem::isHidden(path))
+			if (!trustGamelist && !file->getHidden() && Utils::FileSystem::isHidden(path))
 				file->getMetadata().set(MetaDataId::Hidden, "true");
+
+			Genres::convertGenreToGenreIds(&file->getMetadata());
 
 			if (checkSize != SIZE_MAX)
 				file->getMetadata().setDirty();
@@ -193,22 +196,7 @@ std::vector<FileData*> loadGamelistFile(const std::string xmlpath, SystemData* s
 void clearTemporaryGamelistRecovery(SystemData* system)
 {	
 	auto path = getGamelistRecoveryPath(system);
-
-	auto files = Utils::FileSystem::getDirContent(path, true);
-	if (files.size() > 0)
-	{
-		for (auto file : files)
-			if (!Utils::FileSystem::isDirectory(file))
-				Utils::FileSystem::removeFile(file);
-
-		std::reverse(std::begin(files), std::end(files));
-
-		for (auto file : files)
-			if (Utils::FileSystem::isDirectory(file))
-				rmdir(file.c_str());
-	}
-
-	rmdir(path.c_str());
+	Utils::FileSystem::deleteDirectoryFiles(path, true);
 }
 
 void parseGamelist(SystemData* system, std::unordered_map<std::string, FileData*>& fileMap)
@@ -227,7 +215,7 @@ void parseGamelist(SystemData* system, std::unordered_map<std::string, FileData*
 		system->setGamelistHash(size);	
 }
 
-bool addFileDataNode(pugi::xml_node& parent, const FileData* file, const char* tag, SystemData* system)
+bool addFileDataNode(pugi::xml_node& parent, FileData* file, const char* tag, SystemData* system)
 {
 	//create game and add to parent node
 	pugi::xml_node newNode = parent.append_child(tag);
@@ -266,6 +254,9 @@ bool saveToGamelistRecovery(FileData* file)
 	const char* tag = file->getType() == GAME ? "game" : "folder";
 
 	SystemData* system = file->getSourceFileData()->getSystem();
+	if (!Settings::HiddenSystemsShowGames() && !system->isVisible())
+		return false;
+
 	root.append_attribute("parentHash").set_value(system->getGamelistHash());
 
 	if (addFileDataNode(root, file, tag, system))
@@ -315,7 +306,7 @@ bool removeFromGamelistRecovery(FileData* file)
 
 bool hasDirtyFile(SystemData* system)
 {
-	if (system == nullptr || !system->isGameSystem()) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
+	if (system == nullptr || !system->isGameSystem() || (!Settings::HiddenSystemsShowGames() && !system->isVisible())) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		return false;
 
 	FolderData* rootFolder = system->getRootFolder();
@@ -339,7 +330,7 @@ void updateGamelist(SystemData* system)
 	if(system == nullptr || Settings::getInstance()->getBool("IgnoreGamelist"))
 		return;
 
-	if (!system->isGameSystem()) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
+	if (!system->isGameSystem() || (!Settings::HiddenSystemsShowGames() && !system->isVisible())) // || system->hasPlatformId(PlatformIds::IMAGEVIEWER))
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();
@@ -440,7 +431,7 @@ void updateGamelist(SystemData* system)
 
 void cleanupGamelist(SystemData* system)
 {
-	if (!system->isGameSystem() || system->isCollection()) //  || system->hasPlatformId(PlatformIds::IMAGEVIEWER)
+	if (!system->isGameSystem() || system->isCollection() || (!Settings::HiddenSystemsShowGames() && !system->isVisible())) //  || system->hasPlatformId(PlatformIds::IMAGEVIEWER)
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();
@@ -525,8 +516,12 @@ void cleanupGamelist(SystemData* system)
 				case MetaDataId::Marquee: suffix = "marquee"; break;
 				case MetaDataId::Video: suffix = "video"; folder = "/videos/"; ext = ".mp4"; break;
 				case MetaDataId::FanArt: suffix = "fanart"; break;
+				case MetaDataId::BoxBack: suffix = "boxback"; break;
+				case MetaDataId::BoxArt: suffix = "box"; break;
+				case MetaDataId::Wheel: suffix = "wheel"; break;
 				case MetaDataId::TitleShot: suffix = "titleshot"; break;
 				case MetaDataId::Manual: suffix = "manual"; folder = "/manuals/"; ext = ".pdf"; break;
+				case MetaDataId::Magazine: suffix = "magazine"; folder = "/magazines/"; ext = ".pdf"; break;
 				case MetaDataId::Map: suffix = "map"; break;
 				case MetaDataId::Cartridge: suffix = "cartridge"; break;
 				}
@@ -535,7 +530,13 @@ void cleanupGamelist(SystemData* system)
 				{					
 					std::string mediaPath = system->getStartPath() + folder + file->second->getDisplayName() + "-"+ suffix + ext;
 
-					if (ext != ".jpg" && !Utils::FileSystem::exists(mediaPath))
+					if (ext == ".pdf" && !Utils::FileSystem::exists(mediaPath))
+					{
+						mediaPath = system->getStartPath() + folder + file->second->getDisplayName() + ".pdf";
+						if (!Utils::FileSystem::exists(mediaPath))
+							mediaPath = system->getStartPath() + folder + file->second->getDisplayName() + ".cbz";
+					}
+					else if (ext != ".jpg" && !Utils::FileSystem::exists(mediaPath))
 						mediaPath = system->getStartPath() + folder + file->second->getDisplayName() + ext;
 					else if (ext == ".jpg" && !Utils::FileSystem::exists(mediaPath))
 						mediaPath = system->getStartPath() + folder + file->second->getDisplayName() + "-" + suffix + ".png";

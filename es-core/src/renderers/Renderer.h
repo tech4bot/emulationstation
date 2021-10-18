@@ -98,6 +98,7 @@ namespace Renderer
 	void         setScissor        (const Rect& _scissor);
 	void         setSwapInterval   ();
 	void         swapBuffers       ();
+	std::vector<std::pair<std::string, std::string>> getDriverInformation();
 
 	// batocera methods
 	bool         isClippingEnabled  ();

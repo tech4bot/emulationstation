@@ -22,6 +22,8 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/MultiStateInput.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/TextToSpeech.h
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/Animation.h
@@ -101,6 +103,8 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/zip_file.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Delegate.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Randomizer.h
 )
 
 set(CORE_SOURCES
@@ -124,6 +128,8 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/MultiStateInput.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/TextToSpeech.cpp
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/AnimationController.cpp	
@@ -158,6 +164,7 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/VideoVlcComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/VolumeInfoComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ScrollbarComponent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/MultiLineMenuEntry.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ComponentTab.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/WebImageComponent.cpp	
 
@@ -200,6 +207,7 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.cpp	
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Randomizer.cpp
 )
 
 # Keep Directory structure in Visual Studio

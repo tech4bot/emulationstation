@@ -8,6 +8,7 @@
 #include "LocaleES.h"
 #include "Settings.h"
 #include "FileData.h"
+#include "ImageIO.h"
 
 std::vector<MetaDataDecl> MetaDataList::mMetaDataDecls;
 
@@ -22,7 +23,7 @@ void MetaDataList::initMetadata()
 	{
 		// key,             type,                   default,            statistic,  name in GuiMetaDataEd,  prompt in GuiMetaDataEd
 		{ Name,             "name",        MD_STRING,              "",                 false,      _("Name"),                 _("enter game name"),			true },
-	//	{ SortName,         "sortname",    MD_STRING,              "",                 false,      _("sortname"),             _("enter game sort name"),	true },
+		{ SortName,         "sortname",    MD_STRING,              "",                 false,      _("sortname"),             _("enter game sort name"),	true },
 		{ Desc,             "desc",        MD_MULTILINE_STRING,    "",                 false,      _("Description"),          _("enter description"),		true },
 
 #if WIN32 && !_DEBUG
@@ -42,23 +43,31 @@ void MetaDataList::initMetadata()
 		{ FanArt,           "fanart",      MD_PATH,                "",                 false,      _("Fan art"),              _("enter path to fanart"),	 true },
 		{ TitleShot,        "titleshot",   MD_PATH,                "",                 false,      _("Title shot"),           _("enter path to title shot"), true },
 		{ Manual,			"manual",	   MD_PATH,                "",                 false,      _("Manual"),               _("enter path to manual"),     true },
+		{ Magazine,			"magazine",	   MD_PATH,                "",                 false,      _("Magazine"),             _("enter path to magazine"),     true },
 		{ Map,			    "map",	       MD_PATH,                "",                 false,      _("Map"),                  _("enter path to map"),		 true },
 
 		// Non scrappable /editable medias
-		{ Cartridge,        "cartridge",   MD_PATH,                "",                 true,      _("Cartridge"),            _("enter path to cartridge"),  true },
-		{ BoxArt,			"boxart",	   MD_PATH,                "",                 true,      _("Alt BoxArt"),		      _("enter path to alt boxart"), true },
-		{ Wheel,			"wheel",	   MD_PATH,                "",                 true,      _("Wheel"),		          _("enter path to wheel"),      true },
-		{ Mix,			    "mix",	       MD_PATH,                "",                 true,      _("Mix"),                  _("enter path to mix"),		 true },
+		{ Cartridge,        "cartridge",   MD_PATH,                "",                 true,       _("Cartridge"),            _("enter path to cartridge"),  true },
+		{ BoxArt,			"boxart",	   MD_PATH,                "",                 true,       _("Alt BoxArt"),		      _("enter path to alt boxart"), true },
+		{ BoxBack,			"boxback",	   MD_PATH,                "",                 false,      _("Box backside"),		  _("enter path to box background"), true },
+		{ Wheel,			"wheel",	   MD_PATH,                "",                 true,       _("Wheel"),		          _("enter path to wheel"),      true },
+		{ Mix,			    "mix",	       MD_PATH,                "",                 true,       _("Mix"),                  _("enter path to mix"),		 true },
 		
 		{ Rating,           "rating",      MD_RATING,              "0.000000",         false,      _("Rating"),               _("enter rating"),			false },
 		{ ReleaseDate,      "releasedate", MD_DATE,                "not-a-date-time",  false,      _("Release date"),         _("enter release date"),		false },
 		{ Developer,        "developer",   MD_STRING,              "",                 false,      _("Developer"),            _("enter game developer"),	false },
 		{ Publisher,        "publisher",   MD_STRING,              "",                 false,      _("Publisher"),            _("enter game publisher"),	false },
-		{ Genre,            "genre",       MD_STRING,              "",                 false,      _("Genre"),                _("enter game genre"),		false },
+
+
+		{ Genre,            "genre",       MD_STRING,              "",                 false,      _("Genre"),                _("enter game genre"),		false }, 
+		{ Family,           "family",      MD_STRING,              "",                 false,      _("Game family"),		  _("enter game family"),		false },
+
+		// GenreIds is not serialized
+		{ GenreIds,         "genres",      MD_STRING,              "",                 false,      _("Genres"),				  _("enter game genres"),		false },
 
 		{ ArcadeSystemName, "arcadesystemname",  MD_STRING,        "",                 false,      _("Arcade system"),        _("enter game arcade system"), false },
 
-		{ Players,          "players",     MD_INT,                 "",                false,      _("Players"),              _("enter number of players"),	false },
+		{ Players,          "players",     MD_INT,                 "",                false,       _("Players"),              _("enter number of players"),	false },
 		{ Favorite,         "favorite",    MD_BOOL,                "false",            false,      _("Favorite"),             _("enter favorite"),			false },
 		{ Hidden,           "hidden",      MD_BOOL,                "false",            false,      _("Hidden"),               _("enter hidden"),			true },
 		{ KidGame,          "kidgame",     MD_BOOL,                "false",            false,      _("Kidgame"),              _("enter kidgame"),			false },
@@ -70,8 +79,8 @@ void MetaDataList::initMetadata()
 
 		{ GameTime,         "gametime",    MD_INT,                 "0",                true,       _("Game time"),            _("how long the game has been played in total (seconds)"), false },
 
-		{ Language,         "lang",        MD_STRING,              "",                 false,       _("Languages"),            _("Languages"),				false },
-		{ Region,           "region",      MD_STRING,              "",                 false,       _("Region"),               _("Region"),					false },
+		{ Language,         "lang",        MD_STRING,              "",                 false,      _("Languages"),            _("Languages"),				false },
+		{ Region,           "region",      MD_STRING,              "",                 false,      _("Region"),               _("Region"),					false },
 
 		{ CheevosHash,      "cheevosHash", MD_STRING,              "",                 true,       _("Cheevos Hash"),          _("Cheevos checksum"),	    false },
 		{ CheevosId,        "cheevosId",   MD_INT,                 "",				   true,       _("Cheevos Game ID"),       _("Cheevos Game ID"),		false },
@@ -112,6 +121,11 @@ MetaDataType MetaDataList::getType(MetaDataId id) const
 	return mGameTypeMap[id];
 }
 
+MetaDataType MetaDataList::getType(const std::string name) const
+{
+	return getType(getId(name));
+}
+
 MetaDataId MetaDataList::getId(const std::string& key) const
 {
 	return mGameIdMap[key];
@@ -127,7 +141,10 @@ MetaDataList MetaDataList::createFromXML(MetaDataListType type, pugi::xml_node& 
 	MetaDataList mdl(type);
 	mdl.mRelativeTo = system;
 	std::string value;
-	
+	std::string relativeTo = mdl.mRelativeTo->getStartPath();
+
+	bool preloadMedias = Settings::getInstance()->getBool("PreloadMedias");
+
 	for (pugi::xml_node xelement : node.children())
 	{
 		std::string name = xelement.name();
@@ -156,12 +173,19 @@ MetaDataList MetaDataList::createFromXML(MetaDataListType type, pugi::xml_node& 
 			continue;
 		}
 
+		if (mdd.id == MetaDataId::GenreIds)
+			continue;
+
 		if (value == mdd.defaultValue)
 			continue;
 
 		if (mdd.type == MD_BOOL)
 			value = Utils::String::toLower(value);
-
+		
+		if (preloadMedias && mdd.type == MD_PATH && (mdd.id == MetaDataId::Image || mdd.id == MetaDataId::Thumbnail || mdd.id == MetaDataId::Marquee || mdd.id == MetaDataId::Video) &&
+			!Utils::FileSystem::exists(Utils::FileSystem::resolveRelativePath(value, relativeTo, true)))
+			continue;
+		
 		// Players -> remove "1-"
 		if (type == GAME_METADATA && mdd.id == MetaDataId::Players && Utils::String::startsWith(value, "1-"))
 			value = Utils::String::replace(value, "1-", "");
@@ -232,6 +256,10 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			continue;
 		}
 
+		// Don't save GenreIds
+		if (mddIter->id == MetaDataId::GenreIds)
+			continue;
+
 		auto mapIter = mMap.find(mddIter->id);
 		if(mapIter != mMap.cend())
 		{
@@ -261,11 +289,6 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 		else 
 			parent.append_attribute(std::get<0>(element).c_str()).set_value(std::get<1>(element).c_str());
 	}
-}
-
-const std::string& MetaDataList::getName() const
-{
-	return mName;
 }
 
 void MetaDataList::set(MetaDataId id, const std::string& value)
@@ -339,7 +362,7 @@ int MetaDataList::getInt(MetaDataId id) const
 
 float MetaDataList::getFloat(MetaDataId id) const
 {
-	return (float)atof(get(id).c_str());
+	return Utils::String::toFloat(get(id));
 }
 
 bool MetaDataList::wasChanged() const
@@ -372,6 +395,9 @@ void MetaDataList::importScrappedMetadata(const MetaDataList& source)
 
 		if (!Settings::getInstance()->getBool("ScrapeFanart"))
 			type &= ~MetaDataImportType::Types::FANART;
+
+		if (!Settings::getInstance()->getBool("ScrapeBoxBack"))
+			type &= ~MetaDataImportType::Types::BOXBACK;
 
 		if (!Settings::getInstance()->getBool("ScrapeTitleShot"))
 			type &= ~MetaDataImportType::Types::TITLESHOT;
@@ -418,6 +444,9 @@ void MetaDataList::importScrappedMetadata(const MetaDataList& source)
 		if (mdd.id == MetaDataId::FanArt && (source.get(mdd.id).empty() || (type & MetaDataImportType::Types::FANART) != MetaDataImportType::Types::FANART))
 			continue;
 
+		if (mdd.id == MetaDataId::BoxBack && (source.get(mdd.id).empty() || (type & MetaDataImportType::Types::BOXBACK) != MetaDataImportType::Types::BOXBACK))
+			continue;
+
 		if (mdd.id == MetaDataId::Map && (source.get(mdd.id).empty() || (type & MetaDataImportType::Types::MAP) != MetaDataImportType::Types::MAP))
 			continue;
 
@@ -431,8 +460,25 @@ void MetaDataList::importScrappedMetadata(const MetaDataList& source)
 			continue;
 
 		set(mdd.id, source.get(mdd.id));
+
+
+		if (mdd.type == MetaDataType::MD_PATH)
+		{
+			ImageIO::removeImageCache(source.get(mdd.id));
+
+			unsigned int x, y;
+			ImageIO::loadImageSize(source.get(mdd.id).c_str(), &x, &y);
+		}
 	}
 
 	if (Utils::String::startsWith(source.getName(), "ZZZ(notgame)"))
 		set(MetaDataId::Hidden, "true");
+}
+
+std::string MetaDataList::getRelativeRootPath()
+{
+	if (mRelativeTo)
+		return mRelativeTo->getStartPath();
+
+	return "";
 }

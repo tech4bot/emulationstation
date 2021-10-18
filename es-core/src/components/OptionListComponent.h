@@ -8,6 +8,7 @@
 #include "LocaleES.h"
 #include "ThemeData.h"
 #include "components/MultiLineMenuEntry.h"
+#include "components/MenuComponent.h"
 
 //Used to display a list of options.
 //Can select one or multiple options.
@@ -32,6 +33,7 @@ private:
 
 		T object;
 		bool selected;
+		bool treeChild;
 
 		std::string group;
 	};
@@ -41,6 +43,15 @@ private:
 	private:
 		MenuComponent mMenu;
 		OptionListComponent<T>* mParent;
+		// for select all/none
+
+		struct CheckBoxElement
+		{
+			ImageComponent* checkbox;
+			OptionListData* item;
+		};
+
+		std::vector<CheckBoxElement> mCheckBoxes;
 
 	public:
 		OptionListPopup(Window* window, OptionListComponent<T>* parent, const std::string& title, const std::function<void(T& data, ComponentListRow& row)> callback = nullptr) : GuiComponent(window),
@@ -50,11 +61,11 @@ private:
 			auto font = menuTheme->Text.font;
 			auto color = menuTheme->Text.color;
 
+		//	if (parent->mMultiSelect && parent->mMultiSelectShowNames)
+		//		font = menuTheme->TextSmall.font;
+
 			ComponentListRow row;
-
-			// for select all/none
-			std::vector<ImageComponent*> checkboxes;
-
+					
 			for(auto it = mParent->mEntries.begin(); it != mParent->mEntries.end(); it++)
 			{
 				row.elements.clear();
@@ -69,7 +80,7 @@ private:
 					{
 						row.makeAcceptInputHandler([this, &e]
 						{
-							e.selected = !e.selected;							
+							e.selected = !e.selected;														
 							mParent->onSelectedChanged();
 						});
 					}
@@ -90,7 +101,7 @@ private:
 						row.addElement(std::make_shared<MultiLineMenuEntry>(mWindow, Utils::String::toUpper(it->name), it->description), true);
 					else
 					{
-						auto text = std::make_shared<TextComponent>(mWindow, Utils::String::toUpper(it->name), font, color);
+						auto text = std::make_shared<TextComponent>(mWindow, e.treeChild ? "      " + Utils::String::toUpper(it->name) : Utils::String::toUpper(it->name), font, color);
 						if (EsLocale::isRTL())
 							text->setHorizontalAlignment(Alignment::ALIGN_RIGHT);
 
@@ -114,8 +125,12 @@ private:
 							mParent->onSelectedChanged();
 						});
 
+						CheckBoxElement el;
+						el.checkbox = checkbox.get();
+						el.item = &e;
+
 						// for select all/none
-						checkboxes.push_back(checkbox.get());
+						mCheckBoxes.push_back(el);
 					}
 					else {
 						// input handler for non-multiselect
@@ -140,22 +155,24 @@ private:
 
 			mMenu.addButton(_("BACK"), _("accept"), [this] { delete this; }); // batocera
 
-			if(mParent->mMultiSelect)
+			if (mParent->mMultiSelect)
 			{
-			  mMenu.addButton(_("SELECT ALL"), _("select all"), [this, checkboxes] { // batocera
-					for(unsigned int i = 0; i < mParent->mEntries.size(); i++)
+				mMenu.addButton(_("SELECT ALL"), _("select all"), [this]
+				{
+					for (unsigned int i = 0; i < mParent->mEntries.size(); i++)
 					{
 						mParent->mEntries.at(i).selected = true;
-						checkboxes.at(i)->setImage(CHECKED_PATH);
+						mCheckBoxes.at(i).checkbox->setImage(CHECKED_PATH);
 					}
 					mParent->onSelectedChanged();
 				});
 
-				mMenu.addButton(_("SELECT NONE"), _("select none"), [this, checkboxes] { // batocera
-					for(unsigned int i = 0; i < mParent->mEntries.size(); i++)
+				mMenu.addButton(_("SELECT NONE"), _("select none"), [this]
+				{
+					for (unsigned int i = 0; i < mParent->mEntries.size(); i++)
 					{
 						mParent->mEntries.at(i).selected = false;
-						checkboxes.at(i)->setImage(UNCHECKED_PATH);
+						mCheckBoxes.at(i).checkbox->setImage(UNCHECKED_PATH);
 					}
 					mParent->onSelectedChanged();
 				});
@@ -189,8 +206,8 @@ private:
 	};
 
 public:
-	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name),
-		 mText(window), mLeftArrow(window), mRightArrow(window)
+	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false, bool multiSelectShowNames = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name),
+		 mText(window), mLeftArrow(window), mRightArrow(window), mMultiSelectShowNames(multiSelectShowNames)
 	{
 		auto theme = ThemeData::getMenuTheme();
 
@@ -327,6 +344,8 @@ public:
 		assert(selected.size() == 1);
 		return selected.at(0);
 	}
+
+  	bool IsMultiSelect() { return mMultiSelect; }
         
         // batocera
 	std::string getSelectedName()
@@ -340,7 +359,7 @@ public:
                 return "";
 	}
         
-	void addEx(const std::string name, const std::string description, const T& obj, bool selected)
+	void addEx(const std::string name, const std::string description, const T& obj, bool selected, bool treeChild = false)
 	{
 		for (auto sysIt = mEntries.cbegin(); sysIt != mEntries.cend(); sysIt++)
 			if (sysIt->name == name)
@@ -351,18 +370,18 @@ public:
 		e.description = description;
 		e.object = obj;
 		e.selected = selected;
-
+		e.treeChild = treeChild;
 		e.group = mGroup;
 		mGroup = "";
 
-		// batocera
 		if (selected)
 			firstSelected = obj;
 
 		mEntries.push_back(e);
 		onSelectedChanged();
 	}
-	void add(const std::string name, const T& obj, bool selected, bool distinct = true)
+
+	void add(const std::string name, const T& obj, bool selected, bool distinct = true, bool treeChild = false)
 	{
 		if (distinct)
 		{
@@ -375,11 +394,10 @@ public:
 		e.name = name;
 		e.object = obj;
 		e.selected = selected;
-
+		e.treeChild = treeChild;
 		e.group = mGroup;
 		mGroup = "";
-
-                // batocera
+                
 		if(selected)
 			firstSelected = obj;
 
@@ -520,11 +538,31 @@ private:
 
 	void onSelectedChanged()
 	{
-		if(mMultiSelect)
+		if (mMultiSelect && mMultiSelectShowNames)
+		{
+			std::string name;
+
+			// display currently selected + l/r cursors
+			for (auto it = mEntries.cbegin(); it != mEntries.cend(); it++)
+			{
+				if (it->selected)
+				{
+					if (name.empty())
+						name = Utils::String::trim(it->name);
+					else
+						name = name + ", " + Utils::String::trim(it->name);
+				}
+			}
+
+			mText.setText(name);
+			mText.setSize(0, mText.getSize().y());
+			setSize(mText.getSize().x() + mLeftArrow.getSize().x() + mRightArrow.getSize().x() + 24, mText.getSize().y());
+			if (mParent) // hack since theres no "on child size changed" callback atm...
+				mParent->onSizeChanged();
+		}
+		else if (mMultiSelect)
 		{
 			// display # selected
-
-                        // batocera
 		  	char strbuf[256];
 			int x = getSelectedObjects().size();
 		  	snprintf(strbuf, 256, ngettext("%i SELECTED", "%i SELECTED", x), x);
@@ -534,7 +572,9 @@ private:
 			setSize(mText.getSize().x() + mRightArrow.getSize().x() + 24, mText.getSize().y());
 			if(mParent) // hack since theres no "on child size changed" callback atm...
 				mParent->onSizeChanged();
-		}else{
+		}
+		else
+		{
 			// display currently selected + l/r cursors
 			for(auto it = mEntries.cbegin(); it != mEntries.cend(); it++)
 			{
@@ -566,6 +606,7 @@ private:
 	}
 
 	bool mMultiSelect;
+	bool mMultiSelectShowNames;
 
 	std::string mName;
 	std::string mGroup;

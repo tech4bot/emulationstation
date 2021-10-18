@@ -336,7 +336,7 @@ void ScraperSearchComponent::onSearchDone()
 					icons += _U(" \uF03D");
 
 				if (result.urls.find(MetaDataId::Marquee) != result.urls.cend())
-					icons += _U(" \uF009");
+					icons += _U(" \uF031"); // 09
 
 				row.elements.clear();
 				row.addElement(std::make_shared<TextComponent>(mWindow, Utils::String::toUpper(result.mdl.get(MetaDataId::Name)) + " " + icons, font, color), true);
@@ -379,7 +379,7 @@ void ScraperSearchComponent::onSearchError(const std::string& error)
 {
 	LOG(LogInfo) << "ScraperSearchComponent search error: " << error;
 
-	mWindow->pushGui(new GuiMsgBox(mWindow, _("AN ERROR HAS OCCURED") + " :\n" + Utils::String::toUpper(error),
+	mWindow->pushGui(new GuiMsgBox(mWindow, _("AN ERROR OCCURED") + " :\n" + Utils::String::toUpper(error),
 		_("RETRY"), std::bind(&ScraperSearchComponent::search, this, mInitialSearch),
 		_("SKIP"), mSkipCallback, // batocera
 		_("CANCEL"), mCancelCallback, ICON_ERROR)); // batocera

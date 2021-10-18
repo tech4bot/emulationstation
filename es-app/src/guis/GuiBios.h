@@ -1,8 +1,6 @@
 #pragma once
 
 #include "GuiComponent.h"
-#include "GuiThemeInstallStart.h"
-#include "GuiPackageInstallStart.h"
 #include "components/MenuComponent.h"
 #include "ApiSystem.h"
 

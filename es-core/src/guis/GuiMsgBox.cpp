@@ -5,6 +5,7 @@
 #include "components/ImageComponent.h"
 #include "resources/ResourceManager.h"
 #include "LocaleES.h"
+#include "TextToSpeech.h"
 
 #define HORIZONTAL_PADDING_PX  (Renderer::getScreenWidth()*0.01)
 
@@ -26,6 +27,9 @@ GuiMsgBox::GuiMsgBox(Window* window, const std::string& text,
 	
 {
 	auto theme = ThemeData::getMenuTheme();
+
+	TextToSpeech::getInstance()->say(text);
+
 	mBackground.setImagePath(theme->Background.path);
 	mBackground.setEdgeColor(theme->Background.color);
 	mBackground.setCenterColor(theme->Background.centerColor);
@@ -144,6 +148,17 @@ GuiMsgBox::GuiMsgBox(Window* window, const std::string& text,
 
 	addChild(&mBackground);
 	addChild(&mGrid);
+
+	TextToSpeech::getInstance()->say(text);
+
+	for (auto btn : mButtons)
+	{
+		if (btn->hasFocus())
+		{
+			TextToSpeech::getInstance()->say(btn->getText(), true);
+			break;
+		}
+	}
 }
 
 bool GuiMsgBox::input(InputConfig* config, Input input)

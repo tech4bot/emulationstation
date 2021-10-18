@@ -55,10 +55,12 @@ public:
 	void addToIndex(FileData* game);
 	void removeFromIndex(FileData* game);
 	void setFilter(FilterIndexType type, std::vector<std::string>* values);
+	std::unordered_set<std::string>* getFilter(FilterIndexType type);
+
 	void clearAllFilters();
 	
 	virtual int showFile(FileData* game);
-	virtual bool isFiltered() { return (!mTextFilter.empty() || filterByGenre || filterByPlayers || filterByPubDev 
+	virtual bool isFiltered() { return (!mTextFilter.empty() || filterByGenre || filterByPlayers || filterByPubDev || filterByFamily
 		|| filterByRatings || filterByFavorites || filterByKidGame || filterByPlayed || filterByLang || filterByRegion || filterByYear || filterByCheevos || filterByVertical); };
 
 	bool isKeyBeingFilteredBy(std::string key, FilterIndexType type);
@@ -82,11 +84,11 @@ protected:
 	std::string getIndexableKey(FileData* game, FilterIndexType type, bool getSecondary);
 
 	void manageGenreEntryInIndex(FileData* game, bool remove = false);
+	void manageFamilyEntryInIndex(FileData* game, bool remove = false);
 	void managePlayerEntryInIndex(FileData* game, bool remove = false);
-	void managePubDevEntryInIndex(FileData* game, bool remove = false);
-	void manageRatingsEntryInIndex(FileData* game, bool remove = false);	
+	void managePubDevEntryInIndex(FileData* game, bool remove = false);	
 	void manageYearEntryInIndex(FileData* game, bool remove = false);
-	void manageIndexEntry(std::map<std::string, int>* index, std::string key, bool remove, bool forceUnknown = false);
+	void manageIndexEntry(std::map<std::string, int>* index, const std::string& key, bool remove, bool forceUnknown = false);
 
 	void manageLangEntryInIndex(FileData* game, bool remove = false);
 	void manageRegionEntryInIndex(FileData* game, bool remove = false);
@@ -94,6 +96,7 @@ protected:
 	void clearIndex(std::map<std::string, int> indexMap);
 
 	bool filterByGenre;
+	bool filterByFamily;
 	bool filterByPlayers;
 	bool filterByPubDev;
 	bool filterByRatings;
@@ -107,6 +110,7 @@ protected:
 	bool filterByVertical;
 
 	std::map<std::string, int> genreIndexAllKeys;
+	std::map<std::string, int> familyIndexAllKeys;
 	std::map<std::string, int> playersIndexAllKeys;
 	std::map<std::string, int> pubDevIndexAllKeys;
 	std::map<std::string, int> ratingsIndexAllKeys;
@@ -121,6 +125,7 @@ protected:
 	std::map<std::string, int> verticalIndexAllKeys;
 
 	std::unordered_set<std::string> genreIndexFilteredKeys;
+	std::unordered_set<std::string> familyIndexFilteredKeys;
 	std::unordered_set<std::string> playersIndexFilteredKeys;
 	std::unordered_set<std::string> pubDevIndexFilteredKeys;
 	std::unordered_set<std::string> ratingsIndexFilteredKeys;

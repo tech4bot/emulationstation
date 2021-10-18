@@ -107,20 +107,24 @@ namespace Utils
 			for (i = 0; i < len; i++)
 				buflen += unicode_to_utf8_len(cp437_to_unicode[cp437buf[i]]);
 
-			std::string ret(buflen, 0);
-			unsigned char* utf8buf = (unsigned char*) ret.data();
+			unsigned char* utf8buf = new unsigned char[buflen];
 
 			int offset = 0;
 			for (i = 0; i < len; i++)
 				offset += unicode_to_utf8(cp437_to_unicode[cp437buf[i]], utf8buf + offset);
 
 			utf8buf[buflen - 1] = 0;			
+
+			std::string ret = (char*)utf8buf;
+			delete utf8buf;
+
 			return ret;
 		}
 
 		ZipFile::ZipFile()
 		{
 			mZipFile = nullptr;			
+			mUtfTableBuilt = false;
 		}
 
 		ZipFile::~ZipFile()
@@ -216,6 +220,8 @@ namespace Utils
 					mUtfTo437Names[zi.filename] = file_stat.m_filename;
 			}
 
+			mUtfTableBuilt = true;
+
 			return ret;
 		}
 
@@ -261,7 +267,7 @@ namespace Utils
 
 		std::string ZipFile::getInternalFilename(const std::string& fileName)
 		{
-			if (mUtfTo437Names.size() == 0 && !fileName.empty())
+			if (!mUtfTableBuilt && !fileName.empty())
 				infolist();
 
 			auto it = mUtfTo437Names.find(fileName);
@@ -294,6 +300,8 @@ namespace Utils
 			{
 
 			}
+
+			return false;
 		}
 
 		std::string ZipFile::getFileCrc(const std::string &name)

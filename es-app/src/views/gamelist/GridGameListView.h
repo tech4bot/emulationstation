@@ -22,6 +22,8 @@ public:
 	virtual void setCursor(FileData*) override;
 	virtual int getCursorIndex() override; // batocera
 	virtual void setCursorIndex(int index) override; // batocera
+	virtual void resetLastCursor() override;
+	virtual void moveToRandomGame() override;
 
 	virtual bool input(InputConfig* config, Input input) override;
 
@@ -33,13 +35,13 @@ public:
 		return "grid";
 	}
 
-	virtual std::vector<HelpPrompt> getHelpPrompts() override;
 	virtual void launch(FileData* game) override;
 	virtual void onFileChanged(FileData* file, FileChangeType change);
 
 	virtual void setThemeName(std::string name);
 	virtual void onShow();
 	virtual std::vector<FileData*> getFileDataEntries() override;
+	virtual void update(int deltaTime) override;
 
 protected:
 	virtual std::string getQuickSystemSelectRightButton() override;
@@ -51,7 +53,7 @@ protected:
 	ImageGridComponent<FileData*> mGrid;
 
 private:
-	DetailedContainer mDetails;
+	DetailedContainerHost mDetails;
 
 	void updateInfoPanel();
 	const std::string getImagePath(FileData* file);
