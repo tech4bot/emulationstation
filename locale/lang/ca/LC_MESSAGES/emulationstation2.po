@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-29 20:52+0200\n"
+"POT-Creation-Date: 2021-10-06 18:29+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: pajarorrojo\n"
 "Language-Team: \n"
@@ -47,28 +47,28 @@ msgid "enter path to image"
 msgstr "introdueix la ruta de la imatge"
 
 msgid "Video"
-msgstr "video"
+msgstr "Vídeo"
 
 msgid "enter path to video"
-msgstr "introduïu el camí per al video"
+msgstr "introdueix la ruta del video"
 
 msgid "Logo"
-msgstr "Logotip"
+msgstr "Logo"
 
 msgid "enter path to logo"
-msgstr "introduïu el camí per al logotip"
+msgstr "introdueix la ruta del lago"
 
 msgid "Box"
-msgstr "Caixa"
+msgstr "Capsa"
 
 msgid "enter path to box"
-msgstr "introduïu el camí per a la caixa"
+msgstr "introdueix la ruta de la capsa"
 
 msgid "Fan art"
 msgstr "Fan art"
 
 msgid "enter path to fanart"
-msgstr "introduïu el camí per al fanart"
+msgstr "introdueix la ruta del fanart"
 
 msgid "Title shot"
 msgstr "Captura del títol"
@@ -80,7 +80,7 @@ msgid "Manual"
 msgstr "Manual"
 
 msgid "enter path to manual"
-msgstr "introduïu el camí per al manual"
+msgstr "introdueix la ruta del manual"
 
 msgid "Magazine"
 msgstr "Magazine"
@@ -92,19 +92,19 @@ msgid "Map"
 msgstr "Mapa"
 
 msgid "enter path to map"
-msgstr "introduïu un camí per al mapa"
+msgstr "introdueix la ruta del mapa"
 
 msgid "Cartridge"
 msgstr "Cartutx"
 
 msgid "enter path to cartridge"
-msgstr "introduïu un camí per al cartutx"
+msgstr "introdueix la ruta del cartutx"
 
 msgid "Alt BoxArt"
-msgstr "BoxArt alternatiu"
+msgstr "Capsa alternativa"
 
 msgid "enter path to alt boxart"
-msgstr "introduïu el camí per al boxart alternatiu"
+msgstr "introdueix la ruta de la capsa alternativa"
 
 msgid "Box backside"
 msgstr "Part posterior de la causa"
@@ -113,16 +113,16 @@ msgid "enter path to box background"
 msgstr "introdueix la ruta de la part posterior de la capsa"
 
 msgid "Wheel"
-msgstr "Roda"
+msgstr "Wheel"
 
 msgid "enter path to wheel"
-msgstr "introduïu el camí per a la roda"
+msgstr "introdueix la ruta del wheee"
 
 msgid "Mix"
-msgstr "Bareja"
+msgstr "Mix"
 
 msgid "enter path to mix"
-msgstr "introduïu un camí per a la barreja"
+msgstr "introdueix la ruta del mix"
 
 msgid "Rating"
 msgstr "Valoració"
@@ -167,10 +167,10 @@ msgid "enter game genres"
 msgstr "introdueix els gèneres del joc"
 
 msgid "Arcade system"
-msgstr "Sistema de màquina recreativa"
+msgstr "Sistema arcade"
 
 msgid "enter game arcade system"
-msgstr "introduïu el sistema de màquina recreativa"
+msgstr "introdueix el sistema arcade"
 
 msgid "Players"
 msgstr "Jugadors"
@@ -188,13 +188,13 @@ msgid "Hidden"
 msgstr "Ocult"
 
 msgid "enter hidden"
-msgstr "introduïu ocult"
+msgstr "marcar com ocult"
 
 msgid "Kidgame"
-msgstr "Joc per a nens"
+msgstr "Per a nens"
 
 msgid "enter kidgame"
-msgstr "introduïu joc per a nens"
+msgstr "marcar com a joc per a nens"
 
 msgid "Play count"
 msgstr "Contador de jugades"
@@ -221,13 +221,13 @@ msgid "Md5 checksum"
 msgstr "Validació de MD5"
 
 msgid "Game time"
-msgstr "Temps de joc"
+msgstr "Temps jugat"
 
 msgid "how long the game has been played in total (seconds)"
-msgstr "quant temps s'ha jugat al joc en total (segons)"
+msgstr "temps que has jugat en total (SEGONS)"
 
 msgid "Languages"
-msgstr "Llengües"
+msgstr "Idiomes"
 
 msgid "Region"
 msgstr "Regió"
@@ -241,11 +241,14 @@ msgstr "Cheevos checksum"
 msgid "Cheevos Game ID"
 msgstr "ID de joc cheevos"
 
+msgid "Screenscraper Game ID"
+msgstr "ID de joc Screenscraper"
+
 msgid "all games"
-msgstr "tots els jocs"
+msgstr "tots el jocs"
 
 msgid "last played"
-msgstr "darrers jocs jugats"
+msgstr "últims jugats"
 
 msgid "favorites"
 msgstr "favorits"
@@ -257,13 +260,13 @@ msgid "4 players"
 msgstr "4 jugadors"
 
 msgid "never played"
-msgstr "mai jugats"
+msgstr "mai jugat"
 
 msgid "retroachievements"
 msgstr "retroachievements (trofeus)"
 
 msgid "arcade"
-msgstr "recreatives"
+msgstr "arcade"
 
 msgid "vertical arcade"
 msgstr "arcade vertical"
@@ -275,30 +278,22 @@ msgid "collections"
 msgstr "col·leccions"
 
 #, c-format
-msgid "Editing the '%s' Collection. Add/remove games with Y."
-msgstr "Editant la col·lecció '%s'. Afegir/eliminar jocs amb Y."
-
-#, c-format
-msgid "Finished editing the '%s' Collection."
-msgstr "Finalitzada l'edició"
-
-#, c-format
 msgid "Added '%s' to '%s'"
-msgstr "Afegits '%s' a '%s'"
+msgstr "Agregat ‘%s’ a ‘%s’"
 
 #, c-format
 msgid "Removed '%s' from '%s'"
-msgstr "Eliminats '%s' a '%s'"
+msgstr "Eliminat ‘%s’ de ‘%s’"
 
 msgid "This collection is empty."
-msgstr "La col·lecció està buida"
+msgstr "Aquesta col·lecció està buida."
 
 #. TRANSLATION: number of developpers / various developpers
 msgid "None"
 msgstr "Cap"
 
 msgid "Various"
-msgstr "Varis"
+msgstr "Diversos"
 
 #, c-format
 msgid "This collection contains %i game, including :%s"
@@ -307,13 +302,13 @@ msgstr[0] "Aquesta col·lecció conté %i joc, incloent: %s"
 msgstr[1] "Aquesta col·lecció conté %i jocs, incloent: %s"
 
 msgid "SCANNING BLUETOOTH"
-msgstr "EXPLORANT BLUETOOTH"
+msgstr "ESCANEJANT BLUETOOTH"
 
-msgid "Searching controllers..."
-msgstr "Cercant comandaments..."
+msgid "Searching for devices..."
+msgstr "Buscant comandaments…"
 
-msgid "BLUETOOTH SCANNING IS ALREADY RUNNING."
-msgstr "L'EXPLORACIÓ DE BLUETOOTH ENCARA ESTÀ ACTIVA."
+msgid "BLUETOOTH SCAN IS ALREADY RUNNING."
+msgstr "EL ESCANEIG BLUETOOTH S’ESTÀ EXECUTANT."
 
 msgid "FORMATING DEVICE"
 msgstr "FORMATANT DISPOSITIU"
@@ -321,11 +316,11 @@ msgstr "FORMATANT DISPOSITIU"
 msgid "Formating"
 msgstr "Formatant"
 
-msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO COMPLETE THE OPERATION"
-msgstr "CAL REINICIAR EL SISTEMA PER A COMPLETAR L'OPERACIÓ"
+msgid "A REBOOT IS REQUIRED TO COMPLETE THE OPERATION"
+msgstr "CAL REINICIAR PER A COMPLETAR L’OPERACIÓ"
 
 msgid "DRIVE FORMAT IS ALREADY RUNNING."
-msgstr "EL FORMATAT DE LA UNITAT ENCARA ESTÀ ACTIU"
+msgstr "LA FORMATACIÓ DEL DISC S’ESTÀ EXECUTANT."
 
 msgid "DOWNLOADING"
 msgstr "DESCARREGANT"
@@ -340,31 +335,31 @@ msgid "THEME UNINSTALLED SUCCESSFULLY"
 msgstr "TEMA DESINSTAL·LAT SATISFACTÒRIAMENT"
 
 msgid "BEZELS INSTALLED SUCCESSFULLY"
-msgstr "MÀSCARES INSTAL·LADES SATISFACTÒRIAMENT"
+msgstr "BISELLS INSTAL·LATS SATISFACTÒRIAMENT"
 
 msgid "BEZELS UNINSTALLED SUCCESSFULLY"
-msgstr "MÀSCARES DESINSTAL·LADES SATISFACTÒRIAMENT"
+msgstr "BISELLS DESINSTAL·LAT SATISFACTÒRIAMENT"
 
 msgid "PACKAGE INSTALLED SUCCESSFULLY"
 msgstr "PAQUET INSTAL·LAT SATISFACTÒRIAMENT"
 
 msgid "PACKAGE REMOVED SUCCESSFULLY"
-msgstr "PAQUET ELIMINAT SATISFACTÒRIAMENT"
+msgstr "PAQUET DESINSTAL·LAT SATISFACTÒRIAMENT"
 
 msgid "FILTER GAMELIST BY"
 msgstr "FILTRAR LLISTA DE JOCS PER"
 
 msgid "EDIT DYNAMIC COLLECTION FILTERS"
-msgstr "EDITAR COL·LECCIÓ DINÀMICA DE FILTRES"
+msgstr "EDITAR FILTRES DE COL·LECCIÓ DINÀMICA"
 
 msgid "RESET ALL FILTERS"
-msgstr "RESTABLIR TOTS ELS FILTRES"
+msgstr "RESTABLIR FILTRES"
 
 msgid "BACK"
 msgstr "ENRERE"
 
 msgid "FIND GAMES"
-msgstr "TROBAR JOCS"
+msgstr "CERCAR JOCS"
 
 msgid "Unknown"
 msgstr "Desconegut"
@@ -379,7 +374,7 @@ msgid "SYSTEMS"
 msgstr "SISTEMES"
 
 msgid "GAME COLLECTION SETTINGS"
-msgstr "CONFIGURACIÓ DE COL·LECCIÓ DE JOCS"
+msgstr "CONFIGURACIÓ DE COL·LECCIONS DE JOCS"
 
 msgid "COLLECTIONS TO DISPLAY"
 msgstr "COL·LECCIONS A MOSTRAR"
@@ -391,19 +386,19 @@ msgid "GROUPED SYSTEMS"
 msgstr "SISTEMES AGRUPATS"
 
 msgid "CREATE CUSTOM COLLECTION"
-msgstr "CREAR UNA COL·LECCIÓ PERSONALITZADA"
+msgstr "CREAR COL·LECCIÓ PERSONALITZADA"
 
 msgid "CREATE NEW CUSTOM COLLECTION FROM THEME"
-msgstr "CREAR UNA NOVA COL·LECCIÓ PERSONALITZADA DES DE TEMA"
+msgstr "CREAR NOVA COL·LECCIÓ PERSONALITZADA A PARTIR DEL TEMA"
 
 msgid "SELECT THEME FOLDER"
-msgstr "SELECCIONI UNA CARPETA DE TEMA"
+msgstr "SELECCIONAR LA CARPETA DEL TEMA"
 
 msgid "CREATE NEW EDITABLE COLLECTION"
-msgstr "CREAR UNA NOVA COL·LECCIÓ EDITABLE"
+msgstr "CREAR NOVA COL·LECCIÓ EDITABLE"
 
 msgid "New Collection Name"
-msgstr "Nou nom de col·lecció"
+msgstr "Nom de la nova col·lecció"
 
 msgid "CREATE NEW DYNAMIC COLLECTION"
 msgstr "CREAR NOVA COL·LECCIÓ DINÀMICA"
@@ -412,25 +407,25 @@ msgid "OPTIONS"
 msgstr "OPCIONS"
 
 msgid "SORT COLLECTIONS AND SYSTEMS"
-msgstr "ORDENAR COL·LECCIONS I SISTEMES"
+msgstr "ORGANITZAR COL·LECCIONS I SISTEMES"
 
 msgid "ALPHABETICALLY"
 msgstr "ALFABÈTICAMENT"
 
 msgid "BY MANUFACTURER"
-msgstr "PER FABRICANT"
+msgstr "PER MARCA"
 
 msgid "BY HARDWARE TYPE"
-msgstr "PER TIPUS DE MAQUINARI"
+msgstr "PER HARDWARE"
 
 msgid "BY RELEASE YEAR"
-msgstr "PER ANY DE PUBLICACIÓ"
+msgstr "PER ANY DE LLANÇAMENT"
 
 msgid "SORT SYSTEMS"
-msgstr "ORDERNAR SISTEMES"
+msgstr "ORDENAR SISTEMES"
 
 msgid "START ON SYSTEM"
-msgstr "INICIAR A UN SISTEMA"
+msgstr "INICIAR BATOCERA DIRECTAMENT EN UN SISTEMA"
 
 msgid "NONE"
 msgstr "NORMAL"
@@ -439,28 +434,25 @@ msgid "RESTORE LAST SELECTED"
 msgstr "ON HO VAS DEIXAR"
 
 msgid "START ON GAMELIST"
-msgstr "COMENÇAR A UNA LLISTA DE JOCS"
+msgstr "INICIAR A LA LLISTA DE JOCS"
 
 msgid "GROUP UNTHEMED CUSTOM COLLECTIONS"
-msgstr "AGRUPAR CO·LECCIONS PERSONALITZADES SENSE TEMA"
+msgstr "AGRUPAR COL·LECCIONS PERSONALITZADES SENSE TEMA"
 
 msgid "SHOW SYSTEM NAME IN COLLECTIONS"
-msgstr "MOSTRAR NOM DE SISTEMA A LES COL·LECCIONS"
+msgstr "MOSTRAR EL NOM DEL SISTEMA A LES COL·LECCIONS"
 
 msgid "SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"
 msgstr "MOSTRAR JOCS OCULTS A COL·LECCIONS"
 
-msgid "UPDATE GAMES LISTS"
+msgid "UPDATE GAME LISTS"
 msgstr "ACTUALITZA LES LLISTES DELS JOCS"
 
-msgid "FINISH EDITING COLLECTION"
-msgstr "FINALITZI L'EDICIÓ DE LES COL·LECCIONS"
-
 msgid "Loading..."
-msgstr "Carregant..."
+msgstr "Carregant …"
 
 msgid "SELECT COLLECTIONS"
-msgstr "SELECCIONI COL·LECCIONS"
+msgstr "SELECCIONAR COL·LECCIONS"
 
 msgid "AUTOMATIC COLLECTIONS"
 msgstr "COL·LECCIONS AUTOMÀTIQUES"
@@ -469,7 +461,7 @@ msgid "PER GENRE"
 msgstr "PER GÈNERE"
 
 msgid "ARCADE SYSTEMS"
-msgstr "SISTEMES DE MÀQUINES RECREATIVES"
+msgstr "SISTEMES ARCADE"
 
 msgid "AUTOMATIC GAME COLLECTIONS"
 msgstr "COL·LECCIONS DE JOCS AUTOMÀTIQUES"
@@ -484,7 +476,7 @@ msgid "CUSTOM GAME COLLECTIONS"
 msgstr "COL·LECCIONS DE JOCS PERSONALITZADES"
 
 msgid "PLEASE WAIT"
-msgstr "SI US PLAU, ESPERI"
+msgstr "ESPERI SI US PLAU"
 
 #, c-format
 msgid "%d%% (%d of %d)"
@@ -511,32 +503,26 @@ msgstr "FINALITZAT"
 msgid "OK"
 msgstr "ACCEPTA"
 
+msgid "VIEW OPTIONS"
+msgstr "VEURE OPCIONS"
+
 msgid "go back"
-msgstr "tornar enrere"
+msgstr "anar enrere"
 
 msgid "NAVIGATION"
 msgstr "NAVEGACIÓ"
 
-msgid "JUMP TO..."
-msgstr "SALTAR A..."
+msgid "JUMP TO LETTER"
+msgstr "SALTA A UNA LLETRA"
+
+msgid "SELECT RANDOM GAME"
+msgstr "SELECCIONAR JOC ALEATORI"
 
 msgid "SORT GAMES BY"
 msgstr "ORDENA ELS JOCS PER"
 
 msgid "OTHER FILTERS"
 msgstr "ALTRES FILTRES"
-
-msgid "FIND SIMILAR GAMES..."
-msgstr "TROBAR JOCS SIMILARS..."
-
-msgid "GAME MEDIAS"
-msgstr "AUDIOVISUALS DE JOCS"
-
-msgid "VIEW GAME MANUAL"
-msgstr "VEURE MANUAL DEL JOC"
-
-msgid "VIEW GAME MAP"
-msgstr "VEURE MAPA DEL JOC"
 
 msgid "COLLECTION"
 msgstr "COL·LECCIÓ"
@@ -545,58 +531,35 @@ msgid "DELETE COLLECTION"
 msgstr "ELIMINAR COL·LECCIÓ"
 
 msgid "GAMELIST VIEW STYLE"
-msgstr "ESTIL DE VISTA DE LLISTAT DE JOCS"
+msgstr "ESTIL DE LA LLISTA DE JOCS"
 
 msgid "automatic"
 msgstr "automàtic"
 
-msgid "VIEW OPTIONS"
-msgstr "OPCIONS DE VISTA"
-
 msgid "VIEW CUSTOMISATION"
-msgstr "PERSONALITZACIÓ DE VISTA"
-
-msgid "COLLECTION MANAGEMENT"
-msgstr "GESTIÓ DE COL·LECCIONS"
-
-msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
-msgstr "AFEGIR/ELIMINAR JOCS D'AQUESTA COL·LECCIÓ"
-
-msgid "GAME OPTIONS"
-msgstr "OPCIONS DE JOC"
-
-msgid "ADVANCED SYSTEM OPTIONS"
-msgstr "OPCIONS AVANÇADES DE SISTEMA"
-
-msgid "ADVANCED GAME OPTIONS"
-msgstr "OPCIONS AVANÇADES DE JOC"
-
-msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
-msgstr "EDITAR CONFIGURACIÓ DE COMANDAMENT A TECLAT"
-
-msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
-msgstr "CREAR CONFIGURACIÓ DE COMANDAMENT A TECLAT"
-
-msgid "EDIT FOLDER METADATA"
-msgstr "EDITAR CARPETA DE METADADES"
+msgstr "PERSONALITZAR LLISTA"
 
 msgid "VIEW PAD TO KEYBOARD INFORMATION"
 msgstr "VEURE INFORMACIÓ DE COMANDAMENT A TECLAT"
 
+msgid "ADVANCED SYSTEM OPTIONS"
+msgstr "OPCIONS AVANÇADES DE SISTEMA"
+
 msgid "RESET FILTERS"
-msgstr "REINICIAR FILTRES"
+msgstr "RESTABLIR FILTRES"
 
 msgid "FILTER GAMES BY TEXT"
 msgstr "FILTRAR JOCS PER TEXT"
 
 msgid "THIS FUNCTION IS DISABLED WHEN SCRAPING IS RUNNING"
-msgstr "AQUESTA FUNCIÓ NO ESTÀ DISPONIBLE MENTRE L'SCRAPING ESTÀ ACTIU"
+msgstr ""
+"AQUESTA FUNCIÓ ESTÀ DESACTIVADA QUAN L’OBTENCIÓ DE DADES S’ESTÀ EXECUTANT"
 
 msgid "CLOSE"
 msgstr "TANCA"
 
-msgid "ARE YOU SURE YOU WANT TO DELETE THIS ITEM ?"
-msgstr "ESTÁ SEGUR DE VOLER ELIMINAR AQUEST ELEMENT ?"
+msgid "ARE YOU SURE YOU WANT TO DELETE THIS ITEM?"
+msgstr "ESTÀS SEGUR QUE VOLS ESBORRAR AQUEST ELEMENT?"
 
 msgid "INPUT"
 msgstr "ENTRADA"
@@ -611,58 +574,58 @@ msgid "CONNECT TO NETPLAY"
 msgstr "CONNECTAR A NETPLAY"
 
 msgid "Select the game you want to join"
-msgstr "Seleccioni el joc al que es vol unir"
+msgstr "Selecciona el joc a què vols unir-te"
 
 msgid "REFRESH"
-msgstr "ACTUALITZA"
+msgstr "ACTUALITZAR"
 
 msgid "FAILED"
-msgstr "FALLADA"
+msgstr "HA FALLAT"
 
 msgid "UNKNOWN ROM VERSION"
-msgstr "VERSIÓ DE ROM DESCONEGUDA"
+msgstr "VERSIÓ DESCONEGUDA DE LA ROM"
 
 msgid "DIFFERENT ROM"
-msgstr "ROM DIFERENT"
+msgstr "LA ROM ÉS DIFERENT"
 
 msgid "SAME ROM"
-msgstr "MATEIXA ROM"
+msgstr "LA ROM ÉS IGUAL"
 
 msgid "UNAVAILABLE CORE"
 msgstr "NUCLI NO DISPONIBLE"
 
 msgid "AVAILABLE GAMES"
-msgstr "JOCS DISPONIBLE"
+msgstr "JOCS DISPONIBLES"
 
 msgid "UNAVAILABLE GAMES"
 msgstr "JOCS NO DISPONIBLES"
 
 msgid "NO GAME FOUND"
-msgstr "NO S'HA TROBAT CAP JOC"
+msgstr "NO S’HA TROBAT CAP JOC"
 
 msgid "JOIN GAME"
-msgstr "UNIR-SE AL JOC"
+msgstr "UNIR-SE A LA PARTIDA"
 
 msgid "WATCH GAME"
-msgstr "VEURE JOC"
+msgstr "UNIR-SE COM A ESPECTADOR"
 
 msgid "MANUAL INPUT"
 msgstr "ENTRADA MANUAL"
 
-msgid "NO WIFI NETWORKS FOUND"
-msgstr "NO S'HAN TROBAT XARXES INALÀMBRIQUES"
+msgid "NO WI-FI NETWORKS FOUND"
+msgstr "NO S’HA TROBAR CAP XARXA WIFI"
 
-msgid "SEARCHING WIFI NETWORKS"
-msgstr "CERCANT XARXES INALÀMBRIQUES"
+msgid "SEARCHING WI-FI NETWORKS"
+msgstr "BUSCANT XARXES WIFI"
 
 msgid "FORGET A BLUETOOTH DEVICE"
-msgstr "OBLIDAR UN COMANDAMENT BLUETOOTH"
+msgstr ""
 
 msgid "REMOVE ALL"
-msgstr "ELIMINAR TOT"
+msgstr "DESVINCULAR TOT"
 
 msgid "NO BLUETOOTH DEVICES FOUND"
-msgstr "NO S'HAN TROBAT DISPOSITIUS BLUETOOTH"
+msgstr "NO S’HA TROBAT CAP DISPOSITIU BLUETOOTH"
 
 msgid "BLUETOOTH DEVICES HAVE BEEN DELETED."
 msgstr ""
@@ -671,7 +634,7 @@ msgid "FILE BROWSER"
 msgstr "EXAMINAR"
 
 msgid "RESET"
-msgstr "REINICIA"
+msgstr "RESTABLIR"
 
 msgid "PARENT FOLDER"
 msgstr "CARPETA PRINCIPAL"
@@ -686,16 +649,16 @@ msgid "ADD COMBINATION KEY"
 msgstr "AFEGIR COMBINACIÓ DE TECLES"
 
 msgid "CONTENT DOWNLOADER"
-msgstr "DESCARREGADOR DE CONTINGUT"
+msgstr "GESTOR DE CONTINGUT DESCARREGABLE"
 
 msgid "SELECT CONTENT TO INSTALL / REMOVE"
-msgstr "SELECCIONI CONTINGUT A INSTAL·LAR / ELIMINAR"
+msgstr "SELECCIONA EL CONTINGUT A INSTAL·LAR / DESINSTAL·LAR"
 
 msgid "UPDATE INSTALLED CONTENT"
-msgstr "ACTUALITZAR EL CONTINGUT INSTAL·LAT"
+msgstr "ACTUALITZAR CONTINGUT INSTAL·LAT"
 
-msgid "There are no items in this view"
-msgstr "No hi han elements a mostrar"
+msgid "No items"
+msgstr "No hi ha cap element en aquesta vista"
 
 msgid "MISC"
 msgstr "MISC"
@@ -721,28 +684,28 @@ msgid "CURRENTLY IN DOWNLOAD QUEUE"
 msgstr "ACTUALMENT A LA CUA DE DESCÀRREGUES"
 
 msgid "NO MISSING BIOS"
-msgstr "TOTES LES BIOS ESTÀN PRESENTS"
+msgstr "NO FALTEN BIOS"
 
-msgid "MISSING BIOS"
-msgstr "BIOS NO TROBADES"
+msgid "MISSING BIOS CHECK"
+msgstr "BIOS QUE FALTEN"
 
 msgid "dim"
-msgstr "atenuar"
+msgstr "atenuar pantalla"
 
 msgid "black"
-msgstr "negre"
+msgstr "pantalla negra"
 
 msgid "random video"
-msgstr "video aleatori"
+msgstr "vídeo aleatori"
 
 msgid "slideshow"
-msgstr "projecció"
+msgstr "presentació d’imatges"
 
 msgid "always"
 msgstr "sempre"
 
 msgid "start & end"
-msgstr "començar i acabar"
+msgstr "inici i fi"
 
 msgid "never"
 msgstr "mai"
@@ -757,88 +720,88 @@ msgid "random"
 msgstr "aleatori"
 
 msgid "SCREENSAVER SETTINGS"
-msgstr "CONFIGURACIÓ D'ESTALVI DE PANTALLA"
+msgstr "CONFIGURACIÓ DE L’ESTALVI DE PANTALLA"
 
 msgid "SETTINGS"
 msgstr "CONFIGURACIÓ"
 
-msgid "SCREENSAVER AFTER"
+msgid "START SCREENSAVER AFTER"
 msgstr "ESTALVI DE PANTALLA DESPRÉS DE"
 
-msgid "SCREENSAVER BEHAVIOR"
+msgid "SCREENSAVER TYPE"
 msgstr "COMPORTAMENT DE L'ESTALVI DE PANTALLA"
 
 msgid "STOP MUSIC ON SCREENSAVER"
-msgstr "PARAR MÚSICA A L'ESTALVI DE PANTALLA"
+msgstr "ATURAR MÚSICA A L’ESTALVI DE PANTALLA"
 
 msgid "RANDOM VIDEO SCREENSAVER SETTINGS"
-msgstr "CONFIGURACIÓ DE VIDEO D'ESTALVI DE PANTALLA ALEATORI"
+msgstr "CONFIGURAR ESTALVI DE PANTALLA DE VÍDEO ALEATORI"
 
 msgid "SWAP VIDEO AFTER (SECS)"
-msgstr "INTERCANVIAR VIDEO DESPRÉS (SECS)"
+msgstr "CANVIAR VÍDEO CADA (SEGS)"
 
 msgid "USE OMX PLAYER FOR SCREENSAVER"
 msgstr "UTILITZAR REPRODUCTOR OMX A L’ESTALVI DE PANTALLA"
 
 msgid "SHOW GAME INFO"
-msgstr "MOSTRAR INFORMACIÓ DE JOC"
+msgstr "MOSTRAR INFORMACIÓ DEL JOC"
 
 msgid "SHOW GAME INFO ON SCREENSAVER"
-msgstr "MOSTRAR INFORMACIÓ A L'ESTALVI DE PANTALLA"
+msgstr "MOSTRAR INFORMACIÓ DEL JOC A L’ESTALVI DE PANTALLA"
 
 msgid "USE MARQUEE AS GAME INFO"
-msgstr "USAR MARQUESINA COM INFORMACIÓ DE JOC"
+msgstr "UTILITZAR MARQUESINA COM A INFORMACIÓ DEL JOC"
 
 msgid "DECORATIONS"
 msgstr "DECORACIONS"
 
 msgid "STRETCH VIDEO ON SCREENSAVER"
-msgstr "AJUSTAR VIDEO A L'ESTALVI DE PANTALLA"
+msgstr "AJUSTAR VÍDEO A L’ESTALVI DE PANTALLA"
 
 msgid "MUTE VIDEO AUDIO"
-msgstr "SILENCIAR SO DE VIDEO"
+msgstr "INHABILITA EL SO DELS VÍDEOS"
 
 msgid "SCREENSAVER CONTROLS"
-msgstr "CONTROLS D'ESTALVI DE PANTALLA"
+msgstr "CONTROLS DE L’ESTALVI DE PANTALLA"
 
 msgid "USE CUSTOM VIDEOS"
-msgstr "USAR VIDEOS PERSONALITZATS"
+msgstr "UTILITZAR VÍDEOS PERSONALITZATS"
 
-msgid "CUSTOM VIDEO DIR"
-msgstr "PERSONALITZAR DIRECTORI DE VIDEO"
+msgid "CUSTOM VIDEO DIRECTORY"
+msgstr "CARPETA DE VÍDEOS PERSONALITZATS"
 
-msgid "CUSTOM VIDEO DIR RECURSIVE"
-msgstr "PERSONALITZAR DIRECTORI RECURSIU DE VIDEO"
+msgid "CUSTOM VIDEO DIRECTORY RECURSIVE"
+msgstr "DIRECTORI DE VÍDEO PERSONALITZAT RECURSIU"
 
 msgid "CUSTOM VIDEO FILTER"
-msgstr "PERSONALITZAR FILTRE DE VIDEO"
+msgstr "FILTRE DE VÍDEOS PERSONALITZAT"
 
 msgid "SLIDESHOW SCREENSAVER SETTINGS"
-msgstr "CONFIGURACIÓ DE PROJECCIÓ D'ESTALVI DE PANTALLA"
+msgstr "CONFIGURAR L’ESTALVI DE PANTALLA DE PRESENTACIÓ D’IMATGES"
 
-msgid "SWAP IMAGE AFTER (SECS)"
-msgstr "INTERCANVIAR IMATGE DESPRÉS (SECS)"
+msgid "IMAGE DURATION (SECS)"
+msgstr "CANVIAR IMATGE CADA (SEGONS)"
 
 msgid "STRETCH IMAGES"
 msgstr "AJUSTAR IMATGES"
 
 msgid "USE CUSTOM IMAGES"
-msgstr "USAR IMATGES PERSONALITZADES"
+msgstr "UTILITZAR IMATGES PERSONALITZADES"
 
-msgid "CUSTOM IMAGE DIR"
-msgstr "CARPETA D'IMATGE PERSONALITZADA"
+msgid "CUSTOM IMAGE DIRECTORY"
+msgstr "CARPETA D’IMATGES PERSONALITZADES"
 
-msgid "CUSTOM IMAGE DIR RECURSIVE"
-msgstr "CARPETA RECURSIVA D'IMATGE PERSONALITZADA"
+msgid "CUSTOM IMAGE DIRECTORY RECURSIVE"
+msgstr "DIRECTORI D’IMATGES PERSONALITZAT RECURSIU"
 
 msgid "CUSTOM IMAGE FILTER"
-msgstr "FILTRE PERSONALITZAT D'IMATGE"
+msgstr "FILTRE D’IMATGE PERSONALITZAT"
 
 msgid "PAD TO KEYBOARD CONFIGURATION"
 msgstr "CONFIGURACIÓ DE COMANDAMENT A TECLAT"
 
 msgid "SELECT ACTIONS TO CHANGE"
-msgstr "SELECCIONI ACCIONS A CANVIAR"
+msgstr "SELECCIONA LES ACCIONS A CANVIAR"
 
 msgid "SAVE"
 msgstr "DESA"
@@ -852,55 +815,60 @@ msgstr "JUGADOR 1"
 msgid "PLAYER 2"
 msgstr "JUGADOR 2"
 
+msgid "PLAYER 3"
+msgstr "JUGADOR 3"
+
+msgid "PLAYER 4"
+msgstr "JUGADOR 4"
+
 msgid "COMBINATIONS"
-msgstr "COMINACIONS"
+msgstr "COMBINACIONS"
 
 msgid "MOUSE CURSOR"
-msgstr "CURSOR DEL RATOLÍ"
+msgstr "CURSOR DE RATOLÍ"
 
 msgid "EMULATE MOUSE CURSOR"
-msgstr "EMULAR CURSOR DEL RATOLÍ"
+msgstr "EMULAR EL CURSOR DEL RATOLÍ"
 
 msgid "LEFT ANALOG STICK"
-msgstr "PALANCA ANALÒGICA ESQUERRA"
+msgstr "STICK ANALÒGIC ESQUERRE"
 
 msgid "RIGHT ANALOG STICK"
-msgstr "PALANCA ANALÒGICA DRETA"
+msgstr "STICK ANALÒGIC DRET"
 
 msgid "EDIT DESCRIPTION"
-msgstr "EDITA DESCRIPCIÓ"
+msgstr "EDITAR DESCRIPCIÓ"
 
 msgid "DELETE MAPPING"
-msgstr "ESBORRAR ASSIGNACIÓ"
+msgstr "ELIMINA EL MAPATGE"
 
 msgid "SAVE CHANGES?"
 msgstr "VOLEU DESAR ELS CANVIS?"
 
-msgid "ARE YOU SURE ?"
-msgstr "ESTÀ SEGUR?"
+msgid "ARE YOU SURE?"
+msgstr "ESTÀS SEGUR?"
 
-msgid "UPDATING EMULATIONSTATION"
-msgstr "ACTUALITZANT EMULATIONSTATION"
+#, c-format
+msgid "UPDATING %s"
+msgstr "ACTUALITZANT %s"
 
 msgid "UPDATING BATOCERA"
 msgstr "ACTUALITZANT BATOCERA"
 
 msgid "UPDATE IS READY"
-msgstr "L'ACTUALITZACIÓ ESTÀ LLESTA"
+msgstr "L’ACTUALITZACIÓ ESTÀ PREPARADA"
 
-msgid "REBOOT SYSTEM TO APPLY"
-msgstr "REINICII EL SISTEMA PER A APLICAR CANVIS"
+msgid "REBOOT SYSTEM TO APPLY THE UPDATE"
+msgstr "REINICIAR BATOCERA PER APLICAR"
 
 msgid "REALLY UPDATE?"
 msgstr "ESTEU SEGUR QUE VOLEU ACTUALITZAR?"
 
 #, c-format
 msgid ""
-"YOU ARE CURRENTLY USING VERSION : %s\n"
-"DO YOU WANT TO UPDATE TO VERSION : %s ?"
+"YOU ARE CURRENTLY USING VERSION %s\n"
+"DO YOU WANT TO UPDATE TO VERSION %s?"
 msgstr ""
-"ACTUALMENT ESTÀS FENT SERVIR LA VERSIÓ %s\n"
-"VOLS ACTUALITZAR A LA VERSIÓ %s ?"
 
 msgid "NETWORK CONNECTION NEEDED"
 msgstr "ES REQUEREIX CONNEXIÓ A LA XARXA"
@@ -912,19 +880,28 @@ msgid "INSTALL BATOCERA"
 msgstr "INSTAL·LAR BATOCERA"
 
 msgid "TARGET DEVICE"
-msgstr "DISPOSITIU "
+msgstr "DISPOSITIU DE DESTINACIÓ"
 
 msgid "TARGET ARCHITECTURE"
-msgstr "ARQUITECTURA DESTÍ"
+msgstr "ARQUITECTURA DE DESTINACIÓ"
 
 msgid "NETWORK REQUIRED"
-msgstr "XARXA REQUERIDA"
+msgstr "ES REQUEREIX CONNEXIÓ A INTERNET"
 
 msgid "INVALID PARAMETERS"
-msgstr "PARÀMETRES INVÀLIDS"
+msgstr "VALORS NO VÀLIDS"
+
+msgid "GAME MEDIAS"
+msgstr "MITJANS DE JOC"
+
+msgid "VIEW GAME MANUAL"
+msgstr "VEURE MANUAL DEL JOC"
 
 msgid "VIEW GAME MAGAZINE"
 msgstr "VEURE MAGAZINE DEL JOC"
+
+msgid "VIEW GAME MAP"
+msgstr "VEURE EL MAPA DEL JOC"
 
 msgid "VIEW FULLSCREEN VIDEO"
 msgstr ""
@@ -971,11 +948,21 @@ msgstr "CONTRASENYA PER JUGADORS"
 msgid "SET VIEWER PASSWORD"
 msgstr "CONTRASENYA PER ESPECTADORS"
 
+msgid "FIND SIMILAR GAMES..."
+msgstr "CERCAR JOCS SIMILARS…"
+
 msgid "DELETE ITEM"
 msgstr "ESBORRAR ELEMENT"
 
 msgid "DELETE GAME"
 msgstr "ESBORRAR JOC"
+
+msgid ""
+"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
+"ARE YOU SURE?"
+msgstr ""
+"AIXÒ ELIMINARÀ L’ARXIU(S) DEL JOC ACTUAL!\n"
+"ESTÀS SEGUR?"
 
 msgid "COLLECTIONS"
 msgstr "COL·LECCIONS"
@@ -988,11 +975,26 @@ msgstr "TREURE DE %s"
 msgid "ADD TO %s"
 msgstr "AFEGIR A %s"
 
-msgid "ADD TO CUSTOM COLLECTION"
-msgstr ""
+msgid "FAVORITES"
+msgstr "FAVORITS"
+
+msgid "ADD TO CUSTOM COLLECTION..."
+msgstr "AFEGIR A COL·LECCIÓ PERSONALITZADA …"
 
 msgid "SCRAPE"
 msgstr "OBTENIR DADES DELS JOCS"
+
+msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
+msgstr "CONFIGURACIÓ DE COMANDAMENT A TECLAT"
+
+msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
+msgstr "CONFIGURACIÓ DE COMANDAMENT A TECLAT"
+
+msgid "ADVANCED GAME OPTIONS"
+msgstr "OPCIONS AVANÇADES DEL JOC"
+
+msgid "EDIT FOLDER METADATA"
+msgstr "EDITAR LA CARPETA DE METADADES"
 
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "EDITA LES METADADES D'AQUEST JOC"
@@ -1010,7 +1012,7 @@ msgstr "TEMA ACTUAL"
 msgid "Unlocked on"
 msgstr "Desbloquejat el"
 
-msgid "THIS GAME HAS NO ACHIEVEMENT YET"
+msgid "THIS GAME HAS NO ACHIEVEMENTS YET"
 msgstr "ENCARA NO TENS TROFEUS EN AQUEST JOC"
 
 msgid "Achievements won"
@@ -1045,7 +1047,7 @@ msgid "All Games"
 msgstr "Tots els jocs"
 
 msgid "Only missing medias"
-msgstr "Només audiovisuals que falten"
+msgstr "Només contingut que falta"
 
 msgid "FILTER"
 msgstr "FILTRA"
@@ -1065,7 +1067,7 @@ msgstr ""
 "ELS RESULTATS PODEN SER MENYS PRECISOS DEL NORMAL.\n"
 "VOLEU CONTINUAR DE TOTES MANERES?"
 
-msgid "SCRAPING IS RUNNING. DO YOU WANT TO STOP IT ?"
+msgid "SCRAPING IS RUNNING. DO YOU WANT TO STOP IT?"
 msgstr "OBTENCIÓ D’INFORMACIÓ EXECUTANT-SE. VOLS PARAR-LO?"
 
 msgid "NO GAMES FIT THAT CRITERIA."
@@ -1078,16 +1080,16 @@ msgid "SELECT BEZELS TO INSTALL / REMOVE"
 msgstr "SELECCIONA ELS BISELLS A INSTAL·LAR / DESINSTAL·LAR"
 
 msgid "fade"
-msgstr "esvaïment"
+msgstr "esvair"
 
 msgid "slide"
-msgstr "lliscant"
+msgstr "lliscar"
 
 msgid "instant"
 msgstr "instantani"
 
 msgid "fade & slide"
-msgstr "esvaïment i lliscant"
+msgstr "esvair i lliscar"
 
 msgid "System"
 msgstr "Sistema"
@@ -1108,16 +1110,16 @@ msgid "Battery"
 msgstr "Bateria"
 
 msgid "Cpu model"
-msgstr "Model d'unitat de procès"
+msgstr "Processador"
 
 msgid "Cpu number"
-msgstr "Número d'unitat de procès"
+msgstr "Nuclis del processador"
 
 msgid "Cpu max frequency"
-msgstr "Freqüència màxima d'unitat de procès"
+msgstr "Freqüència màxima del processador"
 
 msgid "Cpu feature"
-msgstr "Habilitat d'unitat de procès"
+msgstr "Característica del processador"
 
 msgid "SCANLINES"
 msgstr "SCANLINES"
@@ -1152,11 +1154,11 @@ msgstr "VERSIÓ"
 msgid "SHADERS"
 msgstr ""
 
-msgid "CONTROLLERS SETTINGS"
-msgstr "PARÀMETRES DELS COMANDAMENTS"
-
-msgid "CONTROLLERS & BLUETOOTH SETTINGS"
+msgid "CONTROLLER SETTINGS"
 msgstr ""
+
+msgid "CONTROLLER & BLUETOOTH SETTINGS"
+msgstr "PARÀMETRES DELS COMANDAMENTS"
 
 msgid "MAIN MENU"
 msgstr "MENÚ PRINCIPAL"
@@ -1180,7 +1182,7 @@ msgid "CONFIGURE INPUT"
 msgstr "CONFIGUREU L'ENTRADA"
 
 msgid "EMULATOR SETTINGS"
-msgstr "CONFIGURACIÓ D'EMULADOR"
+msgstr "CONFIGURACIÓ DE L’EMULADOR"
 
 msgid "UPDATES & DOWNLOADS"
 msgstr "ACTUALITZACIONS I DESCÀRREGUES"
@@ -1192,7 +1194,7 @@ msgid "INFORMATIONS"
 msgstr "INFORMACIÓ"
 
 msgid "UNLOCK UI MODE"
-msgstr "DESBLOQUEDAR MODE D'IU"
+msgstr "DESBLOQUEJAR INTERFÍCIE DEL SISTEMA"
 
 msgid "QUIT"
 msgstr "SURT"
@@ -1204,13 +1206,13 @@ msgid "SCRAPE FROM"
 msgstr "OBTENIR DADES DE"
 
 msgid "IMAGE SOURCE"
-msgstr "ORIGEN D'IMATGE"
+msgstr ""
 
 msgid "SCREENSHOT"
-msgstr "CAPTURA"
+msgstr ""
 
 msgid "TITLE SCREENSHOT"
-msgstr "CAPTURA DE TÍTOL"
+msgstr ""
 
 msgid "MIX V1"
 msgstr ""
@@ -1228,16 +1230,16 @@ msgid "FAN ART"
 msgstr ""
 
 msgid "BOX SOURCE"
-msgstr "ORIGEN DE LA CAIXA"
+msgstr ""
 
 msgid "LOGO SOURCE"
-msgstr "ORIGEN DEL LOGOTIP"
+msgstr ""
 
 msgid "WHEEL"
-msgstr "RODA"
+msgstr ""
 
 msgid "MARQUEE"
-msgstr "MARQUESINA"
+msgstr ""
 
 msgid "SCRAPE RATINGS"
 msgstr "OBTENIR DADES DE VALORACIÓ"
@@ -1267,25 +1269,25 @@ msgid "PASSWORD"
 msgstr "CONTRASENYA"
 
 msgid "ARE YOU SURE YOU WANT TO CONFIGURE INPUT?"
-msgstr "ESTÀ SEGUR DE VOLER CONFIGURAR L'ENTRADA?"
+msgstr ""
 
 msgid "CHOOSE"
 msgstr "TRIA"
 
 msgid "UI MODE IS NOW UNLOCKED"
-msgstr "EL MODE D'UI ESTÀ DESBLOQUEJAT"
+msgstr ""
 
 msgid "PLEASE ENTER THE CODE TO UNLOCK THE CURRENT UI MODE"
-msgstr "SI US PLAU ENTRI EL CODI PER DESBLOQUEJAR EL MODE D'UI ACTUAL"
+msgstr ""
 
 msgid "INFORMATION"
-msgstr "INFORMACIÓ"
+msgstr ""
 
 msgid "USER DISK USAGE"
-msgstr "ESPAI DE DISC USAT PER L'USUARI"
+msgstr ""
 
 msgid "SYSTEM DISK USAGE"
-msgstr "ESPAI DE DISC USAT PEL SISTEMA"
+msgstr ""
 
 msgid "SYSTEM"
 msgstr "SISTEMA"
@@ -1297,25 +1299,28 @@ msgid "DEVELOPER"
 msgstr "DESENVOLUPADOR"
 
 msgid "VIDEO OPTIONS"
-msgstr "OPCIONS DE VIDEO"
+msgstr ""
 
 msgid "VRAM LIMIT"
-msgstr "LÍMIT DE VRAM"
+msgstr ""
 
 msgid "SHOW FRAMERATE"
 msgstr "MOSTRA ELS FOTOGRAMES PER SEGON"
 
 msgid "VSYNC"
-msgstr "SINCRONITZACIÓ VERTICAL"
+msgstr ""
 
 msgid "OVERSCAN"
 msgstr "SOBRE-EXPLORACIÓ"
 
 msgid "USE OMX PLAYER (HW ACCELERATED)"
-msgstr "USAR REPRODUCTOR OMX (ACCELERACIÓ PER HW)"
+msgstr ""
 
 msgid "TOOLS"
-msgstr "EINES"
+msgstr ""
+
+msgid "STOP LAUNCHING THIS GAME AT STARTUP"
+msgstr ""
 
 msgid "ENABLE PUBLIC WEB ACCESS"
 msgstr ""
@@ -1324,32 +1329,35 @@ msgstr ""
 msgid "Allow public web access API using %s"
 msgstr ""
 
+msgid "REBOOT REQUIRED TO APPLY THE NEW CONFIGURATION"
+msgstr ""
+
 msgid "LOG LEVEL"
-msgstr "NIVELL DE TRAÇA"
+msgstr ""
 
 msgid "CREATE A SUPPORT FILE"
 msgstr ""
 
-msgid "CREATE A SUPPORT FILE ?"
+msgid "CREATE A SUPPORT FILE?"
 msgstr ""
 
 msgid "FILE GENERATED SUCCESSFULLY"
-msgstr "FITXER GENERAT SATISFACTÒRICAMENT"
+msgstr ""
 
 msgid "FILE GENERATION FAILED"
-msgstr "ERROR AL GENERAR EL FIXTER"
+msgstr ""
 
 msgid "FORMAT A DISK"
-msgstr "FORMATAR UN DISC"
+msgstr ""
 
-msgid "CLEAN GAMELISTS & REMOVE UNUSED MEDIAS"
-msgstr "NETEJAR LLISTATS DE JOCS I ESBORRAR AUDIOVISUALS NO USATS"
+msgid "CLEAN GAMELISTS & REMOVE UNUSED MEDIA"
+msgstr ""
 
-msgid "Cleaning "
-msgstr "Netejant"
+msgid "Cleaning"
+msgstr ""
 
 msgid "CLEAR CACHES"
-msgstr "ESBORRAR CAU"
+msgstr ""
 
 msgid "BUILD IMAGE CACHE"
 msgstr ""
@@ -1360,50 +1368,47 @@ msgstr ""
 msgid "RESET FILE EXTENSIONS"
 msgstr ""
 
-msgid "REDETECT GAMES LANG/REGION"
+msgid "REDETECT ALL GAMES' LANG/REGION"
 msgstr ""
 
 msgid "FIND ALL GAMES WITH NETPLAY/ACHIEVEMENTS"
 msgstr ""
 
 msgid "DATA MANAGEMENT"
-msgstr "GESTIÓ DE DADES"
+msgstr ""
 
-msgid "IGNORE MULTIFILE DISK CONTENT (CUE/GDI/CCD/M3U)"
+msgid "IGNORE MULTI-FILE DISK CONTENT (CUE/GDI/CCD/M3U)"
 msgstr ""
 
 msgid "ENABLE FILTERS"
-msgstr "HABILITAR FILTRES"
+msgstr ""
 
 msgid "SAVE METADATA ON EXIT"
-msgstr "DESAR METADADES AL SORTIR"
+msgstr ""
 
 msgid "PARSE GAMESLISTS ONLY"
-msgstr "INTERPRETAR NOMÉS LLISTATS DE JOCS"
+msgstr ""
 
 msgid "SEARCH FOR LOCAL ART"
-msgstr "CERCAR PER ART LOCAL"
+msgstr ""
 
 msgid "UI"
-msgstr "IU"
+msgstr ""
 
 msgid "CAROUSEL TRANSITIONS"
-msgstr "TRANSICIONS DE CARRUSEL"
+msgstr ""
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "SELECCIÓ RÀPIDA DEL SISTEMA"
 
-msgid "ON SCREEN KEYBOARD"
+msgid "ON-SCREEN KEYBOARD"
 msgstr "TECLAT EN PANTALLA"
 
 msgid "HIDE WHEN RUNNING A GAME"
-msgstr "AMAGAR AL EXECUTAR UN JOC"
+msgstr ""
 
 msgid "COMPLETE QUIT MENU"
-msgstr "MENÚ DE SORTIDA COMPLET"
-
-msgid "USE RETROARCH RGUI MENU"
-msgstr "USAR MENU RGUI DE RETROARCH"
+msgstr ""
 
 msgid "RETROARCH MENU DRIVER"
 msgstr ""
@@ -1411,29 +1416,31 @@ msgstr ""
 msgid "AUTO"
 msgstr "AUTO"
 
-msgid "SWITCH A/B BUTTONS IN EMULATIONSTATION"
-msgstr "INTERCANVIAR BOTONS A/B A EMULATIONSTATION"
-
 msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
-msgstr "AUTOCONFIGURAR COMANDAMENTS D'EMULADORS"
+msgstr ""
+
+msgid "SWITCH A & B BUTTONS IN EMULATIONSTATION"
+msgstr ""
 
 msgid "ACCESS GAME OPTIONS WITH NORTH BUTTON"
 msgstr ""
 
-msgid "Inverts north button (savestates) & long press south (game options)"
+msgid ""
+"Switches to short-press North for Savestates & long-press South button for "
+"Game Options"
 msgstr ""
 
-msgid "CONTROL EMULATIONSTATION ONLY WITH FIRST JOYSTICK"
+msgid "CONTROL EMULATIONSTATION WITH FIRST JOYSTICK ONLY"
 msgstr ""
 
 msgid "SHOW NETWORK INDICATOR"
-msgstr "MOSTRAR INDICADOR DE XARXA"
+msgstr ""
 
 msgid "OPTIMIZATIONS"
-msgstr "OPTIMITZACIONS"
+msgstr ""
 
 msgid "PRELOAD UI"
-msgstr "PRECARREGAR IU"
+msgstr ""
 
 msgid "PRELOAD MEDIAS FILESYSTEM"
 msgstr ""
@@ -1442,40 +1449,40 @@ msgid "REDUCE UI LAGS OVER STARTUP TIME"
 msgstr ""
 
 msgid "THREADED LOADING"
-msgstr "CÀRREGA MULTI-FIL"
+msgstr ""
 
-msgid "ASYNC IMAGES LOADING"
-msgstr "CÀRREGA D'IMATGES ASSÍNCRONA"
+msgid "ASYNC IMAGE LOADING"
+msgstr ""
 
 msgid "OPTIMIZE IMAGES VRAM USE"
-msgstr "OPTIMITZAR IMATGES DE VRAM"
+msgstr ""
 
-msgid "OPTIMIZE VIDEO VRAM USE"
-msgstr "OPTMITZAR VIDEOS DE VRAM"
+msgid "OPTIMIZE VIDEO VRAM USAGE"
+msgstr ""
 
 msgid "DOWNLOADS"
-msgstr "DESCÀRREGUES"
+msgstr ""
 
 msgid "THEMES"
-msgstr "TEMES"
+msgstr ""
 
 msgid "SOFTWARE UPDATES"
-msgstr "ACTUALIZACIONS DE PROGRAMARI"
+msgstr ""
 
 msgid "CHECK FOR UPDATES"
-msgstr "VERFICIAR ACTUALITZACIONS"
+msgstr ""
 
 msgid "UPDATE TYPE"
-msgstr "TIPUS D'ACTUALIZACIÓ"
+msgstr ""
 
 msgid "APPLY UPDATE"
-msgstr "APLICAR ACTUALITZACIÓ"
+msgstr ""
 
 msgid "START UPDATE"
 msgstr "INICIA L'ACTUALITZACIÓ"
 
 msgid "UPDATE IS ALREADY RUNNING"
-msgstr "LA ACTUALIZACIÓ JA S'ESTÀ FENT"
+msgstr ""
 
 msgid "LANGUAGE"
 msgstr "IDIOMA"
@@ -1490,25 +1497,22 @@ msgid "SHOW CLOCK IN 12-HOUR FORMAT"
 msgstr ""
 
 msgid "POWER SAVER MODES"
-msgstr "MODES D'ESTALVI D'ENERGIA"
+msgstr ""
 
 msgid "TEXT TO SPEECH"
 msgstr ""
 
 msgid "UI MODE"
-msgstr "MODE D'IU"
+msgstr ""
 
 msgid ""
 "You are changing the UI to a restricted mode:\n"
 "This will hide most menu-options to prevent changes to the system.\n"
 "To unlock and return to the full UI, enter this code:"
 msgstr ""
-"Està canviant la IU a un mode restringit:\n"
-"Això amagarà moltes opcions de menú per a prevenir canvis al sistema.\n"
-"Per a desbloquejar i tornar a la IU completa, entri aquest codi:"
 
-msgid "Do you want to proceed ?"
-msgstr "Vol procedir?"
+msgid "Do you want to proceed?"
+msgstr ""
 
 msgid "KODI SETTINGS"
 msgstr "PARÀMETRES DEL KODI"
@@ -1516,23 +1520,20 @@ msgstr "PARÀMETRES DEL KODI"
 msgid "ENABLE KODI"
 msgstr "HABILITA EL KODI"
 
-msgid "KODI AT START"
+msgid "LAUNCH KODI AT BOOT"
 msgstr "KODI A L'INICI"
 
 msgid "HARDWARE"
-msgstr "MAQUINARI"
+msgstr ""
 
 msgid "BRIGHTNESS"
-msgstr "LLUENTOR"
+msgstr ""
 
 msgid "VIDEO OUTPUT"
-msgstr "SORTIDA DE VIDEO"
-
-msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
-msgstr "PER A APLICAR LA NOVA CONFIGURACIÓ ES REQUEREIX UN REINICI DE SISTEMA"
+msgstr ""
 
 msgid "AUDIO OUTPUT"
-msgstr "SORTIA D'ÀUDIO"
+msgstr ""
 
 msgid "AUDIO PROFILE"
 msgstr ""
@@ -1555,26 +1556,26 @@ msgstr ""
 msgid "SILENT SPLASH"
 msgstr ""
 
-msgid "NO SPLASH"
+msgid "DEFAULT"
 msgstr ""
 
 msgid "RETROACHIEVEMENTS SETTINGS"
 msgstr "PARÀMETRES DELS ASSOLIMENTS RETRO"
 
 msgid "NETPLAY SETTINGS"
-msgstr "CONFIGURACIÓ DE NETPLAY"
+msgstr ""
 
-msgid "CHECK BIOSES BEFORE RUNNING A GAME"
-msgstr "COMPROVAR BIOS ABANS D'INICIAR UN JOC"
+msgid "CHECK BIOS FILES BEFORE RUNNING A GAME"
+msgstr ""
 
 msgid "MULTIMEDIA KEYS"
-msgstr "TECLES D'AUDIOVISUALS"
+msgstr ""
 
 msgid "ON"
-msgstr "ENCÉS"
+msgstr ""
 
 msgid "OFF"
-msgstr "APAGAT"
+msgstr ""
 
 msgid "BUTTON LED COLOR"
 msgstr ""
@@ -1616,16 +1617,16 @@ msgid "OVERCLOCK"
 msgstr "OVERCLOCK"
 
 msgid "STORAGE"
-msgstr "EMMAGATZEMATGE"
+msgstr ""
 
 msgid "STORAGE DEVICE"
 msgstr "DISPOSITIU D'EMMAGATZEMATGE"
 
 msgid "BACKUP USER DATA"
-msgstr "CÒPIA DE DADES D'USUARI"
+msgstr "CREAR BACKUP DE L’ESPAI D’USUARI"
 
 msgid "INSTALL BATOCERA ON A NEW DISK"
-msgstr "INSTAL·LAR SISTEMA EN UN NOU DISC"
+msgstr "INSTAL·LAR BATOCERA EN UN DISC NOU"
 
 msgid "ADVANCED"
 msgstr "AVANÇAT"
@@ -1640,28 +1641,28 @@ msgid "ROOT PASSWORD"
 msgstr "CONTRASENYA DE ROOT"
 
 msgid "LATENCY REDUCTION"
-msgstr "REDUCCIÓ DE LATÈNCIA"
+msgstr ""
 
 msgid "RUN-AHEAD FRAMES"
-msgstr "FOTOGRAMES PER AVANÇAT"
+msgstr ""
 
 msgid "USE RUN-AHEAD FRAMES"
-msgstr "USAR FOTOGRAMES PER AVANÇAT"
+msgstr ""
 
 msgid "RUN-AHEAD USE SECOND INSTANCE"
-msgstr "PER AVANÇAT USA SEGONA INSTÀNCIA"
+msgstr ""
 
 msgid "HARDCORE MODE"
 msgstr "MODE HARDCORE"
 
 msgid "LEADERBOARDS"
-msgstr "TAULES DE LIDERATGE"
+msgstr ""
 
 msgid "VERBOSE MODE"
-msgstr "MODE VERBÓS"
+msgstr ""
 
 msgid "AUTOMATIC SCREENSHOT"
-msgstr "CAPTURA AUTOMÀTICA"
+msgstr ""
 
 msgid "RETROACHIEVEMENTS UNLOCK SOUND"
 msgstr ""
@@ -1670,40 +1671,43 @@ msgid "UNLOCK SOUND"
 msgstr ""
 
 msgid "SHOW IN MAIN MENU"
-msgstr "MOSTRAR AL MENÚ PRINCIPAL"
+msgstr ""
 
-msgid "ENABLE NETPLAY"
-msgstr "ENCENDRE NETPLAY"
+msgid "GAME INDEXES"
+msgstr ""
 
-msgid "NICKNAME"
-msgstr "SOBRENOM"
+msgid "FIND ALL GAMES"
+msgstr ""
 
 msgid "FIND NEW GAMES"
 msgstr ""
 
-msgid "USE RELAY SERVER"
-msgstr "USAR SERVIDOR DE RETRANSMISSIÓ"
+msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS :"
+msgstr ""
 
-msgid "GAME INDEXES"
-msgstr "ÍNDEXS DE JOC"
+msgid "ENABLE NETPLAY"
+msgstr ""
+
+msgid "NICKNAME"
+msgstr ""
+
+msgid "PORT"
+msgstr ""
+
+msgid "USE RELAY SERVER"
+msgstr ""
 
 msgid "CHECK MISSING INDEXES AT STARTUP"
-msgstr "VERIFICAR ÍNDEXS INEXISTENS L'ARRENCAR"
-
-msgid "REINDEX ALL GAMES"
-msgstr "RE-INDEXAR TOTS ELS JOCS"
-
-msgid "INDEX MISSING GAMES"
-msgstr "INDEXAR JOCS INEXISTENTS"
+msgstr ""
 
 msgid "DEFAULT SETTINGS"
-msgstr "CONFIGURACIÓ PER DEFECTE"
+msgstr ""
 
 msgid "GAME RATIO"
 msgstr "PROPORCIÓ DEL JOC"
 
 msgid "VIDEO MODE"
-msgstr "MODE DE VIDEO"
+msgstr ""
 
 msgid "SMOOTH GAMES"
 msgstr "JOCS SUAVITZATS"
@@ -1711,10 +1715,10 @@ msgstr "JOCS SUAVITZATS"
 msgid "REWIND"
 msgstr "REBOBINA"
 
-msgid "INTEGER SCALE (PIXEL PERFECT)"
+msgid "INTEGER SCALING (PIXEL PERFECT)"
 msgstr ""
 
-msgid "AUTO SAVE/LOAD"
+msgid "AUTO SAVE/LOAD ON GAME LAUNCH"
 msgstr "DESA / CARREGA AUTOMÀTICAMENT"
 
 msgid "SHOW SAVE SNAPSHOTS"
@@ -1723,44 +1727,44 @@ msgstr ""
 msgid "SHOW SNAPSHOTS IF NOT EMPTY"
 msgstr ""
 
-msgid "SHADERS SET"
+msgid "SHADER SET"
 msgstr "SHADERS ESTABLERTS"
 
 msgid "DECORATION"
-msgstr "DECORACIONS"
+msgstr ""
 
 msgid "STRETCH BEZELS (4K & ULTRAWIDE)"
-msgstr "ESTIRAR MÀSCARES (4K I ULTRAWIDE)"
+msgstr ""
 
 msgid "AI GAME TRANSLATION"
-msgstr "TRADUCCIONS DE JOCS PER IA"
+msgstr ""
 
 msgid "ENABLE AI SERVICE"
-msgstr "HABILITAR SERVEI D'IA"
+msgstr ""
 
 msgid "TARGET LANGUAGE"
-msgstr "LLENGUA DESITJADA"
+msgstr ""
 
 msgid "SERVICE URL"
-msgstr "URL DE SERVEI"
+msgstr ""
 
 msgid "PAUSE ON TRANSLATED SCREEN"
-msgstr "PARAR A LES PANTALLES TRADUÏDES"
+msgstr ""
 
 msgid "PER SYSTEM ADVANCED CONFIGURATION"
-msgstr "CONFIGURACIÓ AVANÇADA PER SISTEMA"
+msgstr ""
 
-msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
-msgstr "LA VALIDACIÓ DE JOCS S'ESTÀ EXECUTANT. LA VOL INTERROMPRE?"
+msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT?"
+msgstr ""
 
-msgid "REALLY UPDATE GAMES LISTS ?"
+msgid "REALLY UPDATE GAME LISTS?"
 msgstr "ESTEU SEGUR QUE VOLEU ACTUALITZAR LES LLISTES DELS JOCS?"
 
-msgid "CONFIGURE A CONTROLLER"
+msgid "REMAP A CONTROLLER"
 msgstr "CONFIGUREU UN COMANDAMENT"
 
 msgid ""
-"YOU ARE GOING TO CONFIGURE A CONTROLLER. IF YOU HAVE ONLY ONE JOYSTICK, "
+"YOU ARE GOING TO REMAP A CONTROLLER. IF YOU HAVE ONLY ONE JOYSTICK, "
 "CONFIGURE THE DIRECTIONS KEYS AND SKIP JOYSTICK CONFIG BY HOLDING A BUTTON. "
 "IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, CHOOSE THE SELECT BUTTON. SKIP "
 "ALL BUTTONS YOU DO NOT HAVE BY HOLDING A KEY. BUTTONS NAMES ARE BASED ON THE "
@@ -1781,58 +1785,58 @@ msgid "INPUT P%i"
 msgstr "ENTRADA P%i"
 
 msgid "default"
-msgstr "per defecte"
+msgstr ""
 
 msgid "SHOW CONTROLLER ACTIVITY"
-msgstr "MOSTRAR ACTIVITAT DEL COMANDAMENT"
+msgstr ""
 
 msgid "SHOW CONTROLLER BATTERY LEVEL"
 msgstr ""
 
 msgid "YOU MUST APPLY THE THEME BEFORE EDIT CONFIGURATION"
-msgstr "HA DE APLICAR EL TEMA ABANS D'EDITAR LA CONFIGURACIÓ"
+msgstr ""
 
 msgid "THEME CONFIGURATION"
-msgstr "CONFIGURACÍO DE TEMA"
+msgstr "CONFIGURACIÓ DEL TEMA"
 
 msgid "GAMELIST STYLE"
-msgstr "ESTIL DE LLISTAT DE JOCS"
+msgstr ""
 
 msgid "basic"
-msgstr "bàsic"
+msgstr ""
 
 msgid "detailed"
-msgstr "detallat"
+msgstr ""
 
 msgid "DEFAULT GRID SIZE"
-msgstr "TAMANY DE LA GRAELLA PER DEFECTE"
+msgstr ""
 
 msgid "GAMELIST THEME OPTIONS"
-msgstr "OPCIONS DEL TEMA DE LLISTAT DE JOCS"
+msgstr ""
 
 msgid "THEME OPTIONS"
-msgstr "OPCIONS DE TEMA"
+msgstr ""
 
 msgid "DEFAULT VALUE"
-msgstr "VALOR PER DEFECTE"
+msgstr ""
 
 msgid "GAMELIST OPTIONS"
-msgstr "OPCIONS DE LLISTAT DE JOCS"
+msgstr ""
 
 msgid "SHOW FAVORITES ON TOP"
-msgstr "MOSTRAR ELS FAVORITS AL COMENÇAMENT"
+msgstr ""
 
 msgid "SHOW HIDDEN FILES"
-msgstr "VEURE ELS ARXIUS OCULTS"
+msgstr ""
 
 msgid "SHOW FOLDERS"
-msgstr "MOSTRAR LES CARPETES"
+msgstr ""
 
 msgid "having multiple games"
-msgstr "tenint múltiples jocs"
+msgstr ""
 
 msgid "SHOW '..' PARENT FOLDER"
-msgstr "MOSTRAR '..' CARPETA SUPERIOR"
+msgstr ""
 
 msgid "BEFORE NAME"
 msgstr ""
@@ -1840,104 +1844,104 @@ msgstr ""
 msgid "AFTER NAME"
 msgstr ""
 
-msgid "SHOW LANGUAGE FLAG IN LISTS"
+msgid "SHOW REGION FLAG"
 msgstr ""
 
-msgid "SHOW SAVESTATES FLAG IN LISTS"
+msgid "SHOW SAVESTATE ICON"
 msgstr ""
 
-msgid "SHOW MANUAL ICON IN LISTS"
+msgid "SHOW MANUAL ICON"
+msgstr ""
+
+msgid "SHOW FILENAMES INSTEAD"
 msgstr ""
 
 msgid "FILE EXTENSIONS"
-msgstr "EXTENSIONS D'ARXIU"
+msgstr ""
 
 msgid "RESET CUSTOMISATIONS"
 msgstr ""
 
 msgid "APPEARENCE"
-msgstr "APARIÈNCIA"
+msgstr ""
 
 msgid "THEME SET"
 msgstr "TEMA ESTABLERT"
 
 msgid "video"
-msgstr "vídeo"
+msgstr ""
 
 msgid "grid"
-msgstr "graella"
+msgstr ""
 
 msgid "DISPLAY OPTIONS"
-msgstr "OPCIONS DE VISUALITZACIÓ"
+msgstr ""
 
-msgid "TRANSITION STYLE"
+msgid "LIST TRANSITION STYLE"
 msgstr "ESTIL DE LES TRANSICIONS"
 
 msgid "GAME LAUNCH TRANSITION"
-msgstr "TRANSICIÓ D'EXECUCIÓ DE JOC"
+msgstr ""
 
 msgid "SHOW CLOCK"
-msgstr "MOSTRAR RELLOTGE"
+msgstr "MOSTRA EL RELLOTGE"
 
 msgid "ON-SCREEN HELP"
 msgstr "AJUDA EN PANTALLA"
 
 msgid "SHOW BATTERY STATUS"
-msgstr "MOSTRAR ESTAT DE LA BATERIA"
+msgstr ""
 
 msgid "ICON"
-msgstr "ICONA"
+msgstr ""
 
 msgid "ICON AND TEXT"
-msgstr "ICONA I TEXT"
-
-msgid "SHOW FILENAMES IN LISTS"
-msgstr "MOSTRAR NOM D'ARXIU ALS LLISTATS"
+msgstr ""
 
 msgid "IGNORE LEADING ARTICLES WHEN SORTING"
 msgstr ""
 
 msgid "VOLUME"
-msgstr "VOLUM"
+msgstr ""
 
 msgid "SYSTEM VOLUME"
 msgstr "VOLUM DEL SISTEMA"
 
 msgid "MUSIC VOLUME"
-msgstr "VOLUM DE LA MÚSICA"
+msgstr ""
 
 msgid "SHOW OVERLAY WHEN VOLUME CHANGES"
-msgstr "MOSTRAR SOBRE-POSAT QUAN EL VOLUM CANVIA"
+msgstr ""
 
 msgid "MUSIC"
-msgstr "MÚSICA"
+msgstr ""
 
 msgid "FRONTEND MUSIC"
 msgstr "MÚSICA DEL FRONTAL"
 
 msgid "DISPLAY SONG TITLES"
-msgstr "MOSTRAR TÍTOL DE LES CANÇONS"
+msgstr ""
 
-msgid "HOW MANY SECONDS FOR SONG TITLES"
-msgstr "SEGONS PER A MOSTRAR ELS TÍTOLS DE CANÇONS"
+msgid "SONG TITLE DISPLAY DURATION"
+msgstr ""
 
 msgid "ONLY PLAY SYSTEM-SPECIFIC MUSIC FOLDER"
-msgstr "REPRODUÏR CARPETA DE MÚSICA ESPECÍFICA PER SISTEMA"
+msgstr ""
 
-msgid "PLAY THEME MUSICS"
-msgstr "REPRODUÏR MÚSICA DELS TEMES"
+msgid "PLAY SYSTEM-SPECIFIC MUSIC"
+msgstr ""
 
 msgid "LOWER MUSIC WHEN PLAYING VIDEO"
-msgstr "ABAIXAR VOLUM DE LA MÚSICA AMB VIDEOS"
+msgstr ""
 
 msgid "SOUNDS"
-msgstr "SONS"
+msgstr ""
 
 msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "HABILITAR SONS DE NAVEGACIÓ"
+msgstr ""
 
-msgid "ENABLE VIDEO AUDIO"
-msgstr "HABILITAR ÀUDIO-VIDEO"
+msgid "ENABLE VIDEO PREVIEW AUDIO"
+msgstr ""
 
 msgid "IP ADDRESS"
 msgstr "ADREÇA IP"
@@ -1949,7 +1953,7 @@ msgid "NOT CONNECTED"
 msgstr "NO CONNECTAT"
 
 msgid "INTERNET STATUS"
-msgstr "ESTAT DE CONNEXIÓ A INTERNET"
+msgstr ""
 
 msgid "HOSTNAME"
 msgstr "NOM DE LA MÀQUINA"
@@ -1970,22 +1974,22 @@ msgid "WIFI CONFIGURATION ERROR"
 msgstr "ERROR EN LA CONFIGURACIÓ DEL WIFI"
 
 msgid "QUICK ACCESS"
-msgstr "ACCÈS RÀPID"
+msgstr ""
 
 msgid "SKIP TO NEXT SONG"
-msgstr "PASSAR A LA SEGÜENT CANCÓ"
+msgstr ""
 
 msgid "LISTENING NOW"
-msgstr "ESCOLTANT ARA"
+msgstr ""
 
 msgid "LAUNCH SCREENSAVER"
-msgstr "INICIAR ESTALVI DE PANTALLA"
+msgstr ""
 
 msgid "VIEW USER'S MANUAL"
-msgstr "VEURE MANUAL D'USUARI"
+msgstr ""
 
 msgid "VIEW BATOCERA MANUAL"
-msgstr "VEURE MANUAL DE BATOCERA"
+msgstr ""
 
 msgid "RESTART SYSTEM"
 msgstr "REINICIA EL SISTEMA"
@@ -2002,56 +2006,59 @@ msgstr "ESTEU SEGUR QUE VOLEU APAGAR?"
 msgid "FAST SHUTDOWN SYSTEM"
 msgstr "APAGA EL SISTEMA RÀPIDAMENT"
 
-msgid "REALLY SHUTDOWN WITHOUT SAVING METADATAS?"
+msgid "REALLY SHUTDOWN WITHOUT SAVING METADATA?"
 msgstr "ESTEU SEGUR QUE VOLEU APAGAR SENSE DESAR LES METADADES?"
 
 msgid "QUIT EMULATIONSTATION"
-msgstr "TREURE EMULATIONSTATION"
+msgstr ""
 
 msgid "REALLY QUIT?"
-msgstr "DE VERITAT VOL SORTIT?"
+msgstr ""
 
 msgid "COLORIZATION"
-msgstr "COLORITZACIÓ"
+msgstr ""
 
 msgid "FULL BOOT"
-msgstr "ARRENCADA COMPLETA"
+msgstr ""
 
 msgid "EMULATED WIIMOTES"
-msgstr "WIIMOTES EMULATS"
+msgstr ""
 
 msgid "CHANGE SCREEN LAYOUT"
-msgstr "CANVIAR ESQUEMA DE PANTALLA"
+msgstr ""
 
 msgid "LARGE SCREEN"
-msgstr "PANTALLA GRAN"
+msgstr ""
 
 msgid "SIDE BY SIDE"
-msgstr "COSTAT A COSTAT"
+msgstr ""
 
 msgid "INTERNAL RESOLUTION"
-msgstr "RESOLUCIÓ INTERNA"
+msgstr ""
 
 msgid "AUTOCONFIGURE CONTROLLERS"
 msgstr ""
 
+msgid "LAUNCH THIS GAME AT STARTUP"
+msgstr ""
+
 msgid "FORMAT DEVICE"
-msgstr "FORMATAR DISPOSITIU"
+msgstr ""
 
 msgid "DEVICE TO FORMAT"
-msgstr "DISPOSITIU A FORMATAR"
+msgstr ""
 
 msgid "FILE SYSTEM"
-msgstr "SISTEMA D'ARXIUS"
+msgstr ""
 
 msgid "FORMAT NOW"
-msgstr "FORMATAR ARA"
+msgstr ""
 
 msgid "SELECTED OPTIONS ARE INVALID"
-msgstr "LES OPCIONS SELECCIONADES NO SÓN VÀLIDES"
+msgstr ""
 
-msgid "ARE YOU SURE YOU WANT TO FORMAT THIS DRIVE ?"
-msgstr "ESTÀ SEGUR DE VOLER FORMATAR AQUESTA UNITAT?"
+msgid "ARE YOU SURE YOU WANT TO FORMAT THIS DRIVE?"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "EDITA LES METADADES"
@@ -2060,19 +2067,12 @@ msgid "GENRES"
 msgstr ""
 
 msgid ""
-"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
-"ARE YOU SURE?"
-msgstr ""
-"AIXÒ REALMENT ESBORRARÀ ELS ARXIUS DE JOC\n"
-"ESTEU SEGUR?"
-
-msgid ""
 "SOME FILES YOU LINKED ARE LOCATED OUTSIDE THE GAMELIST PATH.\n"
 "DO YOU WANT TO USE A COPY OF THESE FILES RELATIVE TO THE GAMELIST ?"
 msgstr ""
 
 msgid "NO DEVICE FOUND"
-msgstr "NO S'HA TROBAT EL DISPOSITIU"
+msgstr ""
 
 msgid "ZOOM-"
 msgstr ""
@@ -2087,87 +2087,83 @@ msgid "ZOOM"
 msgstr ""
 
 msgid "SYSTEM INFO"
-msgstr "INFORMACIÓ DE SISTEMA"
+msgstr ""
 
 msgid "ERROR: EVERY SYSTEM IS HIDDEN, RE-DISPLAYING ALL OF THEM NOW"
-msgstr "ERROR: CADA SISTEMA ESTÀ OCULT, MOSTRAR-LOS TOTS ARA"
+msgstr ""
 
 msgid "QUICK SEARCH"
-msgstr "CERCA RÀPIDA"
+msgstr ""
 
 msgid "GO TO LETTER"
-msgstr "ANAR A LA LLETRA"
+msgstr ""
 
 msgid "GO TO MANUFACTURER"
-msgstr "ANAR AL FABRICANT"
+msgstr ""
 
 msgid "GO TO HARDWARE"
-msgstr "ANAR AL MAQUINARI"
+msgstr ""
 
 msgid "GO TO DECADE"
-msgstr "ANAR A LA DÈCADA"
+msgstr ""
 
 msgid "CONFIGURATION"
-msgstr "CONFIGURACIÓ"
+msgstr ""
 
 #, c-format
 msgid "%i COLLECTION"
 msgid_plural "%i COLLECTIONS"
-msgstr[0] "%i COL·LECCIÓ"
-msgstr[1] "%i COL·LECCIONS"
+msgstr[0] ""
+msgstr[1] ""
 
 #, c-format
 msgid "%i ITEM"
 msgid_plural "%i ITEMS"
-msgstr[0] "%i ELEMENT"
-msgstr[1] "%i ELEMENTS"
+msgstr[0] ""
+msgstr[1] ""
 
 #, c-format
 msgid "%i GAME"
 msgid_plural "%i GAMES"
-msgstr[0] "%i JOC"
-msgstr[1] "%i JOCS"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "RANDOM"
-msgstr "ALEATORI"
+msgstr ""
 
 msgid "FILES"
-msgstr "ARXIUS"
+msgstr ""
 
 msgid ""
 "WARNING : THIS GAME'S FORMAT IS NOT SUPPORTED BY THE CURRENT EMULATOR/CORE.\n"
 "DO YOU WANT TO LAUNCH IT ANYWAY ?"
 msgstr ""
-"AVÍS: AQUEST FORMAT DE JOC NO ESTÀ SOPORTAT PEL NUCLI/EMULADOR ACTUAL.\n"
-"VOL INICIAR-LO DE TOTES FORMES?"
 
 msgid ""
 "WARNING : THE SYSTEM HAS MISSING BIOS AND THE GAME MAY NOT WORK CORRECTLY.\n"
 "DO YOU WANT TO LAUNCH IT ANYWAY ?"
 msgstr ""
-"AVÍS: EL SISTEMA NECESSITA BIOS QUE NO ES TROBEN I EL JOC POT INICIAR-SE ERRÒNIAMENT.\n"
-"DESITJA INICIAR-LO DE TOTES FORMES?"
 
 msgid "Preloading UI"
-msgstr "Pre-carregant IU"
+msgstr ""
 
 msgid "Loading theme"
-msgstr "Carregant tema"
+msgstr ""
 
 msgid "Loading gamelists"
-msgstr "Carregant llistats de joc"
+msgstr ""
 
 msgid "MENU"
 msgstr "MENÚ"
 
 msgid "Full"
-msgstr "Complet"
+msgstr ""
 
 msgid "Kiosk"
-msgstr "Quiosc"
+msgstr ""
 
 msgid "Kid"
-msgstr "Canalla"
+msgstr ""
 
 msgid "Released"
 msgstr "Publicat"
@@ -2182,13 +2178,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "No Entries Found"
-msgstr "No s'han trobat entrades"
-
-msgid "FAVORITE"
 msgstr ""
 
 msgid "Games similar to"
-msgstr "Jocs similars a"
+msgstr ""
+
+msgid "GAME OPTIONS"
+msgstr ""
+
+msgid "FAVORITE"
+msgstr ""
 
 msgid ""
 "A valid account is required. Please register an account on https://"
@@ -2196,7 +2195,7 @@ msgid ""
 msgstr ""
 
 msgid "Searching"
-msgstr "Cercant"
+msgstr ""
 
 msgid "NO GAMES FOUND - SKIP"
 msgstr "NO S'HA TROBAT CAP JOC - OMET"
@@ -2208,22 +2207,19 @@ msgid "SKIP"
 msgstr "OMET"
 
 msgid "Downloading"
-msgstr "Descarregant"
+msgstr ""
 
 msgid "ACCEPT RESULT"
 msgstr "ACCEPTA EL RESULTAT"
 
 msgid "Loading system config..."
-msgstr "Carregant configuració de sistema..."
-
-msgid "Done."
-msgstr "Finalitzat."
+msgstr ""
 
 msgid "SAVING METADATAS. PLEASE WAIT..."
-msgstr "DESANT METADADES. SI US PLAU ESPERI..."
+msgstr ""
 
 msgid "Collections"
-msgstr "Col·leccions"
+msgstr ""
 
 msgid "FILENAME, ASCENDING"
 msgstr "NOM DEL FITXER, ASCENDENT"
@@ -2250,52 +2246,52 @@ msgid "LAST PLAYED, DESCENDING"
 msgstr "JUGAT PER ÚLTIMA VEGADA, DESCENDENT"
 
 msgid "NUMBER PLAYERS, ASCENDING"
-msgstr "NOMBRE DE JUGADORS, ASCENDENT"
+msgstr ""
 
 msgid "NUMBER PLAYERS, DESCENDING"
-msgstr "NOMBRE DE JUGADORS, DESCENDENT"
+msgstr ""
 
 msgid "RELEASE DATE, ASCENDING"
-msgstr "DATA DE PUBLICACIÓ, ASCENDENT"
+msgstr ""
 
 msgid "RELEASE DATE, DESCENDING"
-msgstr "DATA DE PUBLICACIÓ, DESCENDENT"
+msgstr ""
 
 msgid "GENRE, ASCENDING"
-msgstr "GÈNERE, ASCENDENT"
+msgstr ""
 
 msgid "GENRE, DESCENDING"
-msgstr "GÈNERE, DESCENDENT"
+msgstr ""
 
 msgid "DEVELOPER, ASCENDING"
-msgstr "DESENVOLUPADOR, ASCENDENT"
+msgstr ""
 
 msgid "DEVELOPER, DESCENDING"
-msgstr "DESENVOLUPADOR, DESCENDENT"
+msgstr ""
 
 msgid "PUBLISHER, ASCENDING"
-msgstr "EDITOR, ASCENDENT"
+msgstr ""
 
 msgid "PUBLISHER, DESCENDING"
-msgstr "EDITOR, DESCENDENT"
+msgstr ""
 
 msgid "SYSTEM, ASCENDING"
-msgstr "SISTEMA, ASCENDENT"
+msgstr ""
 
 msgid "SYSTEM, DESCENDING"
-msgstr "SISTEMA, DESCENDENT"
+msgstr ""
 
 msgid "FILE CREATION DATE, ASCENDING"
-msgstr "DATA DE CREACIÓ D'ARXIU, ASCENDENT"
+msgstr ""
 
 msgid "FILE CREATION DATE, DESCENDING"
-msgstr "DATA DE CREACIÓ D'ARXIU, DESCENDENT"
+msgstr ""
 
 msgid "GAME TIME, ASCENDING"
-msgstr "TEMPS DE JOC, ASCENDENT"
+msgstr ""
 
 msgid "GAME TIME, DESCENDING"
-msgstr "TEMPS DE JOC, DESCENDENT"
+msgstr ""
 
 msgid "SYSTEM, RELEASE YEAR, ASCENDING"
 msgstr ""
@@ -2313,16 +2309,19 @@ msgid "A,AN,THE"
 msgstr ""
 
 msgid "Extracting"
-msgstr "Extraient"
+msgstr ""
 
-msgid "HASHING GAMES"
-msgstr "COMPROVANT JOCS"
+msgid "SEARCHING RETROACHIEVEMENTS"
+msgstr ""
 
 msgid "SEARCHING NETPLAY GAMES"
 msgstr ""
 
-msgid "FAVORITES"
-msgstr "FAVORITS"
+msgid "INDEXING COMPLETED"
+msgstr ""
+
+msgid "UPDATE GAME LISTS TO APPLY CHANGES."
+msgstr ""
 
 msgid "GENRE"
 msgstr "GÈNERE"
@@ -2331,25 +2330,25 @@ msgid "FAMILY"
 msgstr ""
 
 msgid "PLAYERS"
-msgstr "JUGADORS"
+msgstr ""
 
 msgid "PUBLISHER / DEVELOPER"
-msgstr "EDITOR / DESENVOLUPADOR"
+msgstr ""
 
 msgid "RATING"
 msgstr "VALORACIÓ"
 
 msgid "YEAR"
-msgstr "ANY"
+msgstr ""
 
 msgid "REGION"
-msgstr "REGIÓ"
+msgstr ""
 
 msgid "KIDGAME"
-msgstr "JOC APTE PER A NENS"
+msgstr ""
 
 msgid "ALREADY PLAYED"
-msgstr "JA JUGAT"
+msgstr ""
 
 msgid "HAS ACHIEVEMENTS"
 msgstr ""
@@ -2361,10 +2360,10 @@ msgid "SCRAPING"
 msgstr ""
 
 msgid "SCRAPE FAILED"
-msgstr "L'SCRAPING HA FALLAT"
+msgstr ""
 
-msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
-msgstr "SCRAPING FINALITZAT. ACTUALITZI LES LLISTES DELS JOCS PER A APLICAR ELS CANVIS"
+msgid "SCRAPING FINISHED"
+msgstr ""
 
 #, c-format
 msgid "%s connected"
@@ -2375,7 +2374,7 @@ msgid "%s disconnected"
 msgstr ""
 
 msgid "SHIFTS FOR UPPER,LOWER, AND SPECIAL"
-msgstr "ALTERNA MAJÚSCULES, MINÚSCULES I ESPECIALS"
+msgstr ""
 
 msgid "ALT GR"
 msgstr ""
@@ -2399,28 +2398,28 @@ msgid "RIGHT"
 msgstr "DRETA"
 
 msgid "LEFT ANALOG UP"
-msgstr "ANALÒGIC ESQUERRE, AMUNT"
+msgstr ""
 
 msgid "LEFT ANALOG DOWN"
-msgstr "ANALÒGIC ESQUERRE, AVALL"
+msgstr ""
 
 msgid "LEFT ANALOG LEFT"
-msgstr "ANALÒGIC ESQUERRE, ESQUERRA"
+msgstr ""
 
 msgid "LEFT ANALOG RIGHT"
-msgstr "ANALÒGIC ESQUERRE, DRETA"
+msgstr ""
 
 msgid "RIGHT ANALOG UP"
-msgstr "ANALÒGIC DRET, AMUNT"
+msgstr ""
 
 msgid "RIGHT ANALOG DOWN"
-msgstr "ANALÒGIC DRET, AVALL"
+msgstr ""
 
 msgid "RIGHT ANALOG LEFT"
-msgstr "ANALÒGIC DRET, ESQUERRA"
+msgstr ""
 
 msgid "RIGHT ANALOG RIGHT"
-msgstr "ANALÒGIC DRET, DRETA"
+msgstr ""
 
 msgid "HOTKEY"
 msgstr "DRECERA DE TECLAT"
@@ -2446,12 +2445,9 @@ msgstr "NO S'HA DEFINIT"
 
 msgid ""
 "YOU DIDN'T CHOOSE A HOTKEY ENABLE BUTTON. THIS IS REQUIRED FOR EXITING GAMES "
-"WITH A CONTROLLER. DO YOU WANT TO USE THE SELECT BUTTON DEFAULT ? PLEASE "
-"ANSWER YES TO USE SELECT OR NO TO NOT SET A HOTKEY ENABLE BUTTON."
+"WITH A CONTROLLER. DO YOU WANT TO USE THE SELECT BUTTON DEFAULT? ANSWER YES "
+"TO USE SELECT OR NO TO NOT SET A HOTKEY ENABLE BUTTON."
 msgstr ""
-"NO HA ESTABLERT UN BOTÓ/TECLA ESPECIAL. ÉS REQUERIDA PER SORTIR DELS JOCS "
-"AMB UN COMANDAMENT. DESITJAUSAR EL BOTÓ SELECT PER DEFECTE?"
-"RESPONGUI 'SI' PER A USAR SELECT, O 'NO' PER A ESTABLIR UN BOTÓ/TECLA ESPECIAL."
 
 #, c-format
 msgid "HOLD FOR %iS TO SKIP"
@@ -2484,22 +2480,22 @@ msgid "DISCARD CHANGES"
 msgstr "DESCARTA ELS CANVIS"
 
 msgid "up/down"
-msgstr "amunt/avall"
+msgstr ""
 
 msgid "accept"
-msgstr "accepta"
+msgstr ""
 
 msgid "SELECT ALL"
 msgstr "SELECCIONA-HO TOT"
 
 msgid "select all"
-msgstr "selecciona-ho tot"
+msgstr ""
 
 msgid "SELECT NONE"
 msgstr "NO SELECCIONIS RES"
 
 msgid "select none"
-msgstr "no seleccionis res"
+msgstr ""
 
 #, c-format
 msgid "%i SELECTED"
@@ -2525,26 +2521,26 @@ msgstr ""
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] "fa %d dia"
-msgstr[1] "fa %d dies"
+msgstr[0] ""
+msgstr[1] ""
 
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
-msgstr[0] "fa %d hora"
-msgstr[1] "fa %d hores"
+msgstr[0] ""
+msgstr[1] ""
 
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
-msgstr[0] "fa %d minut"
-msgstr[1] "fa %d minuts"
+msgstr[0] ""
+msgstr[1] ""
 
 #, c-format
 msgid "%d second ago"
 msgid_plural "%d seconds ago"
-msgstr[0] "fa %d segon"
-msgstr[1] "fa %d segons"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "WORKING..."
 msgstr "S'ESTÀ TREBALLANT…"
@@ -2566,6 +2562,13 @@ msgstr ""
 
 msgid "TEXT TO SPEECH DISABLED"
 msgstr ""
+
+#~ msgid ""
+#~ "YOU ARE CURRENTLY USING VERSION : %s\n"
+#~ "DO YOU WANT TO UPDATE TO VERSION : %s ?"
+#~ msgstr ""
+#~ "ACTUALMENT ESTÀS FENT SERVIR LA VERSIÓ %s\n"
+#~ "VOLS ACTUALITZAR A LA VERSIÓ %s ?"
 
 #~ msgid "FORGET A BLUETOOTH CONTROLLER"
 #~ msgstr "DESVINCULAR COMANDAMENT BLUETOOTH"
@@ -2683,9 +2686,6 @@ msgstr ""
 
 #~ msgid "PRESS ESC OR THE HOTKEY TO CANCEL."
 #~ msgstr "PREMEU ESC O UNA DRECERA DE TECLAT PER A CANCEL·LAR."
-
-#~ msgid "JUMP TO LETTER"
-#~ msgstr "SALTA A UNA LLETRA"
 
 #~ msgid "FAVORITES ONLY"
 #~ msgstr "NOMÉS PREFERITS"
