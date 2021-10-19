@@ -538,7 +538,6 @@ bool FileData::launchGame(Window* window, LaunchGameOptions options)
 	VolumeControl::getInstance()->deinit();
 
 	bool hideWindow = Settings::getInstance()->getBool("HideWindow");
-	hideWindow = false;
 	window->deinit(hideWindow);
 	
 	const std::string rom = Utils::FileSystem::getEscapedPath(getPath());
