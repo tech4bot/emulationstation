@@ -88,19 +88,19 @@ void Settings::setDefaults()
 
 	mIntMap["MonitorID"] = -1;
 
-    mBoolMap["UseOSK"] = true; // on screen keyboard
-    mBoolMap["DrawClock"] = true;
+	mBoolMap["UseOSK"] = true; // on screen keyboard
+	mBoolMap["DrawClock"] = true;
 	mBoolMap["ShowControllerActivity"] = true;
 	mBoolMap["ShowControllerBattery"] = true;
-    mIntMap["SystemVolume"] = 95;
-    mBoolMap["Overscan"] = false;
-    mStringMap["Language"] = "en_US";
-    mStringMap["INPUT P1"] = "DEFAULT";
-    mStringMap["INPUT P2"] = "DEFAULT";
-    mStringMap["INPUT P3"] = "DEFAULT";
-    mStringMap["INPUT P4"] = "DEFAULT";
-    mStringMap["INPUT P5"] = "DEFAULT";
-    mStringMap["Overclock"] = "none";
+	mIntMap["SystemVolume"] = 95;
+	mBoolMap["Overscan"] = false;
+	mStringMap["Language"] = "en_US";
+	mStringMap["INPUT P1"] = "DEFAULT";
+	mStringMap["INPUT P2"] = "DEFAULT";
+	mStringMap["INPUT P3"] = "DEFAULT";
+	mStringMap["INPUT P4"] = "DEFAULT";
+	mStringMap["INPUT P5"] = "DEFAULT";
+	mStringMap["Overclock"] = false;
 
 	mBoolMap["VSync"] = true;
 	mStringMap["FolderViewMode"] = "never";
@@ -108,13 +108,13 @@ void Settings::setDefaults()
 
 	mBoolMap["FirstJoystickOnly"] = false;
 #ifdef _ENABLEEMUELEC
-    mBoolMap["EnableSounds"] = true;
+	mBoolMap["EnableSounds"] = true;
 #else
-    mBoolMap["EnableSounds"] = false;
+	mBoolMap["EnableSounds"] = false;
 #endif
 	mBoolMap["ShowHelpPrompts"] = true;
 	mBoolMap["ScrapeRatings"] = true;
-	mBoolMap["ScrapePadToKey"] = true;
+	mBoolMap["ScrapePadToKey"] = false;
 	mBoolMap["IgnoreGamelist"] = false;
 	mBoolMap["HideConsole"] = true;
 	mBoolMap["QuickSystemSelect"] = true;
@@ -122,7 +122,7 @@ void Settings::setDefaults()
 	mBoolMap["SaveGamelistsOnExit"] = true;
 	mStringMap["ShowBattery"] = "text";
 	mBoolMap["CheckBiosesAtLaunch"] = true;
-	mBoolMap["RemoveMultiDiskContent"] = true;
+	mBoolMap["RemoveMultiDiskContent"] = false;
 
 #if WIN32
 	mBoolMap["ShowNetworkIndicator"] = false;
@@ -134,7 +134,7 @@ void Settings::setDefaults()
 
 	mBoolMap["InvertButtons"] = false;
 
-	mBoolMap["GameOptionsAtNorth"] = false;
+	mBoolMap["GameOptionsAtNorth"] = true;
 
 	mIntMap["ScreenSaverTime"] = 5*60*1000; // 5 minutes
 	mIntMap["ScraperResizeWidth"] = 640;
@@ -151,7 +151,7 @@ void Settings::setDefaults()
 	mIntMap["MaxVRAM"] = 128;
 #elif defined(_ENABLEEMUELEC)
 	// EmuELEC
-	mIntMap["MaxVRAM"] = 180;
+	mIntMap["MaxVRAM"] = 128;
 #else 
 	// Other boards
 	mIntMap["MaxVRAM"] = 100;
@@ -161,14 +161,14 @@ void Settings::setDefaults()
 	mStringMap["GameTransitionStyle"] = "auto";
 
 	mStringMap["ThemeSet"] = "";
-	mStringMap["ScreenSaverBehavior"] = "dim";
+	mStringMap["ScreenSaverBehavior"] = "black";
 	mStringMap["GamelistViewStyle"] = "automatic";
 
 	mStringMap["Scraper"] = "ScreenScraper";
 	mStringMap["ScrapperImageSrc"] = "ss";
-	mStringMap["ScrapperThumbSrc"] = "box-2D";
-	mStringMap["ScrapperLogoSrc"] = "wheel";
-	mBoolMap["ScrapeVideos"] = false;
+	mStringMap["ScrapperThumbSrc"] = "";
+	mStringMap["ScrapperLogoSrc"] = "";
+	mBoolMap["ScrapeVideos"] = true;
 
 	mBoolMap["ScreenSaverMarquee"] = true;
 	mBoolMap["ScreenSaverControls"] = true;
@@ -176,7 +176,7 @@ void Settings::setDefaults()
 	mBoolMap["StretchVideoOnScreenSaver"] = false;
 	mStringMap["PowerSaverMode"] = "default"; // batocera
 
-	mBoolMap["StopMusicOnScreenSaver"] = true;
+	mBoolMap["StopMusicOnScreenSaver"] = false;
 
 	mBoolMap["RetroachievementsMenuitem"] = true;
 	mIntMap["ScreenSaverSwapImageTimeout"] = 10000;
@@ -197,7 +197,7 @@ void Settings::setDefaults()
 	mBoolMap["SlideshowScreenSaverCustomVideoSource"] = false;
 #ifdef _ENABLEEMUELEC
 	mStringMap["SlideshowScreenSaverVideoDir"] = "/storage/roms/mplayer"; // emuelec
-    mStringMap["SlideshowScreenSaverVideoFilter"] = ".mp4,.avi,.mkv,.flv,.mpg,.mov";
+	mStringMap["SlideshowScreenSaverVideoFilter"] = ".mp4,.avi,.mkv,.flv,.mpg,.mov";
 	mBoolMap["SlideshowScreenSaverVideoRecurse"] = true;
 #else
 	mStringMap["SlideshowScreenSaverVideoDir"] = "/userdata/screenshots"; // batocera
@@ -223,7 +223,7 @@ void Settings::setDefaults()
 	mBoolMap["VideoLowersMusic"] = true;
 	mBoolMap["VolumePopup"] = true;
 
-	mIntMap["MusicVolume"] = 128;
+	mIntMap["MusicVolume"] = 75;
 
 	// Audio out device for Video playback using OMX player.
 	mStringMap["OMXAudioDev"] = "both";
@@ -233,7 +233,7 @@ void Settings::setDefaults()
 	mStringMap["SortSystems"] = "manufacturer";
 	mBoolMap["UseCustomCollectionsSystem"] = true;
 
-	mBoolMap["HiddenSystemsShowGames"] = true;
+	mBoolMap["HiddenSystemsShowGames"] = false;
 	mBoolMap["CollectionShowSystemInfo"] = true;
 	mBoolMap["FavoritesFirst"] = false;
 
