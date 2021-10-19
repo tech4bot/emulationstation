@@ -118,7 +118,7 @@ std::vector<SaveState*> SaveStateRepository::getSaveStates(FileData* game)
 bool SaveStateRepository::isEnabled(FileData* game)
 {
 	auto emulatorName = game->getEmulator();
-	if (emulatorName != "libretro" && emulatorName != "angle" && !Utils::String::startsWith(emulatorName, "lr-"))
+	if (emulatorName != "retroarch" && emulatorName != "angle" && !Utils::String::startsWith(emulatorName, "lr-"))
 		return false;
 
 	if (!game->isFeatureSupported(EmulatorFeatures::autosave))

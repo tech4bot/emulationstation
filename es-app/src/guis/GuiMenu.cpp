@@ -579,17 +579,24 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
          });
 #endif
 
-    dangerZone->addEntry(_("BACKUP EMUELEC CONFIGS"), true, [mWindow] { 
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/ee_backup_config.tar.gz TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+    dangerZone->addEntry(_("BACKUP CONFIGURATIONS"), true, [mWindow] { 
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/351ELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup backup", "", nullptr);
 				}, _("NO"), nullptr));
      });
 
-    dangerZone->addEntry(_("RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"), true, [mWindow] { 
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING: SYSTEM WILL RESET SCRIPTS AND BINARIES !\nUPDATE, DOWNLOADS, THEMES, BLUETOOTH PAIRINGS AND ROMS FOLDER WILL NOT BE AFFECTED.\n\nRESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"), _("YES"),
+    dangerZone->addEntry(_("BACKUP IDENTITY"), true, [mWindow] { 
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("THIS SCRIPT WILL BACK UP THE DEVICE AND USER IDENTITY DATA (PASSWORDS, ETC) SO IT CAN BE RESTORED AFTER FLASHING OR RESTORED ON ANOTHER DEVICE. MOVE /storage/roms/backup/identity.tar.gz SOME PLACE SAFE.\n\nBACKUP DEVICE AND USER IDENTITY?"), _("YES"),
 				[] { 
-				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig EMUS", "", nullptr);
+				runSystemCommand("systemd-run /usr/bin/emuelec-utils identity_backup", "", nullptr);
+				}, _("NO"), nullptr));
+     });
+    
+    dangerZone->addEntry(_("RESTORE FROM BACKUP"), true, [mWindow] { 
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
+				[] { 
+				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup restore", "", nullptr);
 				}, _("NO"), nullptr));
      });
      
@@ -600,12 +607,14 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				}, _("NO"), nullptr));
      });
      
-    dangerZone->addEntry(_("RESET SYSTEM TO DEFAULT CONFIG"), true, [mWindow] { 
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING: ALL CONFIGURATIONS WILL BE RESET AND NO BACKUP WILL BE CREATED!\n\nIF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\nRESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
+    dangerZone->addEntry(_("FACTORY RESET"), true, [mWindow] { 
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING: RESETTING WILL PRESERVE YOUR PASSWORDS AND NETWORK CONFIGURATION HOWEVER YOUR REMAINING DATA AND ALL OTHER CONFIGURATIONS WILL BE RESET TO DEFAULTS!\n\nIF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\nRESET SYSTEM AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils clearconfig ALL", "", nullptr);
 				}, _("NO"), nullptr));
      });
+
+    /*
     dangerZone->addEntry(_("FORCE UPDATE"), true, [mWindow] { 
                  
     				if (ApiSystem::getInstance()->getIpAdress() == "NOT CONNECTED")
@@ -619,6 +628,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				runSystemCommand("systemd-run /usr/bin/updatecheck.sh forceupdate", "", nullptr);
 				}, _("NO"), nullptr));
      });
+     */
 
 mWindow->pushGui(dangerZone);
 }
@@ -1056,19 +1066,17 @@ void GuiMenu::openSystemInformations_batocera()
 
 	bool warning = ApiSystem::getInstance()->isFreeSpaceLimit();
 	auto userspace = std::make_shared<TextComponent>(window,
-		//ApiSystem::getInstance()->getFreeSpaceInfo("/storage/roms"),
 		ApiSystem::getInstance()->getFreeSpaceUserInfo(),
 		font,
 		warning ? 0xFF0000FF : color);
 	informationsGui->addWithLabel(_("USER DISK USAGE"), userspace);
 
-//#ifndef _ENABLEEMUELEC
 	auto systemspace = std::make_shared<TextComponent>(window,
-		ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
+		//ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
+		ApiSystem::getInstance()->getFreeSpaceInfo("/storage"),
 		font,
 		color);
 	informationsGui->addWithLabel(_("SYSTEM DISK USAGE"), systemspace);
-//#endif
 	
 	informationsGui->addGroup(_("SYSTEM"));
 
@@ -2342,17 +2350,17 @@ void GuiMenu::openSystemSettings_batocera()
 			}			
 #endif
 		}
-		*/
 
 		if (reboot) {
 		  window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
+		  /*
 		  if(rebootForLanguage) {
 		    if (Settings::getInstance()->getBool("ExitOnRebootRequired")) {
 		      quitES(QuitMode::QUIT);
 		    }
 		  }
-		}
+		  */
 
 	});
 
@@ -2724,7 +2732,7 @@ void GuiMenu::openGamesSettings_batocera()
 #endif
 			std::string currentShader = SystemConf::getInstance()->get("global.shaderset");
 
-			auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADERS SET"), false);
+			auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADER SET"), false);
 			shaders_choices->add(_("AUTO"), "auto", currentShader.empty() || currentShader == "auto");
 			shaders_choices->add(_("NONE"), "none", currentShader == "none");
 
@@ -2740,7 +2748,7 @@ void GuiMenu::openGamesSettings_batocera()
 				shaders_choices->selectFirstItem();
 
 #endif
-			s->addWithLabel(_("SHADERS SET"), shaders_choices);
+			s->addWithLabel(_("SHADER SET"), shaders_choices);
 			s->addSaveFunc([shaders_choices] { SystemConf::getInstance()->set("global.shaderset", shaders_choices->getSelected()); });
 #ifndef _ENABLEEMUELEC
 	}
@@ -4012,9 +4020,6 @@ void GuiMenu::openUISettings()
 	language_choice->add("正體中文", 	     "zh_TW", language == "zh_TW");
 	s->addWithLabel(_("LANGUAGE"), language_choice);
 	
-	auto language_choice = std::make_shared<OptionListComponent<std::string> >(window, _("LANGUAGE"), false);
-
-
 	s->addSaveFunc([window, language_choice, language, s]
 	{
 		bool reboot = false;
@@ -4166,18 +4171,6 @@ void GuiMenu::openUISettings()
 		s->addWithLabel(_("SHOW BATTERY STATUS"), batteryStatus);
 		s->addSaveFunc([batteryStatus] { Settings::getInstance()->setString("ShowBattery", batteryStatus->getSelected()); });
 	}
-
-	auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
-	invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
-	s->addWithLabel(_("SWITCH A/B BUTTONS IN EMULATIONSTATION"), invertJoy);
-	s->addSaveFunc([this, invertJoy]
-	{
-		if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
-		{
-			InputConfig::AssignActionButtons();
-			ViewController::get()->reloadAll(mWindow);
-		}
-	});
 
 	s->addGroup(_("GAMELIST OPTIONS"));
 
@@ -4958,7 +4951,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
 	{
         std::string a;
-		auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADERS SET"),false);
+		auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADER SET"),false);
 		std::string currentShader = SystemConf::getInstance()->get(configName + ".shaderset");
 		if (currentShader.empty()) {
 			currentShader = std::string("auto");
@@ -4968,7 +4961,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		shaders_choices->add(_("NONE"), "none", currentShader == "none");
 		for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils getshaders)")); getline(ss, a, ','); )
 		shaders_choices->add(a, a, currentShader == a); // emuelec
-		systemConfiguration->addWithLabel(_("SHADERS SET"), shaders_choices);
+		systemConfiguration->addWithLabel(_("SHADER SET"), shaders_choices);
 		systemConfiguration->addSaveFunc([shaders_choices, configName] { SystemConf::getInstance()->set(configName + ".shaderset", shaders_choices->getSelected()); });
 	}
 
@@ -4977,7 +4970,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::shaders))
 	{
 		std::string a;
-		auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTERS SET"),false);
+		auto filters_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("FILTER SET"),false);
 		std::string currentFilter = SystemConf::getInstance()->get(configName + ".filterset");
 		if (currentFilter.empty()) {
 			currentFilter = std::string("auto");
@@ -5025,7 +5018,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		{
 			std::string currentShader = SystemConf::getInstance()->get(configName + ".shaderset");
 
-			auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADERS SET"), false);
+			auto shaders_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("SHADER SET"), false);
 			shaders_choices->add(_("AUTO"), "auto", currentShader.empty() || currentShader == "auto");
 			shaders_choices->add(_("NONE"), "none", currentShader == "none");
 
@@ -5035,7 +5028,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			if (!shaders_choices->hasSelection())
 				shaders_choices->selectFirstItem();
 
-			systemConfiguration->addWithLabel(_("SHADERS SET"), shaders_choices);
+			systemConfiguration->addWithLabel(_("SHADER SET"), shaders_choices);
 			systemConfiguration->addSaveFunc([configName, shaders_choices] { SystemConf::getInstance()->set(configName + ".shaderset", shaders_choices->getSelected()); });
 		}
 	}
@@ -5065,11 +5058,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	// RGA scale
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::pixel_perfect))
 	{
-		auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE (FOR MOST CONSOLES)"));
+		auto rgascale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RGA SCALE"));
 		rgascale_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".rgascale") != "0" && SystemConf::getInstance()->get(configName + ".rgascale") != "1");
 		rgascale_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".rgascale") == "1");
 		rgascale_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".rgascale") == "0");
-		systemConfiguration->addWithLabel(_("RGA SCALE (FOR MOST CONSOLES)"), rgascale_enabled);
+		systemConfiguration->addWithLabel(_("RGA SCALE"), rgascale_enabled);
 		systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
 	}
 
