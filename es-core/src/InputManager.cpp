@@ -298,15 +298,6 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		if (ev.key.repeat)
 			return false;
 
-#ifdef _ENABLEEMUELEC
-		/* use the POWER KEY to turn off EmuELEC, specially useful for GTKING-PRO and Odroid Go Advance*/
-        if(ev.key.keysym.sym == SDLK_POWER) {
-			Scripting::fireEvent("quit", "shutdown");
-			quitES(QuitMode::SHUTDOWN);
-			/*LOG(LogError) << "no quit?";*/
-			return false;
-		}
-#endif
 		window->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 1, false));
 		return true;
 
