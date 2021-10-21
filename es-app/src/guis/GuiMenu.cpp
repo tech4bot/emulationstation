@@ -1072,8 +1072,7 @@ void GuiMenu::openSystemInformations_batocera()
 	informationsGui->addWithLabel(_("USER DISK USAGE"), userspace);
 
 	auto systemspace = std::make_shared<TextComponent>(window,
-		//ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
-		ApiSystem::getInstance()->getFreeSpaceInfo("/storage"),
+		ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
 		font,
 		color);
 	informationsGui->addWithLabel(_("SYSTEM DISK USAGE"), systemspace);

@@ -63,7 +63,6 @@ public:
 	virtual ~FileData();
 
 	virtual const std::string& getName();
-	virtual const std::string getSortName() const;
 
 	inline FileType getType() const { return mType; }
 	

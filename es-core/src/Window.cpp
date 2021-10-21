@@ -150,17 +150,8 @@ bool Window::init(bool initRenderer, bool initInputManager)
 
 	// update our help because font sizes probably changed
 	if (peekGui())
-#ifdef _ENABLEEMUELEC	
-		// emuelec
-      if(Utils::FileSystem::exists("/usr/bin/fbfix")) {
-      system("/usr/bin/fbfix");      
-  } else { 
-	  if(Utils::FileSystem::exists("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix")) {
-	   system("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix");
-	  }
-  }
-#endif
 	peekGui()->updateHelpPrompts();
+
 	return true;
 }
 
@@ -283,9 +274,9 @@ void Window::displayNotificationMessage(std::string message, int duration)
 
 	if (duration <= 0)
 	{
-		duration = Settings::getInstance()->getInt("notification.display_time");
+		duration = Settings::getInstance()->getInt("audio.display_titles_time");
 		if (duration <= 2 || duration > 120)
-			duration = 4;
+			duration = 10;
 
 		duration *= 1000;
 	}

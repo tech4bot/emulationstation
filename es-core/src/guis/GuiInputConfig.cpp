@@ -31,7 +31,6 @@
 
 void GuiInputConfig::initInputConfigStructure()
 {
-#ifdef _ENABLEEMUELEC
 	GUI_INPUT_CONFIG_LIST =
 	{
 	{ "Up",               false, "D-PAD UP",           ":/help/dpad_up.svg" },
@@ -40,10 +39,12 @@ void GuiInputConfig::initInputConfigStructure()
 	{ "Right",            false, "D-PAD RIGHT",        ":/help/dpad_right.svg" },
 	{ "Start",            true,  "START",              ":/help/button_start.svg" },
 	{ "Select",           true,  "SELECT",             ":/help/button_select.svg" },
+
 	{ "a",                false, "BUTTON A / EAST",    ":/help/buttons_east.svg" },
 	{ "b",                true,  "BUTTON B / SOUTH",   ":/help/buttons_south.svg" },
 	{ "x",                true,  "BUTTON X / NORTH",   ":/help/buttons_north.svg" },
 	{ "y",                true,  "BUTTON Y / WEST",    ":/help/buttons_west.svg" },
+
 	{ "LeftShoulder",     true,  "LEFT SHOULDER",      ":/help/button_l.svg" },
 	{ "RightShoulder",    true,  "RIGHT SHOULDER",     ":/help/button_r.svg" },
 	{ "LeftTrigger",      true,  "LEFT TRIGGER",       ":/help/button_lt.svg" },
@@ -54,40 +55,12 @@ void GuiInputConfig::initInputConfigStructure()
 	{ "LeftAnalogDown",   true,  "LEFT ANALOG DOWN",   ":/help/analog_down.svg" },
 	{ "LeftAnalogLeft",   true,  "LEFT ANALOG LEFT",   ":/help/analog_left.svg" },
 	{ "LeftAnalogRight",  true,  "LEFT ANALOG RIGHT",  ":/help/analog_right.svg" },
+	{ "HotKeyEnable",     true,  "HOTKEY ENABLE",      ":/help/button_hotkey.svg" },
 	{ "RightAnalogUp",    true,  "RIGHT ANALOG UP",    ":/help/analog_up.svg" },
 	{ "RightAnalogDown",  true,  "RIGHT ANALOG DOWN",  ":/help/analog_down.svg" },
 	{ "RightAnalogLeft",  true,  "RIGHT ANALOG LEFT",  ":/help/analog_left.svg" },
-	{ "RightAnalogRight", true,  "RIGHT ANALOG RIGHT", ":/help/analog_right.svg" },
-	{ "HotKeyEnable",     true,  "HOTKEY ENABLE",      ":/help/button_hotkey.svg" }
+	{ "RightAnalogRight", true,  "RIGHT ANALOG RIGHT", ":/help/analog_right.svg" }
 	};
-#else
-	GUI_INPUT_CONFIG_LIST =
-	{
-		{ "up",               false, "UP",           ":/help/dpad_up.svg" },
-		{ "down",             false, "DOWN",         ":/help/dpad_down.svg" },
-		{ "left",             false, "LEFT",         ":/help/dpad_left.svg" },
-		{ "right",            false, "RIGHT",        ":/help/dpad_right.svg" },
-		{ "start",            true,  "START",              ":/help/button_start.svg" },
-		{ "select",           true,  "SELECT",             ":/help/button_select.svg" },
-
-		{ "a",                false, InputConfig::buttonLabel("a"),    InputConfig::buttonImage("a") },
-		{ "b",                true,  InputConfig::buttonLabel("b"),    InputConfig::buttonImage("b") },
-		{ "x",                true,  "X",    ":/help/buttons_north.svg" },
-		{ "y",                true,  "Y",    ":/help/buttons_west.svg" },
-
-		{ "joystick1up",     true,  "LEFT ANALOG UP",     ":/help/analog_up.svg" },
-		{ "joystick1left",   true,  "LEFT ANALOG LEFT",   ":/help/analog_left.svg" },
-		{ "joystick2up",     true,  "RIGHT ANALOG UP",     ":/help/analog_up.svg" },
-		{ "joystick2left",   true,  "RIGHT ANALOG LEFT",   ":/help/analog_left.svg" },
-		{ "pageup",          true,  "L1",      ":/help/button_l.svg" },
-		{ "pagedown",        true,  "R1",     ":/help/button_r.svg" },
-		{ "l2",              true,  "L2",       ":/help/button_lt.svg" },
-		{ "r2",              true,  "R2",      ":/help/button_rt.svg" },
-		{ "l3",              true,  "L3",       ":/help/analog_thumb.svg" },
-		{ "r3",              true,  "R3",      ":/help/analog_thumb.svg" },
-		{ "hotkey",          true,  "HOTKEY",      ":/help/button_hotkey.svg" } // batocera
-	};
-#endif
 }
 
 GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfigureAll, const std::function<void()>& okCallback) : GuiComponent(window), 
@@ -242,31 +215,19 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("OK"), "ok", [this, okFunction] { // batocera
 		// check if the hotkey enable button is set. if not prompt the user to use select or nothing.
 		Input input;
-#ifdef _ENABLEEMUELEC
-		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) { // batocera
-#else
-        if (!mTargetConfig->getInputByName("hotkey", &input)) { // batocera
-#endif
+		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) { // 351ELEC
 			mWindow->pushGui(new GuiMsgBox(mWindow,
 				_("NO HOTKEY BUTTON HAS BEEN ASSIGNED. THIS IS REQUIRED FOR EXITING GAMES WITH A CONTROLLER. DO YOU WANT TO USE THE SELECT BUTTON AS YOUR HOTKEY?"),  // batocera
 				_("SET SELECT AS HOTKEY"), [this, okFunction] { // batocera
 					Input input;
 					mTargetConfig->getInputByName("Select", &input);
-#ifdef _ENABLEEMUELEC
-					mTargetConfig->mapInput("HotKeyEnable", input); // emuelec
-#else
-					mTargetConfig->mapInput("hotkey", input); // batocera
-#endif
+					mTargetConfig->mapInput("HotKeyEnable", input); // 351ELEC
 					okFunction();
 					},
 				_("DO NOT ASSIGN HOTKEY"), [this, okFunction] { // batocera
 					// for a disabled hotkey enable button, set to a key with id 0,
 					// so the input configuration script can be backwards compatible.
-#ifdef _ENABLEEMUELEC
-                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // emuelec
-#else
-					mTargetConfig->mapInput("hotkey", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // batocera
-#endif
+                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // 351ELEC
 					okFunction();
 				}
 			));
@@ -392,11 +353,7 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	// (if it's the same as what it was before, allow it)
 	if (mTargetConfig->getMappedTo(input).size() > 0 && 
 		!mTargetConfig->isMappedTo(GUI_INPUT_CONFIG_LIST[inputId].name, input) && 
-#ifdef _ENABLEEMUELEC		
-        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // emuelec
-#else
-        GUI_INPUT_CONFIG_LIST[inputId].name != "hotkey") // batocera
-#endif
+        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // 351ELEC
 	{
 		error(mMappings.at(inputId), "Already mapped!");
 		return false;

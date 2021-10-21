@@ -816,24 +816,12 @@ bool ViewController::input(InputConfig* config, Input input)
 	if (mLockInput)
 		return true;
 
-#ifdef _ENABLEEMUELEC
-/* Detect unconfigured keyboad as well */
-        if(config->isConfigured() == false) {
-			if(input.type == TYPE_BUTTON || input.type == TYPE_KEY) {
-				if(input.id != SDLK_POWER) {
-	    mWindow->pushGui(new GuiDetectDevice(mWindow, false, NULL));
-	    return true;
-	}
-	  }
-        }
-#else
 	// If we receive a button pressure for a non configured joystick, suggest the joystick configuration
 	if (!config->isConfigured() && (config->getDeviceId() == DEVICE_KEYBOARD || input.type == TYPE_BUTTON || input.type == TYPE_HAT))
 	{
 		mWindow->pushGui(new GuiDetectDevice(mWindow, false, NULL));
 		return true;
 	}
-#endif
 
 	if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_F5)
 	{

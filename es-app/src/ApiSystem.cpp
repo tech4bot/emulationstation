@@ -84,19 +84,11 @@ unsigned long ApiSystem::getFreeSpaceGB(std::string mountpoint)
 }
 
 std::string ApiSystem::getFreeSpaceUserInfo() {
-#ifdef _ENABLEEMUELEC
-  return getFreeSpaceInfo("/storage/.update");
-#else
-  return getFreeSpaceInfo("/userdata");
-#endif
+  return getFreeSpaceInfo("/storage/roms");
 }
 
 std::string ApiSystem::getFreeSpaceSystemInfo() {
-#ifdef _ENABLEEMUELEC
-  return getFreeSpaceInfo("/");
-#else
-  return getFreeSpaceInfo("/boot");
-#endif
+  return getFreeSpaceInfo("/storage");
 }
 
 std::string ApiSystem::getFreeSpaceInfo(const std::string mountpoint)
@@ -129,22 +121,14 @@ std::string ApiSystem::getFreeSpaceInfo(const std::string mountpoint)
 
 bool ApiSystem::isFreeSpaceLimit() 
 {
-#ifdef _ENABLEEMUELEC
-	return getFreeSpaceGB("/storage/.update") < 2;
-#else
-	return getFreeSpaceGB("/userdata/") < 2;
-#endif
+	return getFreeSpaceGB("/storage/roms") < 2;
 }
 
 std::string ApiSystem::getVersion() 
 {
 	LOG(LogDebug) << "ApiSystem::getVersion";
-#ifdef _ENABLEEMUELEC
-	std::ifstream ifs("/storage/.config/.OS_VERSION");
-#else
-	std::ifstream ifs("/usr/share/batocera/batocera.version");
-#endif
 
+	std::ifstream ifs("/storage/.config/.OS_VERSION");
 	if (ifs.good()) 
 	{
 		std::string contents;
@@ -181,20 +165,14 @@ std::pair<std::string, int> ApiSystem::updateSystem(const std::function<void(con
 {
 	LOG(LogDebug) << "ApiSystem::updateSystem";
 
-#ifdef _ENABLEEMUELEC	
 	std::string updatecommand = "351elec-upgrade";
-	std::string updatelog = "/tmp/logs/351elec-upgrade.log";
-#else
-	std::string updatecommand = "batocera-upgrade";
-	std::string updatelog = "/userdata/system/logs/batocera-upgrade.log";
-#endif
 
 	FILE *pipe = popen(updatecommand.c_str(), "r");
 	if (pipe == nullptr)
 		return std::pair<std::string, int>(std::string("Cannot call update command"), -1);
 
 	char line[1024] = "";
-	FILE *flog = fopen(updatelog.c_str(), "w");
+	FILE *flog = fopen("/tmp/logs/351elec-upgrade.log", "w");
 	while (fgets(line, 1024, pipe)) 
 	{
 		strtok(line, "\n");
@@ -282,12 +260,10 @@ std::pair<std::string, int> ApiSystem::scrape(BusyComponent* ui)
 	FILE* pipe = popen("batocera-scraper", "r");
 	if (pipe == nullptr)
 		return std::pair<std::string, int>(std::string("Cannot call scrape command"), -1);
+
 	char line[1024] = "";
-#ifdef _ENABLEEMUELEC
-	FILE* flog = fopen("/tmp/logs/emuelec-scraper.log", "w");
-#else	
-	FILE* flog = fopen("/userdata/system/logs/batocera-scraper.log", "w");
-#endif
+
+	FILE* flog = fopen("/tmp/logs/351elec-scraper.log", "w");
 	while (fgets(line, 1024, pipe)) 
 	{
 		strtok(line, "\n");
@@ -409,24 +385,7 @@ bool ApiSystem::launchFileManager(Window *window)
 {
 	LOG(LogDebug) << "ApiSystem::launchFileManager";
 
-	std::string command = "/usr/bin/emuelec-utils filemanager";
-
-	ApiSystem::launchExternalWindow_before(window);
-
-	int exitCode = system(command.c_str());
-	if (WIFEXITED(exitCode))
-		exitCode = WEXITSTATUS(exitCode);
-
-	ApiSystem::launchExternalWindow_after(window);
-
-	return exitCode == 0;
-}
-
-bool ApiSystem::launchErrorWindow(Window *window) 
-{
-	LOG(LogDebug) << "ApiSystem::launchErrorWindow";
-
-	std::string command = "/usr/bin/emuelec-utils error";
+	std::string command = "filemanagerlauncher";
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -1390,14 +1349,9 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 		return true;
 
 	for (auto executable : executables)
-#ifdef _ENABLEEMUELEC
-		if (!Utils::FileSystem::exists("/usr/bin/" + executable))
-			return false;
-#else
 		if (!Utils::FileSystem::exists("/usr/bin/" + executable))
 			return false;
 
-#endif
 	return true;
 }
 

@@ -74,8 +74,8 @@ public:
 		cheevos = 131072,
 		autocontrollers = 262144,
 #ifdef _ENABLEEMUELEC
-        vertical = 524288,
-				nativevideo = 1048576,
+		vertical = 524288,
+		nativevideo = 1048576,
 #endif
 
 		all = 0x0FFFFFFF

@@ -1754,11 +1754,7 @@ std::map<std::string, ThemeSet> ThemeData::getThemeSets()
 	{ 
 		"/etc/emulationstation/themes",
 		Utils::FileSystem::getEsConfigPath() + "/themes",
-#ifdef _ENABLEEMUELEC
-        "/emuelec/themes" // emuelec
-#else
-		"/userdata/themes" // batocera
-#endif
+		"/storage/.config/emulationstation/themes/" // 351ELEC
 	};
 
 	for(size_t i = 0; i < pathCount; i++)

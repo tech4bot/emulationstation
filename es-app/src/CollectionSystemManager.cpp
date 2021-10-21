@@ -984,7 +984,7 @@ void CollectionSystemManager::populateAutoCollection(CollectionSystemData* sysDa
 #ifdef _ENABLEEMUELEC
 				include = !(game->getSystemName() == "setup") && !(game->getSystemName() == "imageviewer") && !(game->getSystemName() == "mediaplayer");
 #endif
-            break;
+            	break;
 			case AUTO_VERTICALARCADE:
 				include = game->isVerticalArcadeGame();
 				break;

@@ -258,15 +258,6 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
-const std::string FileData::getSortName() const
-{
-	std::string sortName = mMetadata.get("sortname");
-	if (sortName.empty())
-		return mMetadata.get("name");
-	else
-		return sortName;
-}
-
 const std::string FileData::getVideoPath()
 {
 	std::string video = getMetadata(MetaDataId::Video);
@@ -487,7 +478,7 @@ std::string FileData::getlaunchCommand(LaunchGameOptions options, bool includeCo
 		else
 #endif
 #ifdef _ENABLEEMUELEC
-		command = Utils::String::replace(command, "%NETPLAY%", "--connect " + options.ip + " --port " + std::to_string(options.port) + " --nick " + SystemConf::getInstance()->get("global.netplay.nickname"));
+			command = Utils::String::replace(command, "%NETPLAY%", "--connect " + options.ip + " --port " + std::to_string(options.port) + " --nick " + SystemConf::getInstance()->get("global.netplay.nickname"));
 #else
 			command = Utils::String::replace(command, "%NETPLAY%", "-netplaymode " + mode + " -netplayport " + std::to_string(options.port) + " -netplayip " + options.ip + pass);
 #endif
@@ -500,7 +491,7 @@ std::string FileData::getlaunchCommand(LaunchGameOptions options, bool includeCo
 		else
 #endif
 #ifdef _ENABLEEMUELEC
-		command = Utils::String::replace(command, "%NETPLAY%", "--host --port " + SystemConf::getInstance()->get("global.netplay.port") + " --nick " + SystemConf::getInstance()->get("global.netplay.nickname"));
+			command = Utils::String::replace(command, "%NETPLAY%", "--host --port " + SystemConf::getInstance()->get("global.netplay.port") + " --nick " + SystemConf::getInstance()->get("global.netplay.nickname"));
 #else
 			command = Utils::String::replace(command, "%NETPLAY%", "-netplaymode host");
 #endif
@@ -600,9 +591,8 @@ bool FileData::launchGame(Window* window, LaunchGameOptions options)
 		CollectionSystemManager::get()->refreshCollectionSystems(gameToUpdate);
 		saveToGamelistRecovery(gameToUpdate);
 	} else {
-		// show emuelec error message
+		// show 351ELEC error message
 		LOG(LogWarning) << "...Show Error message! exit code " << exitCode << "!";
-        // ApiSystem::getInstance()->launchErrorWindow(window);
 	}
 
 	window->reactivateGui();

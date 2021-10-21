@@ -579,7 +579,6 @@ bool SystemView::input(InputConfig* config, Input input)
 #endif
 			config->isMappedLike("l2", input) ||
 			config->isMappedLike("r2", input))
-
 			listInput(0);
 		/*
 #ifdef WIN32
