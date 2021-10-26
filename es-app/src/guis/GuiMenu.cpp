@@ -2771,11 +2771,6 @@ void GuiMenu::openGamesSettings_batocera()
 		auto sets = GuiMenu::getDecorationsSets(ViewController::get()->getState().getSystem());
 		if (sets.size() > 0)
 		{
-			GuiSettings *decorations_window = new GuiSettings(mWindow, _("DECORATIONS").c_str());
-			Window* window = mWindow;
-			auto sets = GuiMenu::getDecorationsSets(ViewController::get()->getState().getSystem());
-			if (sets.size() > 0)
-			{
 				auto decorations = std::make_shared<OptionListComponent<std::string> >(mWindow, _("DECORATION SET"), false);
 				decorations->setRowTemplate([window, sets](std::string data, ComponentListRow& row)
 				{
@@ -2826,8 +2821,6 @@ void GuiMenu::openGamesSettings_batocera()
 					});
 #endif
 			}
-			mWindow->pushGui(decorations_window);
-		});
 	}
 
 	// latency reduction
@@ -5017,9 +5010,6 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
 	{
-		systemConfiguration->addEntry(_("DECORATIONS"), true, [mWindow, configName, systemData]
-		{
-			GuiSettings *decorations_window = new GuiSettings(mWindow, _("DECORATIONS").c_str());
 			Window* window = mWindow;
 			auto sets = GuiMenu::getDecorationsSets(systemData);
 			if (sets.size() > 0)
@@ -5082,8 +5072,6 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					*/
 #endif
 			}
-			mWindow->pushGui(decorations_window);
-		});
 	}
 #endif
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::latency_reduction))	
