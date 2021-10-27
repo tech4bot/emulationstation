@@ -814,7 +814,7 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 
 	std::string showFoldersMode = getSystem()->getFolderViewMode();
 	
-	bool showHiddenFiles = Settings::getInstance()->getBool("ShowHiddenFiles");
+	bool showHiddenFiles = Settings::ShowHiddenFiles();
 
 	auto shv = Settings::getInstance()->getString(getSystem()->getName() + ".ShowHiddenFiles");
 	if (shv == "1") showHiddenFiles = true;
@@ -983,7 +983,7 @@ FileData* FolderData::findUniqueGameForFolder()
 	{
 		if (game->getHidden())
 		{
-			bool showHiddenFiles = Settings::getInstance()->getBool("ShowHiddenFiles") && !UIModeController::getInstance()->isUIModeKiosk();
+			bool showHiddenFiles = Settings::ShowHiddenFiles() && !UIModeController::getInstance()->isUIModeKiosk();
 
 			auto shv = Settings::getInstance()->getString(getSystem()->getName() + ".ShowHiddenFiles");
 			if (shv == "1") showHiddenFiles = true;
@@ -1028,7 +1028,7 @@ std::vector<FileData*> FolderData::getFilesRecursive(unsigned int typeMask, bool
 		return fld->isVirtualStorage();
 	};
 
-	bool showHiddenFiles = Settings::getInstance()->getBool("ShowHiddenFiles") && !UIModeController::getInstance()->isUIModeKiosk();
+	bool showHiddenFiles = Settings::ShowHiddenFiles() && !UIModeController::getInstance()->isUIModeKiosk();
 
 	auto shv = Settings::getInstance()->getString(getSystem()->getName() + ".ShowHiddenFiles");
 	if (shv == "1") showHiddenFiles = true;
