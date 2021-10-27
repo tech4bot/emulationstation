@@ -494,7 +494,7 @@ void GuiMenu::openEmuELECSettings()
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
-	createInputTextRow(s, _("DEFAULT YOUTUBE SEARCH WORD"), "youtube.searchword", false);
+	s->addInputTextRow(_("DEFAULT YOUTUBE SEARCH WORD"), "youtube.searchword", false);
 
 	auto enable_advmamegp = std::make_shared<SwitchComponent>(mWindow);
 	bool advgpEnabled = SystemConf::getInstance()->get("advmame_auto_gamepad") == "1";
@@ -661,7 +661,7 @@ void GuiMenu::openScraperSettings()
 
 	auto s = new GuiSettings(mWindow, 
 		_("SCRAPER"), 
-		_("SCRAPE NOW/FILTERS"), [openScrapeNow](GuiSettings* settings)
+		_("NEXT"), [openScrapeNow](GuiSettings* settings)
 	{
 		settings->save();
 		openScrapeNow();
@@ -800,8 +800,8 @@ void GuiMenu::openScraperSettings()
 		//s->addSaveFunc([scrapePadToKey] { Settings::getInstance()->setBool("ScrapePadToKey", scrapePadToKey->getState()); });
 
 		// Account
-		createInputTextRow(s, _("USERNAME"), "ScreenScraperUser", false, true);
-		createInputTextRow(s, _("PASSWORD"), "ScreenScraperPass", true, true);
+		s->addInputTextRow(_("USERNAME"), "ScreenScraperUser", false, true);
+		s->addInputTextRow(_("PASSWORD"), "ScreenScraperPass", true, true);
 	}
 	else
 	{
@@ -1420,7 +1420,7 @@ void GuiMenu::openDeveloperSettings()
 	// Hide EmulationStation Window when running a game ( windows only )
 	auto hideWindowScreen = std::make_shared<SwitchComponent>(mWindow);
 	hideWindowScreen->setState(Settings::getInstance()->getBool("HideWindow"));
-	s->addWithLabel(_("BLANK BACKGROUND DURING GAME LAUNCH TRANSITION"), hideWindowScreen);
+	s->addWithLabel(_("HIDE EMULATIONSTATION WHEN RUNNING A GAME"), hideWindowScreen);
 	s->addSaveFunc([hideWindowScreen] { Settings::getInstance()->setBool("HideWindow", hideWindowScreen->getState()); });
 #endif
 
@@ -1505,8 +1505,8 @@ void GuiMenu::openDeveloperSettings()
 	auto preloadMedias = std::make_shared<SwitchComponent>(mWindow);
 	preloadMedias->setState(Settings::getInstance()->getBool("PreloadMedias"));
 	s->addWithDescription(_("PRELOAD MEDIAS FILESYSTEM"), _("REDUCE UI LAGS OVER STARTUP TIME"), preloadMedias);
-	s->addSaveFunc([preloadMedias] { Settings::getInstance()->setBool("PreloadMedias", preloadMedias->getState()); });
-
+	s->addSaveFunc([preloadMedias] { Settings::setPreloadMedias(preloadMedias->getState()); });
+	
 	// threaded loading
 	auto threadedLoading = std::make_shared<SwitchComponent>(mWindow);
 	threadedLoading->setState(Settings::getInstance()->getBool("ThreadedLoading"));
@@ -1535,8 +1535,8 @@ void GuiMenu::openDeveloperSettings()
 
 	// Allow customizing the github org and repo used to update from
 	// This allows using a different fork/repository to download releases for testing
-	createInputTextRow(s, _("GITHUB ORG"), "updates.github.org", false);
-	createInputTextRow(s, _("GITHUB REPO"), "updates.github.repo", false);
+	s->addInputTextRow(_("GITHUB ORG"), "updates.github.org", false);
+	s->addInputTextRow(_("GITHUB REPO"), "updates.github.repo", false);
 
 	//Force updates will tell the check script and the update script to always
 	//use an update regardless of the current version on the device.
@@ -1787,14 +1787,14 @@ void GuiMenu::openSystemSettings_batocera()
 	modes.push_back("enhanced");
 	modes.push_back("instant");
 	for (auto it = modes.cbegin(); it != modes.cend(); it++)
-		power_saver->add(_(it->c_str()), *it, Settings::getInstance()->getString("PowerSaverMode") == *it);
+		power_saver->add(_(it->c_str()), *it, Settings::PowerSaverMode() == *it);
 	s->addWithLabel(_("POWER SAVER MODES"), power_saver);
-	s->addSaveFunc([this, power_saver] {
-		if (Settings::getInstance()->getString("PowerSaverMode") != "instant" && power_saver->getSelected() == "instant") 
-		{						
+	s->addSaveFunc([this, power_saver] 
+	{
+		if (Settings::PowerSaverMode() != "instant" && power_saver->getSelected() == "instant")
 			Settings::getInstance()->setBool("EnableSounds", false);
-		}
-		Settings::getInstance()->setString("PowerSaverMode", power_saver->getSelected());
+
+		Settings::setPowerSaverMode(power_saver->getSelected());
 		PowerSaver::init();
 	});
 	*/
@@ -2524,8 +2524,8 @@ void GuiMenu::openRetroachievementsSettings()
 	}
 
 	// retroachievements, username, password
-	createInputTextRow(retroachievements, _("USERNAME"), "global.retroachievements.username", false);
-	createInputTextRow(retroachievements, _("PASSWORD"), "global.retroachievements.password", true);
+	retroachievements->addInputTextRow(_("USERNAME"), "global.retroachievements.username", false);
+	retroachievements->addInputTextRow(_("PASSWORD"), "global.retroachievements.password", true);
 
 	// retroachievements_hardcore_mode
 	auto retroachievements_menuitem = std::make_shared<SwitchComponent>(mWindow);
@@ -2576,9 +2576,9 @@ void GuiMenu::openNetplaySettings()
 	std::string port = SystemConf::getInstance()->get("global.netplay.port");
 	if (port.empty())
 		SystemConf::getInstance()->set("global.netplay.port", "55435");
-
-	createInputTextRow(settings, _("NICKNAME"), "global.netplay.nickname", false);
-	createInputTextRow(settings, _("PORT"), "global.netplay.port", false);
+			
+	settings->addInputTextRow(_("NICKNAME"), "global.netplay.nickname", false);
+	settings->addInputTextRow(_("PORT"), "global.netplay.port", false);
 
 	// RELAY SERVER
 	std::string mitm = SystemConf::getInstance()->get("global.netplay.relay");
@@ -2771,23 +2771,23 @@ void GuiMenu::openGamesSettings_batocera()
 		auto sets = GuiMenu::getDecorationsSets(ViewController::get()->getState().getSystem());
 		if (sets.size() > 0)
 		{
-			auto decorations = std::make_shared<OptionListComponent<std::string> >(mWindow, _("DECORATION SET"), false);
-			decorations->setRowTemplate([window, sets](std::string data, ComponentListRow& row)
-			{
-				createDecorationItemTemplate(window, sets, data, row);
-			});
+				auto decorations = std::make_shared<OptionListComponent<std::string> >(mWindow, _("DECORATION SET"), false);
+				decorations->setRowTemplate([window, sets](std::string data, ComponentListRow& row)
+				{
+					createDecorationItemTemplate(window, sets, data, row);
+				});
 
-			std::vector<std::string> decorations_item;
-			decorations_item.push_back(_("AUTO"));
-			decorations_item.push_back(_("NONE"));
-			for (auto set : sets)
-				decorations_item.push_back(set.name);
+				std::vector<std::string> decorations_item;
+				decorations_item.push_back(_("AUTO"));
+				decorations_item.push_back(_("NONE"));
+				for (auto set : sets)
+					decorations_item.push_back(set.name);
 
-			for (auto it = decorations_item.begin(); it != decorations_item.end(); it++)
-				decorations->add(*it, *it,
-				(SystemConf::getInstance()->get("global.bezel") == *it) ||
-					(SystemConf::getInstance()->get("global.bezel") == "none" && *it == _("NONE")) ||
-					(SystemConf::getInstance()->get("global.bezel") == "" && *it == _("AUTO")));
+				for (auto it = decorations_item.begin(); it != decorations_item.end(); it++)
+					decorations->add(*it, *it,
+					(SystemConf::getInstance()->get("global.bezel") == *it) ||
+						(SystemConf::getInstance()->get("global.bezel") == "none" && *it == _("NONE")) ||
+						(SystemConf::getInstance()->get("global.bezel") == "" && *it == _("AUTO")));
 
 			s->addWithLabel(_("DECORATION SET"), decorations);
 
@@ -2820,7 +2820,7 @@ void GuiMenu::openGamesSettings_batocera()
 					}
 					});
 #endif
-		}
+			}
 	}
 
 	// latency reduction
@@ -2868,7 +2868,7 @@ void GuiMenu::openGamesSettings_batocera()
 		ai_service->addWithLabel(_("TARGET LANGUAGE"), lang_choices);
 
 		// Service  URL
-		createInputTextRow(ai_service, _("AI TRANSLATION SERVICE URL"), "global.ai_service_url", false);
+		ai_service->addInputTextRow(_("AI TRANSLATION SERVICE URL"), "global.ai_service_url", false);
 
 		// Pause game for translation?
 		auto ai_service_pause = std::make_shared<SwitchComponent>(mWindow);
@@ -3127,15 +3127,15 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 
 	Window *window = mWindow;
 
-	// REMAP A CONTROLLER
-	s->addEntry(_("REMAP A CONTROLLER"), false, [window, this, s]
+	// CONTROLLER CONFIGURATION
+	s->addEntry(_("CONTROLLER MAPPING"), false, [window, this, s]
 	{
 		window->pushGui(new GuiMsgBox(window,
-			_("YOU ARE GOING TO REMAP A CONTROLLER. REMAP BASED ON THE BUTTON'S POSITION "
+			_("YOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
 				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
 				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
-				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING A KEY. PRESS THE SOUTH BUTTON "
-				"TO CONFIRM WHEN DONE."), _("OK"),
+				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
+				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
 			[window, this, s] {
 			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
 				s->setSave(false);
@@ -3567,7 +3567,7 @@ void GuiMenu::openThemeConfiguration(Window* mWindow, GuiComponent* s, std::shar
 		});
 
 		// Show favorites first in gamelists
-		auto defHid = Settings::getInstance()->getBool("ShowHiddenFiles") ? _("YES") : _("NO");
+		auto defHid = Settings::ShowHiddenFiles() ? _("YES") : _("NO");
 		auto curhid = Settings::getInstance()->getString(system->getName() + ".ShowHiddenFiles");
 		auto hiddenFiles = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SHOW HIDDEN FILES"), false);
 		hiddenFiles->add(_("AUTO"), "", curhid == "" || curhid == "auto");
@@ -4127,15 +4127,15 @@ void GuiMenu::openUISettings()
 
 	// transition style
 	auto transition_style = std::make_shared<OptionListComponent<std::string> >(mWindow, _("LIST TRANSITION STYLE"), false);
-	transition_style->addRange({ "auto", "fade", "slide", "fade & slide", "instant" }, Settings::getInstance()->getString("TransitionStyle"));
+	transition_style->addRange({ "auto", "fade", "slide", "fade & slide", "instant" }, Settings::TransitionStyle());
 	s->addWithLabel(_("LIST TRANSITION STYLE"), transition_style);
-	s->addSaveFunc([transition_style] { Settings::getInstance()->setString("TransitionStyle", transition_style->getSelected()); });
-
+	s->addSaveFunc([transition_style] { Settings::setTransitionStyle(transition_style->getSelected()); });
+		
 	// game transition style
 	auto transitionOfGames_style = std::make_shared< OptionListComponent<std::string> >(mWindow, _("GAME LAUNCH TRANSITION"), false);
-	transitionOfGames_style->addRange({ "auto", "fade", "slide", "instant" }, Settings::getInstance()->getString("GameTransitionStyle"));
+	transitionOfGames_style->addRange({ "auto", "fade", "slide", "instant" }, Settings::GameTransitionStyle());
 	s->addWithLabel(_("GAME LAUNCH TRANSITION"), transitionOfGames_style);
-	s->addSaveFunc([transitionOfGames_style] { Settings::getInstance()->setString("GameTransitionStyle", transitionOfGames_style->getSelected()); });
+	s->addSaveFunc([transitionOfGames_style] { Settings::setGameTransitionStyle(transitionOfGames_style->getSelected()); });
 
 	// quick system select (left/right in game list view)
 	auto quick_sys_select = std::make_shared<SwitchComponent>(mWindow);
@@ -4185,11 +4185,11 @@ void GuiMenu::openUISettings()
 
 	// hidden files
 	auto hidden_files = std::make_shared<SwitchComponent>(mWindow);
-	hidden_files->setState(Settings::getInstance()->getBool("ShowHiddenFiles"));
+	hidden_files->setState(Settings::ShowHiddenFiles());
 	s->addWithLabel(_("SHOW HIDDEN FILES"), hidden_files);
 	s->addSaveFunc([s, hidden_files]
 	{
-		if (Settings::getInstance()->setBool("ShowHiddenFiles", hidden_files->getState()))
+		if (Settings::setShowHiddenFiles(hidden_files->getState()))
 			s->setVariable("reloadAll", true);
 	});
 
@@ -4392,13 +4392,12 @@ void GuiMenu::openSoundSettings()
 	auto sounds_enabled = std::make_shared<SwitchComponent>(mWindow);
 	sounds_enabled->setState(Settings::getInstance()->getBool("EnableSounds"));
 	s->addWithLabel(_("ENABLE NAVIGATION SOUNDS"), sounds_enabled);
-	s->addSaveFunc([sounds_enabled] {
-	    if (sounds_enabled->getState()
-		  && !Settings::getInstance()->getBool("EnableSounds")
-		  && PowerSaver::getMode() == PowerSaver::INSTANT)
+	s->addSaveFunc([sounds_enabled] 
+	{
+	    if (sounds_enabled->getState() && !Settings::getInstance()->getBool("EnableSounds") && PowerSaver::getMode() == PowerSaver::INSTANT)
 		{
-		  Settings::getInstance()->setString("PowerSaverMode", "default");
-		  PowerSaver::init();
+			Settings::getInstance()->setPowerSaverMode("default");
+			PowerSaver::init();
 		}
 	    Settings::getInstance()->setBool("EnableSounds", sounds_enabled->getState());
 	  });
@@ -4447,7 +4446,7 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 
 #if !WIN32
 	// Hostname
-	createInputTextRow(s, _("HOSTNAME"), "system.hostname", false);
+	s->addInputTextRow(_("HOSTNAME"), "system.hostname", false);
 #endif
 
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
@@ -4505,8 +4504,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 
 	if (baseWifiEnabled)
 	{
-		createInputTextRow(s, _("WIFI SSID"), "wifi.ssid", false, false, &openWifiSettings);
-		createInputTextRow(s, _("WIFI KEY"), "wifi.key", true);
+		s->addInputTextRow(_("WIFI SSID"), "wifi.ssid", false, false, &openWifiSettings);
+		s->addInputTextRow(_("WIFI KEY"), "wifi.key", true);
 	}
 
 	s->addSaveFunc([baseWifiEnabled, baseSSID, baseKEY, enable_wifi, window]
@@ -4700,74 +4699,6 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		s->getMenu().setPosition((Renderer::getScreenWidth() - s->getMenu().getSize().x()) / 2, (Renderer::getScreenHeight() - s->getMenu().getSize().y()) / 2);
 
 	window->pushGui(s);
-}
-
-void GuiMenu::createInputTextRow(GuiSettings *gui, std::string title, const char *settingsID, bool password, bool storeInSettings
-	, const std::function<void(Window*, std::string/*title*/, std::string /*value*/, const std::function<void(std::string)>& onsave)>& customEditor)
-{
-
-
-	auto theme = ThemeData::getMenuTheme();
-	std::shared_ptr<Font> font = theme->Text.font;
-	unsigned int color = theme->Text.color;
-
-	// LABEL
-	Window *window = mWindow;
-	ComponentListRow row;
-
-	auto lbl = std::make_shared<TextComponent>(window, title, font, color);
-	if (EsLocale::isRTL())
-		lbl->setHorizontalAlignment(Alignment::ALIGN_RIGHT);
-
-	row.addElement(lbl, true); // label
-
-	std::string value = storeInSettings ? Settings::getInstance()->getString(settingsID) : SystemConf::getInstance()->get(settingsID);
-
-	std::shared_ptr<TextComponent> ed = std::make_shared<TextComponent>(window, ((password && value != "") ? "*********" : value), font, color, ALIGN_RIGHT);
-	if (EsLocale::isRTL())
-		ed->setHorizontalAlignment(Alignment::ALIGN_LEFT);
-
-	row.addElement(ed, true);
-
-	auto spacer = std::make_shared<GuiComponent>(mWindow);
-	spacer->setSize(Renderer::getScreenWidth() * 0.005f, 0);
-	row.addElement(spacer, false);
-
-	auto bracket = std::make_shared<ImageComponent>(mWindow);
-	bracket->setImage(theme->Icons.arrow);
-	bracket->setResize(Vector2f(0, lbl->getFont()->getLetterHeight()));
-
-	if (EsLocale::isRTL())
-		bracket->setFlipX(true);
-
-	row.addElement(bracket, false);
-
-	auto updateVal = [ed, settingsID, password, storeInSettings](const std::string &newVal)
-	{
-		if (!password)
-			ed->setValue(newVal);
-		else
-			ed->setValue("*********");
-
-		if (storeInSettings)
-			Settings::getInstance()->setString(settingsID, newVal);
-		else
-			SystemConf::getInstance()->set(settingsID, newVal);
-	}; // ok callback (apply new value to ed)
-
-	row.makeAcceptInputHandler([this, title, updateVal, settingsID, storeInSettings, customEditor]
-	{
-		std::string data = storeInSettings ? Settings::getInstance()->getString(settingsID) : SystemConf::getInstance()->get(settingsID);
-
-		if (customEditor != nullptr)
-			customEditor(mWindow, title, data, updateVal);
-		else if (Settings::getInstance()->getBool("UseOSK"))
-			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, title, data, updateVal, false));
-		else
-			mWindow->pushGui(new GuiTextEditPopup(mWindow, title, data, updateVal, false));
-	});
-
-	gui->addRow(row);
 }
 
 void GuiMenu::createDecorationItemTemplate(Window* window, std::vector<DecorationSetInfo> sets, std::string data, ComponentListRow& row)
@@ -5078,15 +5009,15 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS))
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
 	{
-		Window* window = mWindow;
-		auto sets = GuiMenu::getDecorationsSets(systemData);
-		if (sets.size() > 0)
-		{
-			auto decorations = std::make_shared<OptionListComponent<std::string> >(mWindow, _("DECORATION SET"), false);
-			decorations->setRowTemplate([window, sets](std::string data, ComponentListRow& row)
+			Window* window = mWindow;
+			auto sets = GuiMenu::getDecorationsSets(systemData);
+			if (sets.size() > 0)
 			{
-				createDecorationItemTemplate(window, sets, data, row);
-			});
+				auto decorations = std::make_shared<OptionListComponent<std::string> >(mWindow, _("DECORATION SET"), false);
+				decorations->setRowTemplate([window, sets](std::string data, ComponentListRow& row)
+				{
+					createDecorationItemTemplate(window, sets, data, row);
+				});
 
 			std::vector<std::string> decorations_item;
 			decorations_item.push_back(_("AUTO"));
@@ -5139,7 +5070,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					});
 					*/
 #endif
-		}
+			}
 	}
 #endif
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::latency_reduction))	
