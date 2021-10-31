@@ -916,7 +916,7 @@ void GuiMenu::addVersionInfo()
 		else
 #endif
 #ifdef _ENABLEEMUELEC
-		mVersion.setText("351ELEC ES V" + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/usr/bin/emuelec-utils getip)"));
+		mVersion.setText("351ELEC ES " + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/usr/bin/emuelec-utils getip)"));
 #else
 		mVersion.setText("BATOCERA.LINUX ES V" + ApiSystem::getInstance()->getVersion() + buildDate);
 #endif
