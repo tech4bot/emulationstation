@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-24 23:05+0200\n"
+"POT-Creation-Date: 2021-11-12 20:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -995,10 +995,10 @@ msgstr ""
 msgid "SCRAPE"
 msgstr ""
 
-msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
+msgid "EDIT PADTOKEY PROFILE"
 msgstr ""
 
-msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
+msgid "CREATE PADTOKEY PROFILE"
 msgstr ""
 
 msgid "ADVANCED GAME OPTIONS"
@@ -1066,7 +1066,7 @@ msgstr ""
 msgid "SYSTEMS INCLUDED"
 msgstr ""
 
-msgid "START SCRAPING"
+msgid "START"
 msgstr ""
 
 msgid ""
@@ -1115,6 +1115,9 @@ msgid "Available memory"
 msgstr ""
 
 msgid "Battery"
+msgstr ""
+
+msgid "Model"
 msgstr ""
 
 msgid "Cpu model"
@@ -1352,10 +1355,10 @@ msgstr ""
 msgid "CREATE A SUPPORT FILE?"
 msgstr ""
 
-msgid "SUPPORT FILE GENERATED SUCCESSFULLY"
+msgid "SUPPORT FILE CREATED IN SAVES FOLDER"
 msgstr ""
 
-msgid "SUPPORT FILE GENERATION FAILED"
+msgid "SUPPORT FILE CREATION FAILED"
 msgstr ""
 
 msgid "FORMAT A DISK"
@@ -1508,6 +1511,15 @@ msgid "SHOW CLOCK IN 12-HOUR FORMAT"
 msgstr ""
 
 msgid "POWER SAVER MODES"
+msgstr ""
+
+msgid "DISABLED"
+msgstr ""
+
+msgid "DEFAULT"
+msgstr ""
+
+msgid "INSTANT"
 msgstr ""
 
 msgid "SCREEN READER (TEXT TO SPEECH)"
@@ -1696,10 +1708,10 @@ msgstr ""
 msgid "GAME INDEXES"
 msgstr ""
 
-msgid "FIND ALL GAMES"
+msgid "INDEX NEW GAMES AT STARTUP"
 msgstr ""
 
-msgid "FIND NEW GAMES"
+msgid "INDEX GAMES"
 msgstr ""
 
 msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS:"
@@ -1715,9 +1727,6 @@ msgid "PORT"
 msgstr ""
 
 msgid "USE RELAY SERVER"
-msgstr ""
-
-msgid "CHECK MISSING NETPLAY INDEXES AT STARTUP"
 msgstr ""
 
 msgid "DEFAULT GLOBAL SETTINGS"
@@ -2118,9 +2127,6 @@ msgstr ""
 msgid "NO DEVICE FOUND"
 msgstr ""
 
-msgid "START"
-msgstr ""
-
 msgid "ZOOM OUT"
 msgstr ""
 
@@ -2131,6 +2137,9 @@ msgid "MOVE"
 msgstr ""
 
 msgid "ZOOM"
+msgstr ""
+
+msgid "GAMES TO INDEX"
 msgstr ""
 
 msgid "SYSTEM INFO"
@@ -2567,9 +2576,6 @@ msgid "EDIT"
 msgstr ""
 
 msgid "ENABLED"
-msgstr ""
-
-msgid "DISABLED"
 msgstr ""
 
 #, c-format

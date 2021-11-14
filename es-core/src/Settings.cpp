@@ -305,6 +305,7 @@ void Settings::setDefaults()
 	mIntMap["audio.display_titles_time"] = 3;
 
 	mBoolMap["NetPlayCheckIndexesAtStart"] = false;
+	mBoolMap["CheevosCheckIndexesAtStart"] = false;	
 
 	mBoolMap["AllImagesAsync"] = true;
 

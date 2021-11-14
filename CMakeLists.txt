@@ -165,6 +165,10 @@ if(CEC)
   endif()
 endif()
 
+if(DEFINED HFS_DEV_LOGIN)
+    add_definitions(-DHFS_DEV_LOGIN="${HFS_DEV_LOGIN}")
+endif()
+
 #-------------------------------------------------------------------------------
 
 if(MSVC)

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-24 23:05+0200\n"
+"POT-Creation-Date: 2021-11-12 20:58+0100\n"
 "PO-Revision-Date: 2021-01-26 19:38+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -997,11 +997,11 @@ msgstr ""
 msgid "SCRAPE"
 msgstr "CRAFU"
 
-msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
-msgstr "GOLYGU FFURFWEDDIAD PAD I ALWEDDFWRDD"
+msgid "EDIT PADTOKEY PROFILE"
+msgstr ""
 
-msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
-msgstr "CREU FFURFWEDDIAD PAD I ALWEDDFWRDD"
+msgid "CREATE PADTOKEY PROFILE"
+msgstr ""
 
 msgid "ADVANCED GAME OPTIONS"
 msgstr "OPSIYNAU GÊM UWCH"
@@ -1068,8 +1068,8 @@ msgstr ""
 msgid "SYSTEMS INCLUDED"
 msgstr ""
 
-msgid "START SCRAPING"
-msgstr ""
+msgid "START"
+msgstr "DECHRAU"
 
 msgid ""
 "WARNING: SOME OF YOUR SELECTED SYSTEMS DO NOT HAVE A PLATFORM SET. RESULTS "
@@ -1118,6 +1118,9 @@ msgstr "Cof ar gael"
 
 msgid "Battery"
 msgstr "Batri"
+
+msgid "Model"
+msgstr ""
 
 msgid "Cpu model"
 msgstr "Model Cpu"
@@ -1354,10 +1357,10 @@ msgstr "CREU FFEIL CEFNOGAETH"
 msgid "CREATE A SUPPORT FILE?"
 msgstr "CREU FFEIL CEFNOGAETH?"
 
-msgid "SUPPORT FILE GENERATED SUCCESSFULLY"
+msgid "SUPPORT FILE CREATED IN SAVES FOLDER"
 msgstr ""
 
-msgid "SUPPORT FILE GENERATION FAILED"
+msgid "SUPPORT FILE CREATION FAILED"
 msgstr ""
 
 msgid "FORMAT A DISK"
@@ -1511,6 +1514,15 @@ msgstr ""
 
 msgid "POWER SAVER MODES"
 msgstr "MODDAU ARBED PŴER"
+
+msgid "DISABLED"
+msgstr ""
+
+msgid "DEFAULT"
+msgstr ""
+
+msgid "INSTANT"
+msgstr ""
 
 msgid "SCREEN READER (TEXT TO SPEECH)"
 msgstr ""
@@ -1698,11 +1710,11 @@ msgstr ""
 msgid "GAME INDEXES"
 msgstr "MYNEGAI GÊM"
 
-msgid "FIND ALL GAMES"
-msgstr "DOD O HYD I BOB GÊM"
+msgid "INDEX NEW GAMES AT STARTUP"
+msgstr ""
 
-msgid "FIND NEW GAMES"
-msgstr "DOD O HYD I GEMAU NEWYDD"
+msgid "INDEX GAMES"
+msgstr ""
 
 msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS:"
 msgstr ""
@@ -1718,9 +1730,6 @@ msgstr "PORTH"
 
 msgid "USE RELAY SERVER"
 msgstr "DEFNYDDIO GWEINYDD RELAY"
-
-msgid "CHECK MISSING NETPLAY INDEXES AT STARTUP"
-msgstr ""
 
 msgid "DEFAULT GLOBAL SETTINGS"
 msgstr ""
@@ -2120,9 +2129,6 @@ msgstr ""
 msgid "NO DEVICE FOUND"
 msgstr "DIM DYFAIS WEDI EI DDARGANFOD"
 
-msgid "START"
-msgstr "DECHRAU"
-
 msgid "ZOOM OUT"
 msgstr ""
 
@@ -2134,6 +2140,9 @@ msgstr "SYMUD"
 
 msgid "ZOOM"
 msgstr "CHWYDDO"
+
+msgid "GAMES TO INDEX"
+msgstr ""
 
 msgid "SYSTEM INFO"
 msgstr "GWYBODAETH SYSTEM"
@@ -2600,9 +2609,6 @@ msgstr "GOLYGU"
 msgid "ENABLED"
 msgstr ""
 
-msgid "DISABLED"
-msgstr ""
-
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -2663,6 +2669,18 @@ msgstr ""
 
 msgid "SCREEN READER DISABLED"
 msgstr ""
+
+#~ msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
+#~ msgstr "GOLYGU FFURFWEDDIAD PAD I ALWEDDFWRDD"
+
+#~ msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
+#~ msgstr "CREU FFURFWEDDIAD PAD I ALWEDDFWRDD"
+
+#~ msgid "FIND ALL GAMES"
+#~ msgstr "DOD O HYD I BOB GÊM"
+
+#~ msgid "FIND NEW GAMES"
+#~ msgstr "DOD O HYD I GEMAU NEWYDD"
 
 #~ msgid "All Games"
 #~ msgstr "Holl gemau"
