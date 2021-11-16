@@ -165,8 +165,24 @@ if(CEC)
   endif()
 endif()
 
-if(DEFINED HFS_DEV_LOGIN)
-    add_definitions(-DHFS_DEV_LOGIN="${HFS_DEV_LOGIN}")
+if(DEFINED ENV{SCREENSCRAPER_SOFTNAME})
+    add_definitions(-DSCREENSCRAPER_SOFTNAME="$ENV{SCREENSCRAPER_SOFTNAME}")
+endif()
+
+if(DEFINED ENV{SCREENSCRAPER_DEV_LOGIN})
+    add_definitions(-DSCREENSCRAPER_DEV_LOGIN="$ENV{SCREENSCRAPER_DEV_LOGIN}")
+endif()
+
+if(DEFINED ENV{GAMESDB_APIKEY})
+    add_definitions(-DGAMESDB_APIKEY="$ENV{GAMESDB_APIKEY}")
+endif()
+
+if(DEFINED ENV{CHEEVOS_DEV_LOGIN})
+    add_definitions(-DCHEEVOS_DEV_LOGIN="$ENV{CHEEVOS_DEV_LOGIN}")
+endif()
+
+if(DEFINED ENV{HFS_DEV_LOGIN})
+    add_definitions(-DHFS_DEV_LOGIN="$ENV{HFS_DEV_LOGIN}")
 endif()
 
 #-------------------------------------------------------------------------------
@@ -189,10 +205,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 
     #set up compiler flags for GCC
 if (CMAKE_BUILD_TYPE MATCHES Debug)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -O0") #support C++11 for std::, optimize
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-attributes -O0") #support C++14 for std::, optimize
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -w -O3") #support C++11 for std::, optimize
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -w -O3") #support C++14 for std::, optimize
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3")  #-s = strip binary
 endif()
 endif()
@@ -212,7 +228,7 @@ set(COMMON_INCLUDE_DIRS
     ${FreeImage_INCLUDE_DIRS}
     # batocera / background musics
     ${SDLMIXER_INCLUDE_DIR}
-    # batocera / customisations    
+    # batocera / customisations
     ${SDL2_INCLUDE_DIR}
     ${CURL_INCLUDE_DIR}
     ${VLC_INCLUDE_DIR}
@@ -290,13 +306,13 @@ set(COMMON_LIBRARIES
     ${SDL2_LIBRARY}
     # batocera / background musics
     ${SDLMIXER_LIBRARY}
-    # batocera / customisations    
+    # batocera / customisations
     ${CURL_LIBRARIES}
     ${VLC_LIBRARIES}
     pugixml
     nanosvg
     id3v2
-	libcheevos	
+	libcheevos
 )
 
 if(ENABLE_PULSE)
