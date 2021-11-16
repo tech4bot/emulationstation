@@ -29,10 +29,6 @@
 #include <SDL_timer.h>
 #include "TextToSpeech.h"
 
-#ifdef _ENABLEEMUELEC
-#include "ApiSystem.h"
-#endif
-
 ViewController* ViewController::sInstance = nullptr;
 
 ViewController* ViewController::get()
@@ -862,27 +858,13 @@ bool ViewController::input(InputConfig* config, Input input)
 		return true;
 	}
 
-#ifdef _ENABLEEMUELEC
-	// Emuelec next song
-	if(config->isMappedTo("leftthumb", input) && input.value != 0) // emuelec
+	// 351ELEC next song
+	if(config->isMappedTo("leftthumb", input) && input.value != 0) // 351ELEC
 	{
 		// next song
 		AudioManager::getInstance()->playRandomMusic(false);
 		return true;
 	}
-#else
-	// Batocera next song
-#ifdef _ENABLEEMUELEC
-	if ((mState.viewing != GAME_LIST && config->isMappedTo("LeftThumb", input)) && input.value != 0) // emuelec
-#else
-	if (((mState.viewing != GAME_LIST && config->isMappedTo("l3", input)) || config->isMappedTo("r3", input)) && input.value != 0) // batocera
-#endif    
-	{
-		// next song
-		AudioManager::getInstance()->playRandomMusic(false);
-		return true;
-	}
-#endif
 
 //	if(UIModeController::getInstance()->listen(config, input))  // check if UI mode has changed due to passphrase completion
 //		return true;

@@ -459,21 +459,13 @@ bool SystemView::input(InputConfig* config, Input input)
 				listInput(1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("righttrigger", input))
-#else
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("pagedown", input))
-#endif
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("righttrigger", input))
 			{
 				int cursor = moveCursorFast(true);
 				listInput(cursor - mCursor);				
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("lefttrigger", input))
-#else
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("pageup", input))
-#endif
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("lefttrigger", input))
 			{
 				int cursor = moveCursorFast(false);
 				listInput(cursor - mCursor);
@@ -494,21 +486,13 @@ bool SystemView::input(InputConfig* config, Input input)
 				listInput(1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("righttrigger", input))
-#else
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("pagedown", input))
-#endif
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("righttrigger", input))
 			{
 				int cursor = moveCursorFast(true);
 				listInput(cursor - mCursor);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("lefttrigger", input))
-#else
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("pageup", input))
-#endif
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("lefttrigger", input))
 			{
 				int cursor = moveCursorFast(false);
 				listInput(cursor - mCursor);
@@ -570,13 +554,8 @@ bool SystemView::input(InputConfig* config, Input input)
 			config->isMappedLike("right", input) ||
 			config->isMappedLike("up", input) ||
 			config->isMappedLike("down", input) ||
-#ifdef _ENABLEEMUELEC
 			config->isMappedLike("righttrigger", input) ||
 			config->isMappedLike("lefttrigger", input) ||
-#else
-			config->isMappedLike("pagedown", input) ||
-			config->isMappedLike("pageup", input) ||
-#endif
 			config->isMappedLike("l2", input) ||
 			config->isMappedLike("r2", input))
 			listInput(0);

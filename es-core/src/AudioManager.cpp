@@ -191,19 +191,11 @@ void AudioManager::playRandomMusic(bool continueIfPlaying)
 
 	// check in User music directory
 	if (musics.empty())
-#ifdef _ENABLEEMUELEC
 		getMusicIn("/storage/roms/BGM", musics);
-#else
-		getMusicIn("/userdata/music", musics);
-#endif
 
 	// check in system sound directory
 	if (musics.empty())
-#ifdef _ENABLEEMUELEC
 		getMusicIn("/storage/.config/distribution/BGM", musics);
-#else
-		getMusicIn("/usr/share/batocera/music", musics);
-#endif
 
 	// check in .emulationstation/music directory
 	if (musics.empty())

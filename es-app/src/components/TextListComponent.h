@@ -317,32 +317,19 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 				listInput(-1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
 			if(config->isMappedTo("righttrigger", input))
-#else			
-			if(config->isMappedTo("pagedown", input))
-#endif
 			{
 				listInput(10);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
 			if(config->isMappedTo("lefttrigger", input))
-#else	
-			if(config->isMappedTo("pageup", input))
-#endif
 			{
 				listInput(-10);
 				return true;
 			}
 		}else{
-#ifdef _ENABLEEMUELEC
 			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) || 
 				config->isMappedTo("righttrigger", input) || config->isMappedTo("lefttrigger", input))
-#else
-			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) || 
-				config->isMappedLike("pagedown", input) || config->isMappedLike("pageup", input))
-#endif
 			{
 				stopScrolling();
 			}

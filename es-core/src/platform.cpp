@@ -28,7 +28,6 @@ int runShutdownCommand()
 #ifdef WIN32 // windows
 	return system("shutdown -s -t 0");
 #elif defined (_ENABLEEMUELEC)
-    system("/usr/bin/emuelec-utils small-cores enable");
     return system("systemctl poweroff");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -h now");
@@ -40,7 +39,6 @@ int runRestartCommand()
 #ifdef WIN32 // windows	
 	return system("shutdown -r -t 0");
 #elif defined (_ENABLEEMUELEC)
-    system("/usr/bin/emuelec-utils small-cores enable");
     return system("systemctl reboot");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -r now");
@@ -122,10 +120,8 @@ int runSystemCommand(const std::string& cmd_utf8, const std::string& name, Windo
 	}
 
 	return 1;
-#elif _ENABLEEMUELEC
-	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // 351ELEC
 #else
-	return system((cmd_utf8 + " 2> /userdata/system/logs/es_launch_stderr.log | head -300 > /userdata/system/logs/es_launch_stdout.log").c_str()); // batocera
+	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // 351ELEC
 #endif
 }
 
@@ -375,9 +371,8 @@ BatteryInformation queryBatteryInformation()
 
 	return ret;
 }
-#ifdef _ENABLEEMUELEC
 
-/* < emuelec */
+#ifdef _ENABLEEMUELEC
 std::string getShOutput(const std::string& mStr)
 {
     std::string result, file;
@@ -393,9 +388,7 @@ std::string getShOutput(const std::string& mStr)
     pclose(pipe);
     return result;
 }
-/* emuelec >*/
 #endif
-
 
 std::string getArchString()
 {

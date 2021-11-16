@@ -30,7 +30,7 @@ std::string SaveState::setupSaveState(FileData* game, const std::string& command
 {
 	if (game == nullptr)
 		return command;
-	
+
 	// We start games with new slots : If the users saves the game, we don't loose the previous save
 	int nextSlot = SaveStateRepository::getNextFreeSlot(game);
 
@@ -44,7 +44,7 @@ std::string SaveState::setupSaveState(FileData* game, const std::string& command
 
 		return command;
 	}
-	
+
 	std::string path = Utils::FileSystem::getParent(fileName);
 
 	std::string cmd = command;

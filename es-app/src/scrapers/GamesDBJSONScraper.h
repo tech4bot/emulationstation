@@ -4,6 +4,8 @@
 
 #include "EmulationStation.h"
 
+#ifdef GAMESDB_APIKEY
+
 #include "scrapers/Scraper.h"
 
 namespace pugi
@@ -44,4 +46,5 @@ class TheGamesDBJSONRequest : public ScraperHttpRequest
 	std::queue<std::unique_ptr<ScraperRequest>>* mRequestQueue;
 };
 
+#endif
 #endif // ES_APP_SCRAPERS_GAMES_DB_JSON_SCRAPER_H

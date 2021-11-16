@@ -49,7 +49,7 @@ void SaveStateRepository::refresh()
 	auto path = getSavesPath();
 	if (!Utils::FileSystem::exists(path))
 		return;
-	
+
 	auto files = Utils::FileSystem::getDirectoryFiles(path);
 	for (auto file : files)
 	{
@@ -153,7 +153,7 @@ int SaveStateRepository::getNextFreeSlot(FileData* game)
 		auto it = std::find_if(states.cbegin(), states.cend(), [i](const SaveState* x) { return x->slot == i; });
 		if (it != states.cend())
 			return i + 1;
-	}
+	}	
 
 	return -99;
 }
@@ -162,10 +162,10 @@ void SaveStateRepository::renumberSlots(FileData* game)
 {
 	if (!isEnabled(game))
 		return;
-
+	
 	auto repo = game->getSourceFileData()->getSystem()->getSaveStateRepository();	
 	repo->refresh();
-
+	
 	auto states = repo->getSaveStates(game);
 	if (states.size() == 0)
 		return;
@@ -181,7 +181,7 @@ void SaveStateRepository::renumberSlots(FileData* game)
 
 		if (state->slot != slot)
 			state->copyToSlot(slot, true);
-		
+
 		slot++;
 	}	
 }

@@ -17,46 +17,53 @@ set(CHEEVOS_HEADERS
 
 set(CHEEVOS_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/cheevos.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/consoleinfo.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/condition.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/operand.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/memref.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/condset.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rapi/rc_api_common.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rapi/rc_api_common.h
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rapi/rc_api_info.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rapi/rc_api_runtime.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rapi/rc_api_user.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/alloc.c
 	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/compat.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/condition.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/condset.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/consoleinfo.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/format.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/lboard.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/memref.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/operand.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/rc_compat.h
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/rc_internal.h
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/rc_libretro.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/rc_libretro.h
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/richpresence.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/runtime.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/runtime_progress.c
 	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/trigger.c
 	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/value.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/runtime_progress.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/format.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/runtime.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/alloc.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/rc_libretro.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/richpresence.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rcheevos/lboard.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rurl/url.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rhash/md5.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rhash/hash.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rhash/cdreader.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rhash/hash.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rhash/md5.h
+	${CMAKE_CURRENT_SOURCE_DIR}/rcheevos/src/rurl/url.c		
 )
 
 set(LIBRETRO_COMMON_HEADERS
 
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_miscellaneous.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_endianness.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_common.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_common_api.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_environment.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_inline.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_assert.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_math.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_timers.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_dirent.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libretro.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/boolean.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/memalign.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_endianness.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_common.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_common_api.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_environment.h		
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_inline.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_assert.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_math.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_timers.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/retro_dirent.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libretro.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/boolean.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/memalign.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/memmap.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/formats/cdfs.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/formats/m3u_file.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/streams/chd_stream.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/streams/chd_stream.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/streams/file_stream.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/streams/file_stream_transforms.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/streams/interface_stream.h
@@ -71,33 +78,36 @@ set(LIBRETRO_COMMON_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/huffman.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/libchdr_zlib.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/lzma.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/minmax.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/flac.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/file/file_path.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/string/stdstring.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/minmax.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/libchdr/flac.h		
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/file/file_path.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/string/stdstring.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/lists/dir_list.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/lists/string_list.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/cdrom/cdrom.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/time/rtime.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/lists/string_list.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/cdrom/cdrom.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/time/rtime.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/vfs/vfs.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/vfs/vfs_implementation.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/vfs/vfs_implementation_cdrom.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/compat/msvc.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/vfs/vfs_implementation_cdrom.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/compat/msvc.h		
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/encodings/crc32.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/encodings/utf.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/include/encodings/utf.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/LzmaDec.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/LzmaEnc.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7z.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7zTypes.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7zFile.h	
 )
 
 set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/file/file_path.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/file/file_path_io.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/file/retro_dirent.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/compat_strl.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/compat_posix_string.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/fopen_utf8.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/memmap/memalign.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/memmap/memmap.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/file/file_path_io.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/file/retro_dirent.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/compat_strl.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/compat_posix_string.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/compat/fopen_utf8.c		
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/memmap/memalign.c	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/memmap/memmap.c		
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/cdfs/cdfs.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_bitstream.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_cdrom.c
@@ -106,7 +116,7 @@ set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_lzma.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_zlib.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_flac.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_flac_codec.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/libchdr/libchdr_flac_codec.c	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/formats/m3u/m3u_file.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/streams/chd_stream.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/streams/file_stream.c
@@ -119,16 +129,17 @@ set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/streams/trans_stream_pipe.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/streams/trans_stream_zlib.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/string/stdstring.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/utils/md5.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/vfs/vfs_implementation.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/vfs/vfs_implementation_cdrom.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/vfs/vfs_implementation_cdrom.c	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/lists/dir_list.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/lists/string_list.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/lists/string_list.c	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/time/rtime.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/cdrom/cdrom.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/cdrom/cdrom.c	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/encodings/encoding_crc32.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/encodings/encoding_utf.c
-
-	# 7zip
+	                           
+	# 7zip                     
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/LzmaDec.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/LzmaEnc.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7zBuf.c
@@ -138,11 +149,11 @@ set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7zIn.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/7zStream.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/Bcj2.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/Bra.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/Bra.c	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/LzFind.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/7zip/Lzma2Dec.c
-
-	# zip
+                                
+	# zip                      
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/adler32.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/compress.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/deflate.c
@@ -157,8 +168,8 @@ set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/trees.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/uncompr.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libz/zutil.c
-
-	# flac
+	                            
+	# flac                     
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/bitmath.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/bitreader.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/cpu.c
@@ -169,12 +180,12 @@ set(LIBRETRO_COMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/lpc.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/md5.c
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/memory.c
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/stream_decoder.c
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/stream_decoder.c	
 
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/assert.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/callback.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/assert.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/callback.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/export.h
-	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/format.h
+	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/format.h	
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/metadata.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/ordinals.h
 	${CMAKE_CURRENT_SOURCE_DIR}/libretro-common/src/libFLAC/include/FLAC/stream_decoder.h
@@ -192,7 +203,7 @@ if(MSVC)
 		string(REPLACE "/" "\\" source_path_msvc "${source_path}")
 		string(REPLACE "src" "" source_path_final "${source_path_msvc}")
 		source_group("${source_path_final}" FILES "${source}")
-	endforeach()
+	endforeach()  	
 endif()
 
 

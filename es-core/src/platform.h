@@ -46,7 +46,7 @@ BatteryInformation queryBatteryInformation();
 std::string queryIPAdress();
 
 #ifdef _ENABLEEMUELEC
-std::string getShOutput(const std::string& mStr); /* < emuelec */
+std::string getShOutput(const std::string& mStr);
 #endif
 std::string getArchString();
 
