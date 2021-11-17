@@ -126,8 +126,6 @@ bool ApiSystem::isFreeSpaceLimit()
 
 std::string ApiSystem::getVersion() 
 {
-	LOG(LogDebug) << "ApiSystem::getVersion";
-
 	std::ifstream ifs("/storage/.config/.OS_VERSION");
 	if (ifs.good()) 
 	{
@@ -141,6 +139,14 @@ std::string ApiSystem::getVersion()
 
 std::string ApiSystem::getApplicationName()
 {
+	std::ifstream ifs("/storage/.config/.OS_BUILD_DATE");
+	if (ifs.good()) 
+	{
+		std::string contents;
+		std::getline(ifs, contents);
+		return "351ELEC EmulationStation (" + contents + ")";
+	}
+
 	return "351ELEC EmulationStation";
 }
 
