@@ -141,7 +141,7 @@ std::string ApiSystem::getVersion()
 
 std::string ApiSystem::getApplicationName()
 {
-	return "BATOCERA";
+	return "351ELEC EmulationStation";
 }
 
 bool ApiSystem::setOverscan(bool enable) 

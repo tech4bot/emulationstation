@@ -951,7 +951,7 @@ void GuiMenu::addVersionInfo()
 			mVersion.setText(aboutInfo + buildDate);
 		else
 #endif
-		mVersion.setText("351ELEC ES " + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/usr/bin/emuelec-utils getip)"));
+		mVersion.setText(ApiSystem::getInstance()->getApplicationName() + " " + ApiSystem::getInstance()->getVersion() + buildDate);
 	}
 
 	mVersion.setHorizontalAlignment(ALIGN_CENTER);
