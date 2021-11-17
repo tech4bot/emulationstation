@@ -951,7 +951,7 @@ void GuiMenu::addVersionInfo()
 			mVersion.setText(aboutInfo + buildDate);
 		else
 #endif
-		mVersion.setText(ApiSystem::getInstance()->getApplicationName() + " " + ApiSystem::getInstance()->getVersion() + buildDate);
+		mVersion.setText(ApiSystem::getInstance()->getApplicationName());
 	}
 
 	mVersion.setHorizontalAlignment(ALIGN_CENTER);
