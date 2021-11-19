@@ -100,7 +100,7 @@ GuiSaveState::GuiSaveState(Window* window, FileData* game, const std::function<v
 
 void GuiSaveState::loadGrid()
 {
-	bool incrementalSaveStates = (SystemConf::getInstance()->get("global.incrementalsavestates") != "0");
+	bool incrementalSaveStates = (SystemConf::getInstance()->get("global.incrementalsavestates") == "1");
 
 	mGrid->clear();
 	mGrid->onSizeChanged(); // To Rebuild tiles

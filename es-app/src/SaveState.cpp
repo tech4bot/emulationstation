@@ -7,7 +7,7 @@
 #include "SaveStateRepository.h"
 #include "SystemConf.h"
 
-#define incrementalSaveStates (SystemConf::getInstance()->get("global.incrementalsavestates") != "0")
+#define incrementalSaveStates (SystemConf::getInstance()->get("global.incrementalsavestates") == "1")
 
 std::string SaveState::makeStateFilename(int slot, bool fullPath) const
 {

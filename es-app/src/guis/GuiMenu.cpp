@@ -2802,9 +2802,9 @@ void GuiMenu::openGamesSettings_batocera()
 	
 	// Incremental savestates
 	auto incrementalSaveStates = std::make_shared<SwitchComponent>(mWindow);
-	incrementalSaveStates->setState(SystemConf::getInstance()->get("global.incrementalsavestates") != "0");
+	incrementalSaveStates->setState(SystemConf::getInstance()->get("global.incrementalsavestates") == "1");
 	s->addWithLabel(_("INCREMENTAL SAVESTATES"), incrementalSaveStates);
-	s->addSaveFunc([incrementalSaveStates] { SystemConf::getInstance()->set("global.incrementalsavestates", incrementalSaveStates->getState() ? "" : "0"); });
+	s->addSaveFunc([incrementalSaveStates] { SystemConf::getInstance()->set("global.incrementalsavestates", incrementalSaveStates->getState() ? "1" : "0"); });
 
 	// Shaders preset
 #ifndef _ENABLEEMUELEC
