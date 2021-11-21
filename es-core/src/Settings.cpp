@@ -232,7 +232,7 @@ void Settings::setDefaults()
 	mStringMap["CollectionSystemsCustom"] = "";
 	mBoolMap["SortAllSystems"] = true; // batocera
 	mStringMap["SortSystems"] = "manufacturer";
-	mBoolMap["UseCustomCollectionsSystem"] = true;
+	mBoolMap["UseCustomCollectionsSystem"] = false;
 
 	mBoolMap["HiddenSystemsShowGames"] = false;
 	mBoolMap["CollectionShowSystemInfo"] = true;
