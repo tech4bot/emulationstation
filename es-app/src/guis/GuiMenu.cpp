@@ -2117,27 +2117,30 @@ void GuiMenu::openSystemSettings_batocera()
 	});
 #endif
 
-       auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
-		oc_enabled->setState(baseEnabled);
-		s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
-		s->addSaveFunc([this, oc_enabled] {
-			bool oc_need_reboot = false;
-			if (oc_enabled->changed()) {
-				if (oc_enabled->getState() == false) {
-					runSystemCommand("351elec-overclock off", "", nullptr);
-				} else {
-					runSystemCommand("351elec-overclock on", "", nullptr);
-				}
-				oc_need_reboot = true;
+#ifndef RG552
+	auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
+
+	bool baseEnabled = SystemConf::getInstance()->get("overclock") == "1";
+	oc_enabled->setState(baseEnabled);
+	s->addWithLabel(_("ENABLE OVERCLOCK"), oc_enabled);
+	s->addSaveFunc([this, oc_enabled] {
+		bool oc_need_reboot = false;
+		if (oc_enabled->changed()) {
+			if (oc_enabled->getState() == false) {
+				runSystemCommand("351elec-overclock off", "", nullptr);
+			} else {
+				runSystemCommand("351elec-overclock on", "", nullptr);
 			}
-			bool ocenabled = oc_enabled->getState();
-			SystemConf::getInstance()->set("overclock", ocenabled ? "1" : "0");
-			SystemConf::getInstance()->saveSystemConf();
-			if (oc_need_reboot) {
-				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-			}
-		});
+			oc_need_reboot = true;
+		}
+		bool ocenabled = oc_enabled->getState();
+		SystemConf::getInstance()->set("overclock", ocenabled ? "1" : "0");
+		SystemConf::getInstance()->saveSystemConf();
+		if (oc_need_reboot) {
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+		}
+	});
+#endif
 
 	if (!ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 	{
