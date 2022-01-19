@@ -18,6 +18,12 @@ option(ENABLE_EMUELEC "Set to ON to enable EmuELEC changes" ${ENABLE_EMUELEC})
 option(ENABLE_GAMEFORCE "Set to ON to enable Gameforce specific changes" ${ENABLE_GAMEFORCE})
 option(ODROIDGOA "Set to ON to enable Odroid Go Advance specific changes" ${ODROIDGOA})
 
+# 351ELEC
+option(RG351P "Set to ON to enable Anbernic RG351P specific changes" ${RG351P})
+option(RG351V "Set to ON to enable Anbernic RG351V specific changes" ${RG351V})
+option(RG351MP "Set to ON to enable Anbernic RG351MP specific changes" ${RG351MP})
+option(RG552 "Set to ON to enable Anbernic RG552 specific changes" ${RG552})
+
 project(emulationstation-all)
 
 #-------------------------------------------------------------------------------
@@ -39,6 +45,22 @@ endif()
 
 if("${ODROIDGOA}" STREQUAL "1")
   add_definitions(-DODROIDGOA)
+endif()
+
+if("${RG351P}" STREQUAL "1")
+  add_definitions(-DRG351P)
+endif()
+
+if("${RG351V}" STREQUAL "1")
+  add_definitions(-DRG351V)
+endif()
+
+if("${RG351MP}" STREQUAL "1")
+  add_definitions(-DRG351MP)
+endif()
+
+if("${RG552}" STREQUAL "1")
+  add_definitions(-DRG552)
 endif()
 
 # batocera / kodi menu
