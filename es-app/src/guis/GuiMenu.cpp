@@ -4312,6 +4312,7 @@ void GuiMenu::openUISettings()
 			SystemConf::getInstance()->saveSystemConf();
 		});
 
+	/*
 	auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
 	bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
 	splash_enabled->setState(splashEnabled);
@@ -4321,6 +4322,7 @@ void GuiMenu::openUISettings()
 	SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
 			SystemConf::getInstance()->saveSystemConf();
 		});
+	*/
 
 	s->addGroup(_("DISPLAY OPTIONS"));
 
