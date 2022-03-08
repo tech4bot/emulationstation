@@ -125,6 +125,8 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ NAOMI, "23" },
 	{ ATOMISWAVE, "23" },
 	{ DAPHNE, "23" },
+	{ AMERICANLASERGAMES, "23" },
+	{ ACTIONMAX, "4976" },
 
 	{ SUPER_NINTENDO_MSU1, "6" },
 

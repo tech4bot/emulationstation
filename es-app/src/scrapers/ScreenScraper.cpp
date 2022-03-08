@@ -144,6 +144,8 @@ const std::map<PlatformId, unsigned short> screenscraper_platformid_map{
 	{ SPECTRAVIDEO, 218 },
 	{ PALMOS, 219 },
 	{ DAPHNE, 49 },
+	{ AMERICANLASERGAMES, 170 },
+	{ ACTIONMAX, 81 },
 	{ SOLARUS, 223 },
 	{ PICO8, 234 },
 	{ SUPER_CASSETTE_VISION, 67 },
