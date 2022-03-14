@@ -421,19 +421,19 @@ std::string getArchString()
 #endif
 
 #if RG351P
-	return "rg351p";
+	return "351elec-rg351p";
 #endif
 
 #if RG351V
-	return "rg351v";
+	return "351elec-rg351v";
 #endif
 
 #if RG351MP
-	return "rg351mp";
+	return "351elec-rg351mp";
 #endif
 
 #if RG552
-	return "rg552";
+	return "351elec-rg552";
 #endif
 
 #if ODROIDGOA
