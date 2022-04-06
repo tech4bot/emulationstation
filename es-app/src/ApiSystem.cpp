@@ -144,10 +144,10 @@ std::string ApiSystem::getApplicationName()
 	{
 		std::string contents;
 		std::getline(ifs, contents);
-		return "351ELEC EmulationStation (" + contents + ")";
+		return "AmberELEC EmulationStation (" + contents + ")";
 	}
 
-	return "351ELEC EmulationStation";
+	return "AmberELEC EmulationStation";
 }
 
 bool ApiSystem::setOverscan(bool enable)
@@ -171,14 +171,14 @@ std::pair<std::string, int> ApiSystem::updateSystem(const std::function<void(con
 {
 	LOG(LogDebug) << "ApiSystem::updateSystem";
 
-	std::string updatecommand = "351elec-upgrade";
+	std::string updatecommand = "amberelec-upgrade";
 
 	FILE *pipe = popen(updatecommand.c_str(), "r");
 	if (pipe == nullptr)
 		return std::pair<std::string, int>(std::string("Cannot call update command"), -1);
 
 	char line[1024] = "";
-	FILE *flog = fopen("/tmp/logs/351elec-upgrade.log", "w");
+	FILE *flog = fopen("/tmp/logs/amberelec-upgrade.log", "w");
 	while (fgets(line, 1024, pipe))
 	{
 		strtok(line, "\n");
@@ -269,7 +269,7 @@ std::pair<std::string, int> ApiSystem::scrape(BusyComponent* ui)
 
 	char line[1024] = "";
 
-	FILE* flog = fopen("/tmp/logs/351elec-scraper.log", "w");
+	FILE* flog = fopen("/tmp/logs/amberelec-scraper.log", "w");
 	while (fgets(line, 1024, pipe))
 	{
 		strtok(line, "\n");
@@ -794,7 +794,7 @@ std::vector<ThreeFiftyOnePackage> ApiSystem::getThreeFiftyOnePackagesList()
 
         std::vector<ThreeFiftyOnePackage> res;
 
-        std::string command = "351elec-es-packages list";
+        std::string command = "amberelec-es-packages list";
         FILE *pipe = popen(command.c_str(), "r");
         if (pipe == NULL)
                 return res;
@@ -829,12 +829,12 @@ std::vector<ThreeFiftyOnePackage> ApiSystem::getThreeFiftyOnePackagesList()
 
 std::pair<std::string, int> ApiSystem::installThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func)
 {
-        return executeScript("351elec-es-packages install " + thname, func);
+        return executeScript("amberelec-es-packages install " + thname, func);
 }
 
 std::pair<std::string, int> ApiSystem::uninstallThreeFiftyOnePackage(std::string thname, const std::function<void(const std::string)>& func)
 {
-        return executeScript("351elec-es-packages remove " + thname, func);
+        return executeScript("amberelec-es-packages remove " + thname, func);
 }
 
 std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
@@ -900,7 +900,7 @@ std::string ApiSystem::getUpdateUrl()
 
 	if (!systemsetting.empty())
 		return systemsetting;
-	std::string SendBack = "https://github.com/351ELEC/351ELEC-metadata/raw/main/" + MyArch;
+	std::string SendBack = "https://github.com/AmberELEC/metadata/raw/main/" + MyArch;
 	return SendBack;
 }
 

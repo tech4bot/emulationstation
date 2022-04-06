@@ -215,19 +215,19 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("OK"), "ok", [this, okFunction] { // batocera
 		// check if the hotkey enable button is set. if not prompt the user to use select or nothing.
 		Input input;
-		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) { // 351ELEC
+		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) { // AmberELEC
 			mWindow->pushGui(new GuiMsgBox(mWindow,
 				_("NO HOTKEY BUTTON HAS BEEN ASSIGNED. THIS IS REQUIRED FOR EXITING GAMES WITH A CONTROLLER. DO YOU WANT TO USE THE SELECT BUTTON AS YOUR HOTKEY?"),  // batocera
 				_("SET SELECT AS HOTKEY"), [this, okFunction] { // batocera
 					Input input;
 					mTargetConfig->getInputByName("Select", &input);
-					mTargetConfig->mapInput("HotKeyEnable", input); // 351ELEC
+					mTargetConfig->mapInput("HotKeyEnable", input); // AmberELEC
 					okFunction();
 					},
 				_("DO NOT ASSIGN HOTKEY"), [this, okFunction] { // batocera
 					// for a disabled hotkey enable button, set to a key with id 0,
 					// so the input configuration script can be backwards compatible.
-                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // 351ELEC
+                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // AmberELEC
 					okFunction();
 				}
 			));
@@ -353,7 +353,7 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	// (if it's the same as what it was before, allow it)
 	if (mTargetConfig->getMappedTo(input).size() > 0 && 
 		!mTargetConfig->isMappedTo(GUI_INPUT_CONFIG_LIST[inputId].name, input) && 
-        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // 351ELEC
+        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // AmberELEC
 	{
 		error(mMappings.at(inputId), "Already mapped!");
 		return false;

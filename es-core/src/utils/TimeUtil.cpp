@@ -320,7 +320,7 @@ namespace Utils
 			char buf[256];
 
 			int h = 0, m = 0, s = 0;
-			h = (seconds / 3600); //351ELEC
+			h = (seconds / 3600); //AmberELEC
 			m = (seconds / 60) % 60;
 			s = seconds % 60;
 			

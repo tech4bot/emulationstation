@@ -1757,7 +1757,7 @@ std::map<std::string, ThemeSet> ThemeData::getThemeSets()
 	{ 
 		"/etc/emulationstation/themes",
 		Utils::FileSystem::getEsConfigPath() + "/themes",
-		"/storage/.config/emulationstation/themes/" // 351ELEC
+		"/storage/.config/emulationstation/themes/" // AmberELEC
 	};
 
 	for(size_t i = 0; i < pathCount; i++)

@@ -121,7 +121,7 @@ int runSystemCommand(const std::string& cmd_utf8, const std::string& name, Windo
 
 	return 1;
 #else
-	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // 351ELEC
+	return system((cmd_utf8 + " 2> /tmp/logs/es_launch_stderr.log > /tmp/logs/es_launch_stdout.log").c_str()); // AmberELEC
 #endif
 }
 
@@ -421,19 +421,19 @@ std::string getArchString()
 #endif
 
 #if RG351P
-	return "351elec-rg351p";
+	return "amberelec-rg351p";
 #endif
 
 #if RG351V
-	return "351elec-rg351v";
+	return "amberelec-rg351v";
 #endif
 
 #if RG351MP
-	return "351elec-rg351mp";
+	return "amberelec-rg351mp";
 #endif
 
 #if RG552
-	return "351elec-rg552";
+	return "amberelec-rg552";
 #endif
 
 #if ODROIDGOA

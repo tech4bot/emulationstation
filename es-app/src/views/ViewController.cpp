@@ -858,8 +858,8 @@ bool ViewController::input(InputConfig* config, Input input)
 		return true;
 	}
 
-	// 351ELEC next song
-	if(config->isMappedTo("leftthumb", input) && input.value != 0) // 351ELEC
+	// AmberELEC next song
+	if(config->isMappedTo("leftthumb", input) && input.value != 0) // AmberELEC
 	{
 		// next song
 		AudioManager::getInstance()->playRandomMusic(false);

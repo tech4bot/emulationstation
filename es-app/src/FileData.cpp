@@ -611,7 +611,7 @@ bool FileData::launchGame(Window* window, LaunchGameOptions options)
 		CollectionSystemManager::get()->refreshCollectionSystems(gameToUpdate);
 		saveToGamelistRecovery(gameToUpdate);
 	} else {
-		// show 351ELEC error message
+		// show AmberELEC error message
 		LOG(LogWarning) << "...Show Error message! exit code " << exitCode << "!";
 	}
 

@@ -8,8 +8,8 @@
 #include "guis/GuiGeneralScreensaverOptions.h"
 #include "guis/GuiMsgBox.h"
 #include "guis/GuiScraperStart.h"
-#include "guis/GuiPackageInstaller.h" //351elec
-#include "guis/GuiDecorationOptions.h" //351elec
+#include "guis/GuiPackageInstaller.h" //AmberELEC
+#include "guis/GuiDecorationOptions.h" //AmberELEC
 #include "guis/GuiHashStart.h"
 #include "guis/GuiThemeInstaller.h" //batocera
 #include "guis/GuiBezelInstaller.h" //batocera
@@ -582,7 +582,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #endif
 
     dangerZone->addEntry(_("BACKUP CONFIGURATIONS"), true, [mWindow] {
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/351ELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/AmberELEC_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
 				[] {
 				runSystemCommand("systemd-run /usr/bin/emuelec-utils ee_backup backup", "", nullptr);
 				}, _("NO"), nullptr));
@@ -2127,9 +2127,9 @@ void GuiMenu::openSystemSettings_batocera()
 		bool oc_need_reboot = false;
 		if (oc_enabled->changed()) {
 			if (oc_enabled->getState() == false) {
-				runSystemCommand("351elec-overclock off", "", nullptr);
+				runSystemCommand("amberelec-overclock off", "", nullptr);
 			} else {
-				runSystemCommand("351elec-overclock on", "", nullptr);
+				runSystemCommand("amberelec-overclock on", "", nullptr);
 			}
 			oc_need_reboot = true;
 		}
@@ -4228,7 +4228,7 @@ void GuiMenu::openUISettings()
 		{
 #ifdef _ENABLEEMUELEC
 			std::string selectedLanguage = language_choice->getSelected();
-			std::string msg = _("You are about to set 351ELEC Language to:") +"\n" +  selectedLanguage + "\n";
+			std::string msg = _("You are about to set AmberELEC Language to:") +"\n" +  selectedLanguage + "\n";
 			msg += _("Emulationstation will restart")+"\n";
 			msg += _("Do you want to proceed ?");
 			window->pushGui(new GuiMsgBox(window, msg, _("YES"), [selectedLanguage] {
@@ -5232,7 +5232,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
 		systemConfiguration->addSaveFunc([maxperf_enabled, configName] { SystemConf::getInstance()->set(configName + ".maxperf", maxperf_enabled->getSelected()); });
 
-	// Enable Decorations for 351ELEC
+	// Enable Decorations for AmberELEC
 	// decorations
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
 	{
@@ -5264,7 +5264,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			}
 			systemConfiguration->addWithLabel(_("DECORATION SET"), decorations);
 
-			//351elec - set decoration on change so it's update for decoration options without exiting screen
+			//AmberELEC - set decoration on change so it's update for decoration options without exiting screen
 			decorations->setSelectedChangedCallback([decorations, configName](std::string value)
 			{
 				LOG(LogDebug) << "Setting bezel on change: " << configName << " to: " << value;

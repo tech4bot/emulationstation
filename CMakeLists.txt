@@ -18,7 +18,7 @@ option(ENABLE_EMUELEC "Set to ON to enable EmuELEC changes" ${ENABLE_EMUELEC})
 option(ENABLE_GAMEFORCE "Set to ON to enable Gameforce specific changes" ${ENABLE_GAMEFORCE})
 option(ODROIDGOA "Set to ON to enable Odroid Go Advance specific changes" ${ODROIDGOA})
 
-# 351ELEC
+# AmberELEC
 option(RG351P "Set to ON to enable Anbernic RG351P specific changes" ${RG351P})
 option(RG351V "Set to ON to enable Anbernic RG351V specific changes" ${RG351V})
 option(RG351MP "Set to ON to enable Anbernic RG351MP specific changes" ${RG351MP})

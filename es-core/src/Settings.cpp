@@ -151,7 +151,7 @@ void Settings::setDefaults()
 	// Rpi 0, 1
 	mIntMap["MaxVRAM"] = 128;
 #elif defined(_ENABLEEMUELEC)
-	// 351ELEC
+	// AmberELEC
 	mIntMap["MaxVRAM"] = 128;
 #else 
 	// Other boards
@@ -185,7 +185,7 @@ void Settings::setDefaults()
 	// mStringMap["SlideshowScreenSaverBackgroundAudioFile"] = "/userdata/music/slideshow_bg.wav"; // batocera
 	mBoolMap["SlideshowScreenSaverCustomImageSource"] = false;
 #ifdef _ENABLEEMUELEC
-	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/screenshots"; // 351ELEC
+	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/screenshots"; // AmberELEC
 #else
 	mStringMap["SlideshowScreenSaverImageDir"] = "/userdata/screenshots"; // batocera
 #endif
@@ -197,7 +197,7 @@ void Settings::setDefaults()
 
 	mBoolMap["SlideshowScreenSaverCustomVideoSource"] = false;
 #ifdef _ENABLEEMUELEC
-	mStringMap["SlideshowScreenSaverVideoDir"] = "/storage/roms/mplayer"; // 351ELEC
+	mStringMap["SlideshowScreenSaverVideoDir"] = "/storage/roms/mplayer"; // AmberELEC
 	mStringMap["SlideshowScreenSaverVideoFilter"] = ".mp4,.avi,.mkv,.flv,.mpg,.mov";
 	mBoolMap["SlideshowScreenSaverVideoRecurse"] = true;
 #else

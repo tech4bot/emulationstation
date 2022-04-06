@@ -56,7 +56,7 @@ VolumeInfoComponent::VolumeInfoComponent(Window* window, bool actionLine)
 
 	// FCA TopLeft
 	float posX = Renderer::getScreenWidth() * 0.02f;
-	float posY = Renderer::getScreenHeight() * 0.13f; //351ELEC
+	float posY = Renderer::getScreenHeight() * 0.13f; //AmberELEC
 
 	setPosition(posX, posY, 0);
 	setOpacity(BASEOPACITY);
