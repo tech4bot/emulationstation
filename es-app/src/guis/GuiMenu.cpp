@@ -5196,7 +5196,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
 		auto integerscaleoverscale_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("INTEGER SCALE OVERSCALE"));
 		integerscaleoverscale_enabled->addRange({ { _("AUTO"), "auto" },{ _("ON") , "1" },{ _("OFF"), "0" } }, SystemConf::getInstance()->get(configName + ".integerscaleoverscale"));
-		systemConfiguration->addWithLabel(_("INTEGER SCALE OVERSCALE)"), integerscaleoverscale_enabled);
+		systemConfiguration->addWithLabel(_("INTEGER SCALE OVERSCALE"), integerscaleoverscale_enabled);
 		systemConfiguration->addSaveFunc([integerscaleoverscale_enabled, configName] { SystemConf::getInstance()->set(configName + ".integerscaleoverscale", integerscaleoverscale_enabled->getSelected()); });
 	}
 #ifdef _ENABLEEMUELEC
