@@ -449,23 +449,23 @@ bool SystemView::input(InputConfig* config, Input input)
 		{
 		case VERTICAL:
 		case VERTICAL_WHEEL:
-			if (config->isMappedLike("up", input) || config->isMappedLike("l2", input))
+			if (config->isMappedLike("up", input) || config->isMappedLike("leftshoulder", input))
 			{
 				listInput(-1);
 				return true;
 			}
-			if (config->isMappedLike("down", input) || config->isMappedLike("r2", input))
+			if (config->isMappedLike("down", input) || config->isMappedLike("rightshoulder", input))
 			{
 				listInput(1);
 				return true;
 			}
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("rightshoulder", input))
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("righttrigger", input))
 			{
 				int cursor = moveCursorFast(true);
 				listInput(cursor - mCursor);				
 				return true;
 			}
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("leftshoulder", input))
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("lefttrigger", input))
 			{
 				int cursor = moveCursorFast(false);
 				listInput(cursor - mCursor);
@@ -476,23 +476,23 @@ bool SystemView::input(InputConfig* config, Input input)
 		case HORIZONTAL:
 		case HORIZONTAL_WHEEL:
 		default:
-			if (config->isMappedLike("left", input) || config->isMappedLike("l2", input))
+			if (config->isMappedLike("left", input) || config->isMappedLike("leftshoulder", input))
 			{
 				listInput(-1);
 				return true;
 			}
-			if (config->isMappedLike("right", input) || config->isMappedLike("r2", input))
+			if (config->isMappedLike("right", input) || config->isMappedLike("rightshoulder", input))
 			{
 				listInput(1);
 				return true;
 			}
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("rightshoulder", input))
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("righttrigger", input))
 			{
 				int cursor = moveCursorFast(true);
 				listInput(cursor - mCursor);
 				return true;
 			}
-			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("leftshoulder", input))
+			if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("lefttrigger", input))
 			{
 				int cursor = moveCursorFast(false);
 				listInput(cursor - mCursor);
@@ -556,8 +556,8 @@ bool SystemView::input(InputConfig* config, Input input)
 			config->isMappedLike("down", input) ||
 			config->isMappedLike("rightshoulder", input) ||
 			config->isMappedLike("leftshoulder", input) ||
-			config->isMappedLike("l2", input) ||
-			config->isMappedLike("r2", input))
+			config->isMappedLike("lefttrigger", input) ||
+			config->isMappedLike("righttrigger", input))
 			listInput(0);
 		/*
 #ifdef WIN32
