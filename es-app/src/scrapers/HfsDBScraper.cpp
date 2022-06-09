@@ -127,6 +127,10 @@ const std::map<PlatformId, std::string> hfsdb_platformids
 	{ ZX_SPECTRUM, "100295" },
 	{ AMERICANLASERGAMES, "75549" },
 	{ ACTIONMAX, "136148" },
+	{ CASIO_PV1000, "190512" },
+	{ ENTEX_ADVENTURE_VISION, "35850" },
+	{ EPOCH_GAME_POCKET_COMPUTER, "190501" },
+	{ HARTUNG_GAMEMASTER, "240872" },
 };
 
 void HfsDBScraper::generateRequests(const ScraperSearchParams& params, std::queue<std::unique_ptr<ScraperRequest>>& requests, std::vector<ScraperSearchResult>& results)

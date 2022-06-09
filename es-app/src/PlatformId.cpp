@@ -102,6 +102,11 @@ namespace PlatformIds
 		{ "watara",			WATARA_SUPERVISION },
 		{ "supervision",		WATARA_SUPERVISION },
 		{ "megaduck",			MEGADUCK },
+		{ "gamate",			BITCORP_GAMATE },
+		{ "pv1000",			CASIO_PV1000 },
+		{ "advision",			ENTEX_ADVENTURE_VISION },
+		{ "gamepocketcomputer",		EPOCH_GAME_POCKET_COMPUTER },
+		{ "gamemaster",			HARTUNG_GAMEMASTER },
 
 		// batocera specific names
 		{ "gb2players",			GAME_BOY },

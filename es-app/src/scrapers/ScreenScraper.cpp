@@ -127,6 +127,10 @@ const std::map<PlatformId, unsigned short> screenscraper_platformid_map{
 	{ MODEL3, 55 },
 	{ TI99, 205 },
 	{ WATARA_SUPERVISION, 207 },
+	{ CASIO_PV1000, 74},
+	{ ENTEX_ADVENTURE_VISION, 78},
+	{ EPOCH_GAME_POCKET_COMPUTER, 95 },
+	{ HARTUNG_GAMEMASTER, 103 },
 
 	// Windows
 	{ VISUALPINBALL, 198 },

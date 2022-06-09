@@ -112,6 +112,9 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ FMTOWNS, "4932" },
 	{ PHILIPS_CDI, "4917" },
 	{ WATARA_SUPERVISION, "4959" },
+	{ BITCORP_GAMATE, "5004" },
+	{ CASIO_PV1000, "4964" },
+	{ ENTEX_ADVENTURE_VISION, "4974" },
 	{ SONIC, "36,21" }, // Sega Mega Drive & Sega CD
 
 	// 1 = PC
