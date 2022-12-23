@@ -151,6 +151,7 @@ namespace PlatformIds
 		PHILIPS_CDI,
 		SUPER_NINTENDO_MSU1,
 		Z_MACHINE,
+		LOWRES_NX,
 
 		PLATFORM_IGNORE, // do not allow scraping for this system
 		PLATFORM_COUNT
