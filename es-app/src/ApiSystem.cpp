@@ -898,6 +898,14 @@ std::string ApiSystem::getUpdateUrl()
 	MyArch = "RG552";
 #endif
 
+#ifdef RG353
+	MyArch = "RG353";
+#endif
+
+#ifdef RG503
+	MyArch = "RG503";
+#endif
+
 	if (!systemsetting.empty())
 		return systemsetting;
 	std::string SendBack = "https://github.com/AmberELEC/metadata/raw/main/" + MyArch;

@@ -23,6 +23,8 @@ option(RG351P "Set to ON to enable Anbernic RG351P specific changes" ${RG351P})
 option(RG351V "Set to ON to enable Anbernic RG351V specific changes" ${RG351V})
 option(RG351MP "Set to ON to enable Anbernic RG351MP specific changes" ${RG351MP})
 option(RG552 "Set to ON to enable Anbernic RG552 specific changes" ${RG552})
+option(RG353 "Set to ON to enable Anbernic RG353 specific changes" ${RG353})
+option(RG503 "Set to ON to enable Anbernic RG503 specific changes" ${RG503})
 
 project(emulationstation-all)
 
@@ -61,6 +63,14 @@ endif()
 
 if("${RG552}" STREQUAL "1")
   add_definitions(-DRG552)
+endif()
+
+if("${RG353}" STREQUAL "1")
+  add_definitions(-DRG353)
+endif()
+
+if("${RG503}" STREQUAL "1")
+  add_definitions(-DRG503)
 endif()
 
 # batocera / kodi menu

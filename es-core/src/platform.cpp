@@ -436,6 +436,14 @@ std::string getArchString()
 	return "amberelec-rg552";
 #endif
 
+#if RG353
+	return "amberelec-rg353";
+#endif
+
+#if RG503
+	return "amberelec-rg503";
+#endif
+
 #if ODROIDGOA
 	return "odroidgoa";
 #endif
