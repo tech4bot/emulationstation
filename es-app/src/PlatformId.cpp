@@ -175,6 +175,7 @@ namespace PlatformIds
 		{ "snes-msu1",			SUPER_NINTENDO_MSU1 },
 		{ "z-machine",			Z_MACHINE },
 		{ "lowresnx",			LOWRES_NX },
+		{ "wasm4",			WASM4 },
 
 		{ "ignore",			PLATFORM_IGNORE },
 		{ "invalid",			PLATFORM_COUNT }

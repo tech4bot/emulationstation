@@ -152,6 +152,7 @@ namespace PlatformIds
 		SUPER_NINTENDO_MSU1,
 		Z_MACHINE,
 		LOWRES_NX,
+		WASM4,
 
 		PLATFORM_IGNORE, // do not allow scraping for this system
 		PLATFORM_COUNT
