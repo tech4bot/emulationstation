@@ -106,7 +106,7 @@ const std::map<PlatformId, unsigned short> screenscraper_platformid_map{
 	{ TRS80_COLOR_COMPUTER, 144 },
 	{ TANDY, 144 },
 	{ SUPERGRAFX, 105 },
-	{ MEGADUCK, 90},
+	{ CREATONIC_MEGA_DUCK, 90},
 
 	{ AMIGACD32, 130 },
 	{ AMIGACDTV, 129 },
@@ -169,7 +169,8 @@ const std::map<PlatformId, unsigned short> screenscraper_platformid_map{
 	{ SUPER_NINTENDO_MSU1, 210 },
 	{ Z_MACHINE, 215 },
 	{ LOWRES_NX, 244 },
-	{ WASM4, 262 }
+	{ WASM4, 262 },
+	{ ARDUBOY, 263 }
 };
 
 // Help XML parsing method, finding an direct child XML node starting from the parent and filtering by an attribute value list.

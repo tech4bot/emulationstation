@@ -73,8 +73,8 @@ namespace PlatformIds
 		{ "scummvm",			SCUMMVM },
 		{ "x1",				SHARP_X1 },
 		{ "x68000",			SHARP_X6800 },
-		{ "pcengine",			TURBOGRAFX_16 }, // (aka PC Engine) HuCards onlyy
-		{ "pcenginecd",			TURBOGRAFX_CD }, // (aka PC Engine) CD-ROMs onlynly
+		{ "pcengine",			TURBOGRAFX_16 }, // (aka PC Engine) HuCards only
+		{ "pcenginecd",			TURBOGRAFX_CD }, // (aka PC Engine) CD-ROMs only
 		{ "wonderswan",			WONDERSWAN },
 		{ "wonderswancolor",		WONDERSWAN_COLOR },
 		{ "zxspectrum",			ZX_SPECTRUM },
@@ -101,10 +101,11 @@ namespace PlatformIds
 		{ "tic80",			TIC80 },
 		{ "watara",			WATARA_SUPERVISION },
 		{ "supervision",		WATARA_SUPERVISION },
-		{ "megaduck",			MEGADUCK },
+		{ "megaduck",			CREATONIC_MEGA_DUCK },
 		{ "gamate",			BITCORP_GAMATE },
 		{ "pv1000",			CASIO_PV1000 },
 		{ "advision",			ENTEX_ADVENTURE_VISION },
+		{ "arcadia",			EMERSON_ARCADIA_2001 },
 		{ "gamepocketcomputer",		EPOCH_GAME_POCKET_COMPUTER },
 		{ "gamemaster",			HARTUNG_GAMEMASTER },
 
@@ -171,6 +172,7 @@ namespace PlatformIds
 
 		{ "fmtowns",			FMTOWNS },
 		{ "cdi",			PHILIPS_CDI },
+		{ "arduboy",			ARDUBOY },
 
 		{ "snes-msu1",			SUPER_NINTENDO_MSU1 },
 		{ "z-machine",			Z_MACHINE },
