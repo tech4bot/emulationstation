@@ -414,7 +414,7 @@ bool ApiSystem::enableWifi(std::string ssid, std::string key)
 	key = regex_replace(key,tic,"\\'");
         ssid = regex_replace(ssid,tic,"\\'");
 #ifdef _ENABLEEMUELEC
-	return executeScript("batocera-config wifi enable $\'" + ssid + "\' $\'" + key + "\'");
+	return executeScript("batocera-config wifi enable $\'" + ssid + "\' $\'" + key + "\' &");
 #else
 	return executeScript("batocera-wifi enable \"" + ssid + "\" \"" + key + "\"");
 #endif
@@ -423,7 +423,7 @@ bool ApiSystem::enableWifi(std::string ssid, std::string key)
 bool ApiSystem::disableWifi()
 {
 #ifdef _ENABLEEMUELEC
-	return executeScript("batocera-config wifi disable");
+	return executeScript("batocera-config wifi disable &");
 #else
 	return executeScript("batocera-wifi disable");
 #endif

@@ -4648,7 +4648,7 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 		bool sshbaseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
 		sshd_enabled->setState(sshbaseEnabled);
 		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
-		s->addSaveFunc([sshd_enabled] {
+		sshd_enabled->setOnChangedCallback([sshd_enabled] {
 			if (sshd_enabled->getState() == false) {
 				runSystemCommand("systemctl stop sshd", "", nullptr);
 				runSystemCommand("systemctl disable sshd", "", nullptr);
@@ -4668,7 +4668,7 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 		bool smbbaseEnabled = SystemConf::getInstance()->get("ee_samba.enabled") == "1";
 		samba_enabled->setState(smbbaseEnabled);
 		s->addWithLabel(_("ENABLE SAMBA"), samba_enabled);
-		s->addSaveFunc([samba_enabled] {
+		samba_enabled->setOnChangedCallback([samba_enabled] {
 			if (samba_enabled->getState() == false) {
 				runSystemCommand("systemctl stop nmbd", "", nullptr);
 				runSystemCommand("systemctl disable nmbd", "", nullptr);
@@ -4695,18 +4695,14 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 		webui_enabled->setState(webuibaseEnabled);
 		auto web_ui_location = "http://"+ApiSystem::getInstance()->getIpAdress()+" or http://"+ApiSystem::getInstance()->getHostsName();
 		s->addWithDescription(_("ENABLE WEB UI"),_(web_ui_location.c_str()), webui_enabled);
-		s->addSaveFunc([webui_enabled] {
+		webui_enabled->setOnChangedCallback([webui_enabled] {
 			if (webui_enabled->getState() == false) {
-				runSystemCommand("systemctl stop webui", "", nullptr);
-				runSystemCommand("systemctl disable webui", "", nullptr);
 				runSystemCommand("systemctl stop webui", "", nullptr);
 				runSystemCommand("systemctl disable webui", "", nullptr);
 				runSystemCommand("rm /storage/.cache/services/webui.conf", "", nullptr);
 			} else {
 				runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
 				runSystemCommand("touch /storage/.cache/services/webui.conf", "", nullptr);
-				runSystemCommand("systemctl enable webui", "", nullptr);
-				runSystemCommand("systemctl start webui", "", nullptr);
 				runSystemCommand("systemctl enable webui", "", nullptr);
 				runSystemCommand("systemctl start webui", "", nullptr);
 			}
@@ -4786,7 +4782,7 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 			const std::string interalWifiDisableString = (disableInternalWifi->getState()) ? "disable" : "enable";
 			SystemConf::getInstance()->setBool("wifi.internal.disabled", disableInternalWifi->getState());
 			LOG(LogDebug) << "Calling: batocera-internal-wifi " << interalWifiDisableString;
-			runSystemCommand("/usr/bin/batocera-internal-wifi "+interalWifiDisableString, "", nullptr);
+			runSystemCommand("/usr/bin/batocera-internal-wifi "+interalWifiDisableString+" &", "", nullptr);
 		});
 	}
 #endif
