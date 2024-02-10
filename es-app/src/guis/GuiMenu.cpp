@@ -1624,13 +1624,13 @@ void GuiMenu::openUpdatesSettings()
 	}
 
 	// Community package installer/browser
-	updateGui->addEntry(_("PACKAGES"), true, [this]
-	{
-		if (!checkNetwork())
-			return;
+	//updateGui->addEntry(_("PACKAGES"), true, [this]
+	//{
+	//	if (!checkNetwork())
+	//		return;
 
-		mWindow->pushGui(new GuiPackageInstallStart(mWindow));
-	});
+	//	mWindow->pushGui(new GuiPackageInstallStart(mWindow));
+	//});
 
 	// Batocera integration with theBezelProject
 	//if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::DECORATIONS) && ApiSystem::getInstance()->isScriptingSupported(ApiSystem::THEBEZELPROJECT))
