@@ -5593,7 +5593,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					std::string storedValue = SystemConf::getInstance()->get(storageName);
 
 					auto cf = std::make_shared<OptionListComponent<std::string>>(mWindow, _(feat.name.c_str()));
-					cf->add(_("AUTO"), "", storedValue.empty() || storedValue == "auto");
+					// AmberELEC hide AUTO option for some features
+					if (feat.value != "GB_Colorization" && feat.value != "Internal_Palette" && feat.value != "TWB64_-_Pack_1" && feat.value != "TWB64_-_Pack_2" && feat.value != "TWB64_-_Pack_3" && feat.value != "PixelShift_-_Pack_1")
+						cf->add(_("AUTO"), "", storedValue.empty() || storedValue == "auto");
 
 					for (auto fval : feat.choices)
 						cf->add(_(fval.name.c_str()), fval.value, storedValue == fval.value);
