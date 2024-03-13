@@ -4688,6 +4688,21 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 				SystemConf::getInstance()->saveSystemConf();
 		});
 
+       auto syncthing_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool syncthingEnabled = SystemConf::getInstance()->get("ee_syncthing.enabled") == "1";
+                syncthing_enabled->setState(syncthingEnabled);
+                s->addWithLabel(_("ENABLE SYNCTHING"), syncthing_enabled);
+                syncthing_enabled->setOnChangedCallback([syncthing_enabled] {
+                        if (syncthing_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop syncthing", "", nullptr);
+                        } else {
+                                runSystemCommand("systemctl start syncthing", "", nullptr);
+                        }
+                bool syncthingenabled = syncthing_enabled->getState();
+                SystemConf::getInstance()->set("ee_syncthing.enabled", syncthingenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                });
+
 //Right now limit webui to RG552
 #ifdef RG552
        auto webui_enabled = std::make_shared<SwitchComponent>(mWindow);
