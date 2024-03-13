@@ -4691,7 +4691,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
        auto syncthing_enabled = std::make_shared<SwitchComponent>(mWindow);
                 bool syncthingEnabled = SystemConf::getInstance()->get("ee_syncthing.enabled") == "1";
                 syncthing_enabled->setState(syncthingEnabled);
-                s->addWithLabel(_("ENABLE SYNCTHING"), syncthing_enabled);
+		auto syncthing_location = "http://"+ApiSystem::getInstance()->getIpAdress()+":8384 or http://"+ApiSystem::getInstance()->getHostsName()+":8384";
+		s->addWithDescription(_("ENABLE SYNCTHING"),_(syncthing_location.c_str()), syncthing_enabled);
                 syncthing_enabled->setOnChangedCallback([syncthing_enabled] {
                         if (syncthing_enabled->getState() == false) {
                                 runSystemCommand("systemctl stop syncthing", "", nullptr);
