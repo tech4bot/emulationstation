@@ -28,7 +28,7 @@ int runShutdownCommand()
 #ifdef WIN32 // windows
 	return system("shutdown -s -t 0");
 #elif defined (_ENABLEEMUELEC)
-    return system("sync ; systemctl poweroff");
+    return system("show_splash.sh ; sync ; systemctl poweroff");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -h now");
 #endif
@@ -39,7 +39,7 @@ int runRestartCommand()
 #ifdef WIN32 // windows	
 	return system("shutdown -r -t 0");
 #elif defined (_ENABLEEMUELEC)
-    return system("sync ; systemctl reboot");
+    return system("show_splash.sh ; sync ; systemctl reboot");
 #else // osx / linux	
 	return system("/usr/bin/shutdown.sh -r now");
 #endif
