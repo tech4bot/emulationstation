@@ -25,6 +25,13 @@
 
 #define FADE_TIME 			500
 
+void setBacklight(int power_value) {
+    FILE *power_file;
+    power_file = fopen("/sys/class/backlight/backlight/bl_power", "w");
+    fprintf(power_file, "%d", power_value);
+    fclose(power_file);
+}
+
 SystemScreenSaver::SystemScreenSaver(Window* window) :
 	mVideoScreensaver(NULL),
 	mImageScreensaver(NULL),
@@ -168,6 +175,10 @@ void SystemScreenSaver::startScreenSaver()
 			return;
 		}	
 	}
+	else if (screensaver_behavior == "black")
+	{
+		setBacklight(1);
+	}
 
 	// No videos. Just use a standard screensaver
 	mState = STATE_SCREENSAVER_ACTIVE;
@@ -207,6 +218,7 @@ void SystemScreenSaver::stopScreenSaver()
 				AudioManager::getInstance()->playRandomMusic();
 		}
 	}
+	setBacklight(0);
 }
 
 void SystemScreenSaver::renderScreenSaver()
