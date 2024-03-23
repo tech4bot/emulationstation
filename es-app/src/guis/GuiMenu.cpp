@@ -1092,23 +1092,23 @@ void GuiMenu::openSystemInformations_batocera()
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
 	GuiSettings *informationsGui = new GuiSettings(window, _("INFORMATION").c_str());
 
-	informationsGui->addGroup(_("INFORMATION"));
+	//informationsGui->addGroup(_("INFORMATION"));
 
-	auto version = std::make_shared<TextComponent>(window, ApiSystem::getInstance()->getVersion(), font, color);
-	informationsGui->addWithLabel(_("VERSION"), version);
+	//auto version = std::make_shared<TextComponent>(window, ApiSystem::getInstance()->getVersion(), font, color);
+	//informationsGui->addWithLabel(_("VERSION"), version);
 
-	bool warning = ApiSystem::getInstance()->isFreeSpaceLimit();
-	auto userspace = std::make_shared<TextComponent>(window,
-		ApiSystem::getInstance()->getFreeSpaceUserInfo(),
-		font,
-		warning ? 0xFF0000FF : color);
-	informationsGui->addWithLabel(_("USER DISK USAGE"), userspace);
+	//bool warning = ApiSystem::getInstance()->isFreeSpaceLimit();
+	//auto userspace = std::make_shared<TextComponent>(window,
+	//	ApiSystem::getInstance()->getFreeSpaceUserInfo(),
+	//	font,
+	//	warning ? 0xFF0000FF : color);
+	//informationsGui->addWithLabel(_("USER DISK USAGE"), userspace);
 
-	auto systemspace = std::make_shared<TextComponent>(window,
-		ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
-		font,
-		color);
-	informationsGui->addWithLabel(_("SYSTEM DISK USAGE"), systemspace);
+	//auto systemspace = std::make_shared<TextComponent>(window,
+	//	ApiSystem::getInstance()->getFreeSpaceSystemInfo(),
+	//	font,
+	//	color);
+	//informationsGui->addWithLabel(_("SYSTEM DISK USAGE"), systemspace);
 
 	informationsGui->addGroup(_("SYSTEM"));
 
