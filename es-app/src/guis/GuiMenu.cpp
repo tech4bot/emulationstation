@@ -2806,7 +2806,7 @@ void GuiMenu::openGamesSettings_batocera()
 	maxperf_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.maxperf") == "1" || SystemConf::getInstance()->get("global.maxperf") != "0");
 	maxperf_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.maxperf") == "0");
 	s->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
-    s->addSaveFunc([maxperf_enabled] { SystemConf::getInstance()->set("global.maxperf", maxperf_enabled->getSelected()); });
+	s->addSaveFunc([maxperf_enabled] { SystemConf::getInstance()->set("global.maxperf", maxperf_enabled->getSelected()); });
 #endif
 
 	// rewind
@@ -2983,6 +2983,18 @@ void GuiMenu::openGamesSettings_batocera()
 #endif
 			}
 	}
+
+	// Game screensaver time
+	auto screensavertime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER TIME"));
+	screensavertime->addRange({ { _("OFF"), "0" },{ "1min" , "1" },{ "2min" , "2" },{ "3min" , "3" },{ "4min" , "4" },{ "5min" , "5" },{ "6min" , "6" },{ "7min" , "7" },{ "8min" , "8" },{ "9min" , "9" },{ "10min" , "10" },{ "11min" , "11" },{ "12min" , "12" },{ "13min" , "13" },{ "14min" , "14" },{ "15min" , "15" } }, SystemConf::getInstance()->get("global.screensavertime"));
+	s->addWithDescription(_("SCREENSAVER TIME"),_("Activates the game screensaver after this time"), screensavertime);
+	s->addSaveFunc([screensavertime] { SystemConf::getInstance()->set("global.screensavertime", screensavertime->getSelected()); });
+
+	// Game screensaver auto-shutdown time
+	auto screensaverautoshutdowntime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER SHUTDOWN TIME"));
+	screensaverautoshutdowntime->addRange({ { _("OFF"), "off" },{ _("INSTANT"), "0" },{ "5min" , "5" },{ "10min" , "10" },{ "15min" , "15" },{ "20min" , "20" },{ "25min" , "25" },{ "30min" , "30" },{ "35min" , "35" },{ "40min" , "40" },{ "45min" , "45" },{ "50min" , "50" },{ "55min" , "55" },{ "60min" , "60" } }, SystemConf::getInstance()->get("global.screensaverautoshutdowntime"));
+	s->addWithDescription(_("SCREENSAVER SHUTDOWN TIME"),_("Time to wait till autosave and shutdown the device"), screensaverautoshutdowntime);
+	s->addSaveFunc([screensaverautoshutdowntime] { SystemConf::getInstance()->set("global.screensaverautoshutdowntime", screensaverautoshutdowntime->getSelected()); });
 
 	// latency reduction
 	s->addEntry(_("LATENCY REDUCTION"), true, [this] { openLatencyReductionConfiguration(mWindow, "global"); });
@@ -5261,6 +5273,21 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		maxperf_enabled->add(_("NO"), "0", SystemConf::getInstance()->get(configName + ".maxperf") == "0");
 		systemConfiguration->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
 		systemConfiguration->addSaveFunc([maxperf_enabled, configName] { SystemConf::getInstance()->set(configName + ".maxperf", maxperf_enabled->getSelected()); });
+
+	// Game screensaver time
+	auto screensavertime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER TIME"));
+	screensavertime->addRange({ { _("AUTO"), "auto" },{ _("OFF"), "0" },{ "1min" , "1" },{ "2min" , "2" },{ "3min" , "3" },{ "4min" , "4" },{ "5min" , "5" },{ "6min" , "6" },{ "7min" , "7" },{ "8min" , "8" },{ "9min" , "9" },{ "10min" , "10" },{ "11min" , "11" },{ "12min" , "12" },{ "13min" , "13" },{ "14min" , "14" },{ "15min" , "15" } }, SystemConf::getInstance()->get(configName + ".screensavertime"));
+	systemConfiguration->addWithDescription(_("SCREENSAVER TIME"),_("Activates the game screensaver after this time"), screensavertime);
+	systemConfiguration->addSaveFunc([screensavertime, configName] { SystemConf::getInstance()->set(configName + ".screensavertime", screensavertime->getSelected()); });
+
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::autosave))
+	{
+		// Game screensaver auto-shutdown time
+		auto screensaverautoshutdowntime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER SHUTDOWN TIME"));
+		screensaverautoshutdowntime->addRange({ { _("AUTO"), "auto" },{ _("OFF"), "off" },{ _("INSTANT"), "0" },{ "5min" , "5" },{ "10min" , "10" },{ "15min" , "15" },{ "20min" , "20" },{ "25min" , "25" },{ "30min" , "30" },{ "35min" , "35" },{ "40min" , "40" },{ "45min" , "45" },{ "50min" , "50" },{ "55min" , "55" },{ "60min" , "60" } }, SystemConf::getInstance()->get(configName + ".screensaverautoshutdowntime"));
+		systemConfiguration->addWithDescription(_("SCREENSAVER SHUTDOWN TIME"),_("Time to wait till autosave and shutdown the device"), screensaverautoshutdowntime);
+		systemConfiguration->addSaveFunc([screensaverautoshutdowntime, configName] { SystemConf::getInstance()->set(configName + ".screensaverautoshutdowntime", screensaverautoshutdowntime->getSelected()); });
+	}
 
 	// Enable Decorations for AmberELEC
 	// decorations

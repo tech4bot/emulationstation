@@ -31,7 +31,7 @@ GuiGeneralScreensaverOptions::GuiGeneralScreensaverOptions(Window* window, int s
 	mMenu.addGroup(_("SETTINGS"));
 
 	// Screensaver time
-	auto ctlTime = std::make_shared<SliderComponent>(mWindow, 0.f, 120.0f, 1.f, "m");
+	auto ctlTime = std::make_shared<SliderComponent>(mWindow, 0.f, 120.0f, 1.f, "min");
 	ctlTime->setValue((float)(Settings::getInstance()->getInt("ScreenSaverTime") / (1000 * 60)));
 	addWithLabel(_("START SCREENSAVER AFTER"), ctlTime);
 	addSaveFunc([ctlTime]
