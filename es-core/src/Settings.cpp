@@ -185,7 +185,7 @@ void Settings::setDefaults()
 	// mStringMap["SlideshowScreenSaverBackgroundAudioFile"] = "/userdata/music/slideshow_bg.wav"; // batocera
 	mBoolMap["SlideshowScreenSaverCustomImageSource"] = false;
 #ifdef _ENABLEEMUELEC
-	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/screenshots"; // AmberELEC
+	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/roms/screenshots"; // AmberELEC
 #else
 	mStringMap["SlideshowScreenSaverImageDir"] = "/userdata/screenshots"; // batocera
 #endif
