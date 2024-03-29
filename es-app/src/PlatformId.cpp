@@ -178,6 +178,7 @@ namespace PlatformIds
 		{ "z-machine",			Z_MACHINE },
 		{ "lowresnx",			LOWRES_NX },
 		{ "wasm4",			WASM4 },
+		{ "vircon32",			VIRCON32 },
 
 		{ "ignore",			PLATFORM_IGNORE },
 		{ "invalid",			PLATFORM_COUNT }

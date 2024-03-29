@@ -170,7 +170,8 @@ const std::map<PlatformId, unsigned short> screenscraper_platformid_map{
 	{ Z_MACHINE, 215 },
 	{ LOWRES_NX, 244 },
 	{ WASM4, 262 },
-	{ ARDUBOY, 263 }
+	{ ARDUBOY, 263 },
+	{ VIRCON32, 272 }
 };
 
 // Help XML parsing method, finding an direct child XML node starting from the parent and filtering by an attribute value list.
