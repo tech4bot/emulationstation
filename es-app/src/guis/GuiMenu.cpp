@@ -2800,13 +2800,6 @@ void GuiMenu::openGamesSettings_batocera()
 	s->addWithLabel(_("ENABLE RA BEZELS"), bezel_enabled);
 	s->addSaveFunc([bezel_enabled] { SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected()); });
 	*/
-
-	//maxperf
-	auto maxperf_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE MAX PERFORMANCE"));
-	maxperf_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.maxperf") == "1" || SystemConf::getInstance()->get("global.maxperf") != "0");
-	maxperf_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.maxperf") == "0");
-	s->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
-	s->addSaveFunc([maxperf_enabled] { SystemConf::getInstance()->set("global.maxperf", maxperf_enabled->getSelected()); });
 #endif
 
 	// rewind
@@ -2983,6 +2976,36 @@ void GuiMenu::openGamesSettings_batocera()
 #endif
 			}
 	}
+
+	//maxperf
+	auto maxperf_enabled = std::make_shared<SwitchComponent>(mWindow);
+	maxperf_enabled->setState(SystemConf::getInstance()->get("global.maxperf") == "1");
+	s->addWithDescription(_("ENABLE MAX PERFORMANCE"),_("This sets the CPU/GPU/RAM clock to the highest values"), maxperf_enabled);
+	maxperf_enabled->setOnChangedCallback([this, s, maxperf_enabled]
+	{
+		if (SystemConf::getInstance()->set("global.maxperf", maxperf_enabled->getState() ? "1" : "0"))
+		{
+			if (SystemConf::getInstance()->get("global.maxperf") == "1")
+				SystemConf::getInstance()->set("global.powersave", "0");
+			delete s;
+			openGamesSettings_batocera();
+		}
+	});
+
+	//powersave
+	auto powersave_enabled = std::make_shared<SwitchComponent>(mWindow);
+	powersave_enabled->setState(SystemConf::getInstance()->get("global.powersave") == "1");
+	s->addWithDescription(_("ENABLE POWERSAVE MODE"),_("This sets the CPU/GPU/RAM clock to the lowest values"), powersave_enabled);
+	powersave_enabled->setOnChangedCallback([this, s, powersave_enabled]
+	{
+		if (SystemConf::getInstance()->set("global.powersave", powersave_enabled->getState() ? "1" : "0"))
+		{
+			if (SystemConf::getInstance()->get("global.powersave") == "1")
+				SystemConf::getInstance()->set("global.maxperf", "0");
+			delete s;
+			openGamesSettings_batocera();
+		}
+	});
 
 	// Game screensaver time
 	auto screensavertime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER TIME"));
@@ -5266,13 +5289,35 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
 	}
 
-	// maxperf
-		auto maxperf_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE MAX PERFORMANCE"));
-		maxperf_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".maxperf") != "0" && SystemConf::getInstance()->get(configName + ".maxperf") != "1");
-		maxperf_enabled->add(_("YES"), "1", SystemConf::getInstance()->get(configName + ".maxperf") == "1");
-		maxperf_enabled->add(_("NO"), "0", SystemConf::getInstance()->get(configName + ".maxperf") == "0");
-		systemConfiguration->addWithLabel(_("ENABLE MAX PERFORMANCE"), maxperf_enabled);
-		systemConfiguration->addSaveFunc([maxperf_enabled, configName] { SystemConf::getInstance()->set(configName + ".maxperf", maxperf_enabled->getSelected()); });
+	//maxperf
+	auto maxperf_enabled = std::make_shared<SwitchComponent>(mWindow);
+	maxperf_enabled->setState(SystemConf::getInstance()->get(configName + ".maxperf") == "1");
+	systemConfiguration->addWithDescription(_("ENABLE MAX PERFORMANCE"),_("This sets the CPU/GPU/RAM clock to the highest values"), maxperf_enabled);
+	maxperf_enabled->setOnChangedCallback([mWindow, title, systemConfiguration, systemData, fileData, maxperf_enabled, configName]
+	{
+		if (SystemConf::getInstance()->set(configName + ".maxperf", maxperf_enabled->getState() ? "1" : "0"))
+		{
+			if (SystemConf::getInstance()->get(configName + ".maxperf") == "1")
+				SystemConf::getInstance()->set(configName + ".powersave", "0");
+			popSpecificConfigurationGui(mWindow, title, configName, systemData, fileData);
+			delete systemConfiguration;
+		}
+	});
+
+	//powersave
+	auto powersave_enabled = std::make_shared<SwitchComponent>(mWindow);
+	powersave_enabled->setState(SystemConf::getInstance()->get(configName + ".powersave") == "1");
+	systemConfiguration->addWithDescription(_("ENABLE POWERSAVE MODE"),_("This sets the CPU/GPU/RAM clock to the lowest values"), powersave_enabled);
+	powersave_enabled->setOnChangedCallback([mWindow, title, systemConfiguration, systemData, fileData, powersave_enabled, configName]
+	{
+		if (SystemConf::getInstance()->set(configName + ".powersave", powersave_enabled->getState() ? "1" : "0"))
+		{
+			if (SystemConf::getInstance()->get(configName + ".powersave") == "1")
+				SystemConf::getInstance()->set(configName + ".maxperf", "0");
+			popSpecificConfigurationGui(mWindow, title, configName, systemData, fileData);
+			delete systemConfiguration;
+		}
+	});
 
 	// Game screensaver time
 	auto screensavertime = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SCREENSAVER TIME"));
