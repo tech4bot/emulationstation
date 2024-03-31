@@ -2117,6 +2117,12 @@ void GuiMenu::openSystemSettings_batocera()
 	});
 #endif
 
+	// powersave
+	auto powersave_es_enabled = std::make_shared<SwitchComponent>(mWindow);
+	powersave_es_enabled->setState(SystemConf::getInstance()->get("global.powersave_es") == "1");
+	s->addWithDescription(_("ENABLE POWERSAVE MODE"),_("Enables powersave mode while Emulationstation is running"), powersave_es_enabled);
+	s->addSaveFunc([powersave_es_enabled] { SystemConf::getInstance()->set("global.powersave_es", powersave_es_enabled->getState() ? "1" : "0"); });
+
 #ifndef RG552
 	auto oc_enabled = std::make_shared<SwitchComponent>(mWindow);
 
@@ -2977,7 +2983,7 @@ void GuiMenu::openGamesSettings_batocera()
 			}
 	}
 
-	//maxperf
+	// maxperf
 	auto maxperf_enabled = std::make_shared<SwitchComponent>(mWindow);
 	maxperf_enabled->setState(SystemConf::getInstance()->get("global.maxperf") == "1");
 	s->addWithDescription(_("ENABLE MAX PERFORMANCE"),_("This sets the CPU/GPU/RAM clock to the highest values"), maxperf_enabled);
@@ -2992,7 +2998,7 @@ void GuiMenu::openGamesSettings_batocera()
 		}
 	});
 
-	//powersave
+	// powersave
 	auto powersave_enabled = std::make_shared<SwitchComponent>(mWindow);
 	powersave_enabled->setState(SystemConf::getInstance()->get("global.powersave") == "1");
 	s->addWithDescription(_("ENABLE POWERSAVE MODE"),_("This sets the CPU/GPU/RAM clock to the lowest values"), powersave_enabled);
@@ -5289,7 +5295,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([rgascale_enabled, configName] { SystemConf::getInstance()->set(configName + ".rgascale", rgascale_enabled->getSelected()); });
 	}
 
-	//maxperf
+	// maxperf
 	auto maxperf_enabled = std::make_shared<SwitchComponent>(mWindow);
 	maxperf_enabled->setState(SystemConf::getInstance()->get(configName + ".maxperf") == "1");
 	systemConfiguration->addWithDescription(_("ENABLE MAX PERFORMANCE"),_("This sets the CPU/GPU/RAM clock to the highest values"), maxperf_enabled);
@@ -5304,7 +5310,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		}
 	});
 
-	//powersave
+	// powersave
 	auto powersave_enabled = std::make_shared<SwitchComponent>(mWindow);
 	powersave_enabled->setState(SystemConf::getInstance()->get(configName + ".powersave") == "1");
 	systemConfiguration->addWithDescription(_("ENABLE POWERSAVE MODE"),_("This sets the CPU/GPU/RAM clock to the lowest values"), powersave_enabled);
