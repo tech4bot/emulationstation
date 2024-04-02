@@ -4745,6 +4745,22 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
                                 SystemConf::getInstance()->saveSystemConf();
                 });
 
+       auto filebrowser_enabled = std::make_shared<SwitchComponent>(mWindow);
+                bool filebrowserEnabled = SystemConf::getInstance()->get("ee_filebrowser.enabled") == "1";
+                filebrowser_enabled->setState(filebrowserEnabled);
+		auto filebrowser_location = "http://"+ApiSystem::getInstance()->getIpAdress()+":8385 or http://"+ApiSystem::getInstance()->getHostsName()+":8385";
+		s->addWithDescription(_("ENABLE FILEBROWSER"),_(filebrowser_location.c_str()), filebrowser_enabled);
+                filebrowser_enabled->setOnChangedCallback([filebrowser_enabled] {
+                        if (filebrowser_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop filebrowser", "", nullptr);
+                        } else {
+                                runSystemCommand("systemctl start filebrowser", "", nullptr);
+                        }
+                bool filebrowserenabled = filebrowser_enabled->getState();
+                SystemConf::getInstance()->set("ee_filebrowser.enabled", filebrowserenabled ? "1" : "0");
+                                SystemConf::getInstance()->saveSystemConf();
+                });
+
 //Right now limit webui to RG552
 #ifdef RG552
        auto webui_enabled = std::make_shared<SwitchComponent>(mWindow);
